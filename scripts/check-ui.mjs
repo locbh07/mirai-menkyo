@@ -13,6 +13,7 @@ await mkdir(screenshots, { recursive: true });
 const manifest = JSON.parse(await readFile(path.join(dist, "data/manifest.json"), "utf8"));
 const knowledge = JSON.parse(await readFile(path.join(dist, "data/knowledge.json"), "utf8"));
 const knowledgeOnly = process.argv.includes("--knowledge");
+const autoAdvanceOnly = process.argv.includes("--auto-advance");
 const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg" };
 const server = http.createServer(async (request, response) => {
   try {
@@ -70,6 +71,114 @@ async function selectLanguage(page, locale) {
   assert.equal(await page.locator(".language-menu").evaluate((el) => el.open), false);
   assert.equal(await page.locator(".language-trigger span").textContent(), languages[locale]);
   assert.equal(await page.locator(".language-trigger img").getAttribute("src"), `assets/flags/${languageFlags[locale]}.png`);
+}
+
+async function waitForQuestion(page, index) {
+  await page.waitForFunction((expected) => document.querySelector(".dot.current")?.dataset.goQuestion === String(expected), index);
+}
+
+async function checkAutoAdvance(page, width, locale) {
+  for (const type of ["karimen", "honmen", "gentsuki"]) {
+    const item = manifest.exams.find((exam) => exam.type === type);
+    const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+    await page.locator(`.exam-card.${type}`).first().click();
+    await page.waitForSelector(".question-title");
+    await openQuestionList(page);
+    await page.locator('[data-answer="true"]').dblclick({ delay: 50 });
+    await waitForQuestion(page, 1);
+    assert.equal(await page.locator('[data-go-question="0"]').evaluate((el) => el.classList.contains("answered")), true);
+    assert.equal(await page.locator('[data-go-question="1"]').evaluate((el) => el.classList.contains("answered")), false, "Double-click answered the next question");
+    const framing = await page.locator(".question-title").evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      const header = document.querySelector(".topbar");
+      return { focused: document.activeElement === el, top: rect.top, headerBottom: getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0 };
+    });
+    assert.equal(framing.focused, true);
+    assert.ok(framing.top >= framing.headerBottom - 1, "Next question is hidden beneath the header");
+    await page.locator('[data-go-question="0"]').click();
+    assert.equal(await page.locator('[data-answer="true"]').getAttribute("class"), "answer-button selected");
+    await page.locator('[data-answer="false"]').click();
+    await waitForQuestion(page, 1);
+    let choiceQuestion = null;
+    if (type === "honmen") {
+      const index = exam.questions.findIndex((q) => q.choices.length);
+      choiceQuestion = exam.questions[index];
+      await page.locator(`[data-go-question="${index}"]`).click();
+      await page.locator(`[data-choice-answer="${choiceQuestion.choices[0].number}:false"]`).click();
+      await page.waitForTimeout(350);
+      assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), String(index));
+      assert.equal(await page.locator(`[data-go-question="${index}"]`).evaluate((el) => el.classList.contains("answered")), false, "Partial question marked complete");
+      const alternative = locale === "en" ? "ja" : "en";
+      await selectLanguage(page, alternative);
+      assert.equal(await page.locator(`[data-choice-answer="${choiceQuestion.choices[0].number}:false"]`).getAttribute("class"), "answer-button selected");
+      await selectLanguage(page, locale);
+      for (const choice of choiceQuestion.choices.slice(1)) {
+        await page.locator(`[data-choice-answer="${choice.number}:false"]`).click();
+      }
+      await waitForQuestion(page, index + 1);
+      assert.equal(await page.locator(`[data-go-question="${index}"]`).evaluate((el) => el.classList.contains("answered")), true, "All-false choices did not complete the question");
+    }
+    const last = exam.questions.at(-1);
+    const lastIndex = exam.questions.length - 1;
+    await page.locator(`[data-go-question="${lastIndex}"]`).click();
+    if (last.choices.length) {
+      for (const choice of last.choices) await page.locator(`[data-choice-answer="${choice.number}:${choice.correct}"]`).click();
+    } else {
+      await page.locator('[data-answer="false"]').click();
+    }
+    await page.waitForTimeout(350);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), String(lastIndex));
+    assert.equal(await page.locator(".result-box").count(), 0, "Last answer submitted the test automatically");
+    assert.equal(await page.locator(`[data-go-question="${lastIndex}"]`).evaluate((el) => el.classList.contains("answered")), true);
+    await page.locator("[data-submit-exam]").click();
+    const points = (q) => type === "honmen" ? (q.number >= 91 ? 2 : 1) : 2;
+    const expected = (exam.questions[0].correct === false ? points(exam.questions[0]) : 0)
+      + (choiceQuestion?.choices.every((choice) => choice.correct === false) ? points(choiceQuestion) : 0)
+      + (last.choices.length || last.correct === false ? points(last) : 0);
+    const total = exam.questions.reduce((sum, q) => sum + points(q), 0);
+    assert.equal(await page.locator(".result-score").textContent(), `${expected}/${total}`);
+    await page.locator('[data-go-question="0"]').click();
+    await page.locator('[data-answer="true"]').click();
+    await page.waitForTimeout(350);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "0", "Review answer advanced automatically");
+    await checkLayout(page, `${width}/${locale}/${type}/auto-advance`);
+    await page.locator("[data-back-exams]").click();
+  }
+  if (locale === "vi") {
+    await page.locator(".exam-card.karimen").first().click();
+    await page.waitForSelector(".question-title");
+    await openQuestionList(page);
+    await page.evaluate(() => {
+      document.querySelector('[data-answer="true"]').click();
+      document.querySelector("[data-next-question]").click();
+    });
+    await page.waitForTimeout(350);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "1", "Manual navigation did not cancel the pending transition");
+    await page.evaluate(() => {
+      document.querySelector('[data-answer="false"]').click();
+      document.querySelector('[data-go-question="0"]').click();
+    });
+    await page.waitForTimeout(350);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "0");
+    await page.evaluate(() => {
+      document.querySelector('[data-answer="true"]').click();
+      document.querySelector("[data-submit-exam]").click();
+    });
+    await page.waitForTimeout(350);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "0", "Grading did not cancel the pending transition");
+    await page.locator("[data-back-exams]").click();
+    await page.locator(".exam-card.karimen").first().click();
+    await page.waitForSelector(".question-title");
+    await page.evaluate(() => {
+      document.querySelector('[data-answer="true"]').click();
+      document.querySelector("[data-back-exams]").click();
+    });
+    await page.locator(".exam-card.karimen").first().click();
+    await page.waitForSelector(".question-title");
+    await page.waitForTimeout(350);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "0", "Previous attempt advanced the new attempt");
+    await page.locator("[data-back-exams]").click();
+  }
 }
 
 async function checkKnowledge(page, width, locale) {
@@ -132,7 +241,7 @@ async function checkKnowledge(page, width, locale) {
 try {
   browser = await chromium.launch();
   let checks = 0;
-  for (const width of [320, 390, 768, 1024, 1440, 1920]) {
+  for (const width of autoAdvanceOnly ? [390, 1024, 1440] : [320, 390, 768, 1024, 1440, 1920]) {
     const height = width === 320 ? 640 : width === 390 ? 844 : 960;
     const context = await browser.newContext({ viewport: { width, height } });
     const page = await context.newPage();
@@ -146,6 +255,11 @@ try {
       if (knowledgeOnly) {
         await checkKnowledge(page, width, locale);
         checks++;
+        continue;
+      }
+      if (autoAdvanceOnly) {
+        await checkAutoAdvance(page, width, locale);
+        checks += 3;
         continue;
       }
       assert.equal(await page.locator(".exam-section").count(), 3);
@@ -191,6 +305,8 @@ try {
         await openQuestionList(page);
         await checkLayout(page, `${width}/${locale}/${type}`);
         await page.locator('[data-answer="true"]').click();
+        await waitForQuestion(page, 1);
+        await page.locator('[data-go-question="0"]').click();
         const alternative = locale === "en" ? "ja" : "en";
         const timerBefore = await page.locator(".timer").textContent();
         await selectLanguage(page, alternative);
@@ -248,9 +364,9 @@ try {
     }
     assert.deepEqual(pageErrors, [], `Browser errors at width ${width}`);
     await context.close();
-    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : "all exam types, knowledge and locations"}`);
+    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : "all exam types, knowledge and locations"}`);
   }
-  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : "exam"} workflows. Screenshots: ${screenshots}`);
+  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : "exam"} workflows. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));

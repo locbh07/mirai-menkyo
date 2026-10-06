@@ -13,6 +13,7 @@ const state = {
   submitted: false,
   result: null,
   timerId: null,
+  advanceTimer: null,
   secondsLeft: 0,
   knowledge: null,
   knowledgeSearch: "",
@@ -81,6 +82,7 @@ async function init() {
 }
 
 function render() {
+  if (state.tab !== "practice" || state.submitted) clearAutoAdvance();
   const oldNav = document.querySelector(".question-nav");
   const navScroll = oldNav && oldNav.dataset.examId === state.currentExam?.id
     ? [oldNav.querySelector(".question-list").scrollTop, oldNav.querySelector(".question-dots").scrollTop]
@@ -200,6 +202,7 @@ function stat(value, label) {
 async function startExam(id) {
   const item = state.manifest.exams.find((exam) => exam.id === id);
   if (!item) return;
+  clearAutoAdvance();
   state.examHomeScroll = window.scrollY;
   state.currentExam = await fetchJson(item.path);
   state.questionNavOpen = window.matchMedia("(min-width: 901px)").matches;
@@ -233,14 +236,14 @@ function renderPractice() {
           ${state.result ? renderResult() : ""}
         </div>
         <details class="question-list" ${state.questionNavOpen ? "open" : ""}>
-          <summary>${t("questionList")}<span>${t("answered", { count: Object.keys(state.answers).length, total: exam.questions.length })}</span></summary>
+          <summary>${t("questionList")}<span>${t("answered", { count: exam.questions.filter(isQuestionAnswered).length, total: exam.questions.length })}</span></summary>
           <div class="question-dots">
             ${exam.questions.map((item, index) => renderDot(item, index)).join("")}
           </div>
         </details>
       </aside>
       <section class="question-panel">
-        <h2 class="question-title">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
+        <h2 class="question-title" tabindex="-1">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
         ${renderQuestionImages(question)}
         ${question.choices.length ? renderChoiceQuestion(question) : renderTrueFalseQuestion(question)}
         ${state.submitted && localizedText(question, "explanation") ? `<div class="explanation"><strong>${t("explanation")}:</strong> ${escapeHtml(localizedText(question, "explanation"))}</div>` : ""}
@@ -286,7 +289,7 @@ function answerButton(question, value, label, selected) {
     if (value === question.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-answer="${value}">${label}</button>`;
+  return `<button class="answer-button ${cls}" data-answer="${value}" ${state.advanceTimer !== null ? "disabled" : ""}>${label}</button>`;
 }
 
 function renderChoiceQuestion(question) {
@@ -316,13 +319,13 @@ function choiceButton(question, choice, value, selected) {
     if (value === choice.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}">${t(value ? "correct" : "incorrect")}</button>`;
+  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" ${state.advanceTimer !== null ? "disabled" : ""}>${t(value ? "correct" : "incorrect")}</button>`;
 }
 
 function renderDot(question, index) {
   let cls = "";
   if (index === state.currentQuestionIndex) cls += " current";
-  if (state.answers[question.id]) cls += " answered";
+  if (isQuestionAnswered(question)) cls += " answered";
   if (state.submitted) cls += isQuestionCorrect(question) ? " good" : " bad";
   return `<button class="dot ${cls}" data-go-question="${index}" aria-label="${t("question", { number: index + 1 })}" ${index === state.currentQuestionIndex ? 'aria-current="step"' : ""}>${index + 1}</button>`;
 }
@@ -338,22 +341,65 @@ function renderResult() {
 }
 
 function answerCurrent(value) {
+  if (state.advanceTimer !== null) return;
   const question = state.currentExam.questions[state.currentQuestionIndex];
   state.answers[question.id] = { value };
+  advanceAfterAnswer(question);
   render();
 }
 
 function answerChoice(raw) {
+  if (state.advanceTimer !== null) return;
   const [choiceNumber, value] = raw.split(":");
   const question = state.currentExam.questions[state.currentQuestionIndex];
   state.answers[question.id] = {
     ...(state.answers[question.id] || {}),
     [choiceNumber]: value === "true",
   };
+  if (isQuestionAnswered(question)) advanceAfterAnswer(question);
+  render();
+}
+
+function isQuestionAnswered(question) {
+  const answer = state.answers[question.id];
+  if (!answer) return false;
+  return question.choices.length
+    ? question.choices.every((choice) => typeof answer[choice.number] === "boolean")
+    : typeof answer.value === "boolean";
+}
+
+function clearAutoAdvance() {
+  if (state.advanceTimer !== null) clearTimeout(state.advanceTimer);
+  state.advanceTimer = null;
+}
+
+function advanceAfterAnswer(question) {
+  if (state.submitted || state.currentQuestionIndex >= state.currentExam.questions.length - 1) return;
+  const examId = state.currentExam.id;
+  state.advanceTimer = setTimeout(() => {
+    state.advanceTimer = null;
+    if (state.tab !== "practice" || state.submitted || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== question.id) return;
+    state.currentQuestionIndex += 1;
+    render();
+    const heading = document.querySelector(".question-title");
+    const header = document.querySelector(".topbar");
+    if (heading) {
+      const offset = header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().height + 16 : 16;
+      heading.style.scrollMarginTop = `${offset}px`;
+      heading.focus({ preventScroll: true });
+      heading.scrollIntoView({ block: "nearest" });
+    }
+  }, 250);
+}
+
+function goToQuestion(index) {
+  clearAutoAdvance();
+  state.currentQuestionIndex = Math.min(state.currentExam.questions.length - 1, Math.max(0, index));
   render();
 }
 
 function scoreExam() {
+  clearAutoAdvance();
   const exam = state.currentExam;
   let score = 0;
   let total = 0;
@@ -638,8 +684,7 @@ function bindEvents() {
 
   document.querySelectorAll("[data-go-question]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.currentQuestionIndex = Number(button.dataset.goQuestion);
-      render();
+      goToQuestion(Number(button.dataset.goQuestion));
     });
   });
 
@@ -652,13 +697,11 @@ function bindEvents() {
   });
 
   document.querySelector("[data-prev-question]")?.addEventListener("click", () => {
-    state.currentQuestionIndex = Math.max(0, state.currentQuestionIndex - 1);
-    render();
+    goToQuestion(state.currentQuestionIndex - 1);
   });
 
   document.querySelector("[data-next-question]")?.addEventListener("click", () => {
-    state.currentQuestionIndex = Math.min(state.currentExam.questions.length - 1, state.currentQuestionIndex + 1);
-    render();
+    goToQuestion(state.currentQuestionIndex + 1);
   });
 
   document.querySelector("[data-submit-exam]")?.addEventListener("click", scoreExam);

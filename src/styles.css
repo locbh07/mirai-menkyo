@@ -706,6 +706,10 @@ a:hover {
   overflow-wrap: anywhere;
 }
 
+.question-title:focus {
+  outline: none;
+}
+
 .question-images {
   display: flex;
   flex-wrap: wrap;
@@ -753,10 +757,14 @@ a:hover {
     background 140ms ease;
 }
 
-.answer-button:hover {
+.answer-button:hover:not(:disabled) {
   transform: translateY(-2px);
   border-color: rgba(26, 54, 93, 0.35);
   box-shadow: var(--shadow-hover);
+}
+
+.answer-button:disabled {
+  cursor: default;
 }
 
 .answer-button.selected {

@@ -57,3 +57,8 @@ were downloaded from [Flagpedia/FlagCDN](https://flagpedia.net/download/api).
 `npm run test:knowledge` checks the full-width knowledge list, accent-insensitive
 search, single article titles, preserved subheadings, tables, images and return
 scroll position on six viewport widths and all interface languages.
+
+Answers advance after a short selection feedback. Multi-part questions advance
+only when all statements are answered. The final question waits for manual
+grading, and graded review does not advance. `npm run test:auto-advance` checks
+these behaviors, double-click protection and cancellation on navigation or exit.
