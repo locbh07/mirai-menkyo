@@ -105,6 +105,7 @@ async function checkImageWorkflow(page, width, locale) {
     await page.locator('[data-answer="true"]').click();
     await waitForQuestion(page, index);
     await checkQuestionImages(page, `${width}/${locale}/${type}/image-after-advance`);
+    await page.waitForFunction(() => document.activeElement === document.querySelector(".question-title"));
     const visible = await page.locator(".question-images").evaluate((el) => {
       const rect = el.getBoundingClientRect();
       const header = document.querySelector(".topbar");
@@ -121,6 +122,45 @@ async function checkImageWorkflow(page, width, locale) {
       await page.screenshot({ path: path.join(screenshots, `${width}-${type}-large-image.png`), fullPage: true });
     }
     await page.locator("[data-back-exams]").click();
+  }
+}
+
+async function checkSlowImageWorkflow(width) {
+  const context = await browser.newContext({ viewport: { width, height: width === 390 ? 844 : 960 } });
+  const page = await context.newPage();
+  try {
+    await page.route("**/data/assets/**", async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await route.continue();
+    });
+    await page.goto(base);
+    await page.locator(".exam-card.honmen").first().click();
+    await page.waitForSelector(".question-title");
+    await openQuestionList(page);
+    await page.locator('[data-go-question="89"]').click();
+    await page.locator('[data-answer="true"]').click();
+    await waitForQuestion(page, 90);
+    await page.waitForFunction(() => document.activeElement === document.querySelector(".question-title"));
+    await checkQuestionImages(page, `${width}/slow-image-load`);
+    assert.equal(await page.locator(".question-images img").first().evaluate((image) => {
+      const header = document.querySelector(".topbar");
+      return image.getBoundingClientRect().top >= (getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
+    }), true, "Image scrolled out of view after a delayed load");
+    const item = manifest.exams.find((exam) => exam.type === "honmen");
+    const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+    const otherIndex = exam.questions.findIndex((q, index) => index > 0 && index !== 90 && q.imagePaths.length && !exam.questions[index - 1].choices.length);
+    await page.locator(`[data-go-question="${otherIndex - 1}"]`).click();
+    await page.locator('[data-answer="true"]').click();
+    await waitForQuestion(page, otherIndex);
+    await page.locator('[data-go-question="0"]').click();
+    await page.locator("[data-next-question]").focus();
+    const scroll = await page.evaluate(() => window.scrollY);
+    await page.waitForTimeout(650);
+    assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "0");
+    assert.equal(await page.evaluate(() => document.activeElement.hasAttribute("data-next-question")), true, "Delayed image completion stole focus after manual navigation");
+    assert.ok(Math.abs((await page.evaluate(() => window.scrollY)) - scroll) < 2);
+  } finally {
+    await context.close();
   }
 }
 
@@ -311,6 +351,7 @@ try {
       }
       if (imagesOnly) {
         await checkImageWorkflow(page, width, locale);
+        if (locale === "vi" && (width === 390 || width === 1440)) await checkSlowImageWorkflow(width);
         checks += 3;
         continue;
       }

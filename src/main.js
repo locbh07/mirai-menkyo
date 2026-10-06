@@ -381,17 +381,23 @@ function advanceAfterAnswer(question) {
     if (state.tab !== "practice" || state.submitted || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== question.id) return;
     state.currentQuestionIndex += 1;
     render();
-    const heading = document.querySelector(".question-title");
-    const header = document.querySelector(".topbar");
-    if (heading) {
-      const offset = header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().height + 16 : 16;
-      const images = document.querySelector(".question-images");
-      const target = images || heading;
-      target.style.scrollMarginTop = `${offset}px`;
-      heading.focus({ preventScroll: true });
-      target.scrollIntoView({ block: images ? "start" : "nearest" });
-    }
+    revealQuestion(examId, state.currentExam.questions[state.currentQuestionIndex].id).catch(showError);
   }, 250);
+}
+
+async function revealQuestion(examId, questionId) {
+  const heading = document.querySelector(".question-title");
+  const images = document.querySelector(".question-images");
+  if (images) {
+    await Promise.allSettled([...images.querySelectorAll("img")].map((image) => image.decode()));
+  }
+  if (!heading?.isConnected || state.tab !== "practice" || state.submitted || state.advanceTimer !== null || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== questionId) return;
+  const header = document.querySelector(".topbar");
+  const offset = header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().height + 16 : 16;
+  const target = images || heading;
+  target.style.scrollMarginTop = `${offset}px`;
+  heading.focus({ preventScroll: true });
+  target.scrollIntoView({ block: images ? "start" : "nearest" });
 }
 
 function goToQuestion(index) {
