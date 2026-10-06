@@ -4,12 +4,13 @@ import { icon } from "./icons.js";
 const storedLocale = localStorage.getItem("mirai-menkyo-locale");
 const state = {
   locale: languages[storedLocale] ? storedLocale : "vi",
-  questionNavOpen: window.matchMedia("(min-width: 901px)").matches,
+  questionNavOpen: false,
   tab: "exams",
   manifest: null,
   examHomeScroll: 0,
   currentExam: null,
   currentQuestionIndex: 0,
+  currentChoiceIndex: 0,
   answers: {},
   submitted: false,
   result: null,
@@ -68,6 +69,7 @@ function renderLanguageMenu() {
 }
 
 const app = document.querySelector("#app");
+let questionObserver;
 
 init();
 
@@ -83,8 +85,13 @@ async function init() {
 }
 
 function render() {
+  questionObserver?.disconnect();
+  if (state.tab !== "practice") state.questionNavOpen = false;
   if (state.tab !== "practice" || state.submitted) clearAutoAdvance();
   const oldNav = document.querySelector(".question-nav");
+  const oldBody = document.querySelector(".question-body");
+  const bodyScroll = oldBody && oldBody.dataset.questionId === state.currentExam?.questions[state.currentQuestionIndex]?.id && oldBody.dataset.choiceIndex === String(state.currentChoiceIndex)
+    ? questionScrollArea(oldBody).scrollTop : 0;
   const navScroll = oldNav && oldNav.dataset.examId === state.currentExam?.id
     ? [oldNav.querySelector(".question-list").scrollTop, oldNav.querySelector(".question-dots").scrollTop]
     : [0, 0];
@@ -100,6 +107,13 @@ function render() {
   if (state.tab === "locations") content = renderLocations();
   app.innerHTML = renderShell(content);
   bindEvents();
+  const newBody = document.querySelector(".question-body");
+  if (newBody) {
+    questionObserver = new ResizeObserver(() => fitQuestionBody(newBody));
+    questionObserver.observe(newBody);
+    newBody.querySelectorAll(".question-images img").forEach((image) => image.addEventListener("load", () => fitQuestionBody(newBody)));
+    questionScrollArea(newBody).scrollTop = bodyScroll;
+  }
   const newNav = document.querySelector(".question-nav");
   if (newNav) {
     newNav.querySelector(".question-list").scrollTop = navScroll[0];
@@ -107,12 +121,35 @@ function render() {
   }
 }
 
+function fitQuestionBody(body) {
+  if (!body.isConnected) return;
+  // Reclaim space before allowing inner scrolling; never truncate translated questions.
+  body.classList.remove("compact-copy", "stepped-choices");
+  const images = body.querySelector(".question-images");
+  if (images && [...images.children].every((image) => image.naturalWidth > 0)) {
+    const width = (images.clientWidth - 12 * (images.children.length - 1)) / images.children.length;
+    const height = Math.max(...[...images.children].map((image) => width * image.naturalHeight / image.naturalWidth));
+    images.style.setProperty("--image-natural-height", `${height}px`);
+  }
+  body.querySelectorAll(".choice-item").forEach((item) => { item.hidden = false; });
+  const readingArea = questionScrollArea(body);
+  if (body.classList.contains("has-choices") && readingArea.scrollHeight > readingArea.clientHeight + 1) body.classList.add("stepped-choices");
+  if (body.classList.contains("has-choices")) updateChoiceStep();
+  if (readingArea.scrollHeight > readingArea.clientHeight + 1) body.classList.add("compact-copy");
+  body.dataset.layoutReady = "true";
+}
+
+function questionScrollArea(body) {
+  const copy = body.querySelector(".question-copy");
+  return getComputedStyle(copy).display === "contents" ? body : copy;
+}
+
 function renderShell(content) {
   document.documentElement.lang = state.locale;
   document.title = `Mirai Menkyo - ${t("homeTitle")}`;
   return `
-    <div class="app-shell">
-      <header class="topbar">
+    <div class="app-shell ${state.tab === "practice" ? "practice-shell" : ""}">
+      ${state.tab === "practice" ? "" : `<header class="topbar">
         <div class="topbar-inner">
           <div class="brand">
             <div class="brand-mark">${icon("car")}</div>
@@ -131,7 +168,7 @@ function renderShell(content) {
             <span class="premium-chip">${t("premium")}</span>
           </div>
         </div>
-      </header>
+      </header>`}
       <main class="main">${content}</main>
     </div>
   `;
@@ -207,8 +244,9 @@ async function startExam(id) {
   clearAutoAdvance();
   state.examHomeScroll = window.scrollY;
   state.currentExam = await fetchJson(item.path);
-  state.questionNavOpen = window.matchMedia("(min-width: 901px)").matches;
+  state.questionNavOpen = false;
   state.currentQuestionIndex = 0;
+  state.currentChoiceIndex = 0;
   state.answers = {};
   state.submitted = false;
   state.result = null;
@@ -228,14 +266,13 @@ function renderPractice() {
   const question = exam.questions[state.currentQuestionIndex];
   return `
     <section class="exam-layout">
-      <aside class="question-nav" data-exam-id="${escapeAttribute(exam.id)}">
+      <aside class="question-nav" id="question-navigation" aria-label="${t("questionList")}" data-exam-id="${escapeAttribute(exam.id)}" ${state.questionNavOpen ? "" : "hidden"}>
         <div class="exam-header">
-          <strong>${escapeHtml(examTitle(exam))}</strong>
-          <div class="timer-row">
-            <span>${t("count", { count: exam.questions.length })}</span>
-            <span class="timer">${formatTime(state.secondsLeft)}</span>
+          <div class="drawer-heading">
+            <strong>${escapeHtml(examTitle(exam))}</strong>
+            <button class="icon-button" data-close-questions aria-label="${t("back")}" data-tooltip="${t("back")}">${icon("x")}</button>
           </div>
-          ${state.result ? renderResult() : ""}
+          <span>${t("count", { count: exam.questions.length })}</span>
         </div>
         <details class="question-list" ${state.questionNavOpen ? "open" : ""}>
           <summary>${t("questionList")}<span>${t("answered", { count: exam.questions.filter(isQuestionAnswered).length, total: exam.questions.length })}</span></summary>
@@ -246,13 +283,37 @@ function renderPractice() {
       </aside>
       <section class="question-panel">
         <div class="question-topline">
-          <button class="icon-button" data-back-exams aria-label="${t("examList")}" data-tooltip="${t("examList")}">${icon("layout-grid")}</button>
-          <span class="question-position">${t("question", { number: state.currentQuestionIndex + 1 })} / ${exam.questions.length}</span>
+          <div class="practice-toolbar-left">
+            <button class="icon-button" data-back-exams aria-label="${t("examList")}" data-tooltip="${t("examList")}">${icon("chevron-left")}</button>
+            <span class="practice-exam-title">${escapeHtml(examTitle(exam))}</span>
+          </div>
+          <span class="timer" role="timer" aria-label="${t("examMeta", { count: exam.questions.length, minutes: exam.type === "honmen" ? 50 : 30 })}">${formatTime(state.secondsLeft)}</span>
+          <div class="practice-toolbar-right">
+            <button class="icon-button" data-toggle-questions aria-controls="question-navigation" aria-expanded="${state.questionNavOpen}" aria-label="${t("questionList")}" data-tooltip="${t("questionList")}">${icon("list")}</button>
+            <details class="practice-menu">
+              <summary class="icon-button" aria-label="${t("navigation")}" data-tooltip="${t("navigation")}">${icon("menu")}</summary>
+              <div class="practice-menu-content">
+                <strong>Mirai Menkyo</strong>
+                <nav class="nav-tabs" aria-label="${t("navigation")}">
+                  ${tabButton("exams", t("exams"))}
+                  ${tabButton("knowledge", t("knowledge"))}
+                  ${tabButton("locations", t("locations"))}
+                </nav>
+                ${renderLanguageMenu()}
+              </div>
+            </details>
+          </div>
         </div>
-        ${renderQuestionImages(question)}
-        <h2 class="question-title" tabindex="-1">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
-        ${question.choices.length ? renderChoiceQuestion(question) : renderTrueFalseQuestion(question)}
-        ${state.submitted && localizedText(question, "explanation") ? `<div class="explanation"><strong>${t("explanation")}:</strong> ${escapeHtml(localizedText(question, "explanation"))}</div>` : ""}
+        ${state.result ? renderResult() : ""}
+        <div class="question-body ${question.imagePaths?.length ? "has-images" : ""} ${question.choices.length ? "has-choices" : ""}" data-question-id="${escapeAttribute(question.id)}" data-choice-index="${state.currentChoiceIndex}">
+          ${renderQuestionImages(question)}
+          <div class="question-copy">
+            <h2 class="question-title" tabindex="-1">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
+            ${question.choices.length ? renderChoiceQuestion(question) : ""}
+            ${state.submitted && localizedText(question, "explanation") ? `<div class="explanation"><strong>${t("explanation")}:</strong> ${escapeHtml(localizedText(question, "explanation"))}</div>` : ""}
+          </div>
+        </div>
+        ${question.choices.length ? "" : renderTrueFalseQuestion(question)}
         <div class="question-footer">
           <div class="question-pager">
             <button class="icon-button" data-prev-question aria-label="${t("previous")}" data-tooltip="${t("previous")}" ${state.currentQuestionIndex === 0 ? "disabled" : ""}>${icon("chevron-left")}</button>
@@ -300,11 +361,14 @@ function renderChoiceQuestion(question) {
   const selected = state.answers[question.id] || {};
   return `
     <div class="choice-list">
+      <div class="choice-step-tabs" role="tablist" aria-label="${t("question", { number: state.currentQuestionIndex + 1 })}">
+        ${question.choices.map((choice, index) => `<button class="choice-step ${index === state.currentChoiceIndex ? "active" : ""}" role="tab" id="tab-${escapeAttribute(question.id)}-${index}" aria-controls="choice-${escapeAttribute(question.id)}-${index}" aria-selected="${index === state.currentChoiceIndex}" aria-label="${t("statement", { number: index + 1 })}" tabindex="${index === state.currentChoiceIndex ? 0 : -1}" data-choice-step="${index}">${index + 1}${typeof selected[choice.number] === "boolean" ? icon("check") : ""}</button>`).join("")}
+      </div>
       ${question.choices
         .map(
-          (choice) => `
-            <div class="choice-item">
-              <div class="choice-text">${escapeHtml(localizedText(choice))}</div>
+          (choice, index) => `
+            <div class="choice-item" id="choice-${escapeAttribute(question.id)}-${index}" data-choice-index="${index}">
+              <div class="choice-text" tabindex="-1">${escapeHtml(localizedText(choice))}</div>
               <div class="answer-actions">
                 ${choiceButton(question, choice, true, selected[choice.number] === true)}
                 ${choiceButton(question, choice, false, selected[choice.number] === false)}
@@ -346,6 +410,7 @@ function renderResult() {
 
 function answerCurrent(value) {
   if (state.advanceTimer !== null) return;
+  state.questionNavOpen = false;
   const question = state.currentExam.questions[state.currentQuestionIndex];
   state.answers[question.id] = { value };
   advanceAfterAnswer(question);
@@ -354,6 +419,7 @@ function answerCurrent(value) {
 
 function answerChoice(raw) {
   if (state.advanceTimer !== null) return;
+  state.questionNavOpen = false;
   const [choiceNumber, value] = raw.split(":");
   const question = state.currentExam.questions[state.currentQuestionIndex];
   state.answers[question.id] = {
@@ -361,7 +427,48 @@ function answerChoice(raw) {
     [choiceNumber]: value === "true",
   };
   if (isQuestionAnswered(question)) advanceAfterAnswer(question);
+  else if (!state.submitted && document.querySelector(".question-body").classList.contains("stepped-choices")) {
+    const examId = state.currentExam.id;
+    state.advanceTimer = setTimeout(() => {
+      state.advanceTimer = null;
+      if (state.tab !== "practice" || state.submitted || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== question.id) return;
+      state.currentChoiceIndex = question.choices.findIndex((choice) => typeof state.answers[question.id]?.[choice.number] !== "boolean");
+      render();
+      document.querySelector(`.choice-item[data-choice-index="${state.currentChoiceIndex}"] .choice-text`)?.focus({ preventScroll: true });
+    }, 250);
+  }
   render();
+}
+
+function updateChoiceStep() {
+  const body = document.querySelector(".question-body");
+  const stepped = body.classList.contains("stepped-choices");
+  body.querySelectorAll(".choice-item").forEach((item, index) => {
+    item.hidden = stepped && index !== state.currentChoiceIndex;
+    if (stepped) {
+      item.setAttribute("role", "tabpanel");
+      item.setAttribute("aria-labelledby", `tab-${body.dataset.questionId}-${index}`);
+    } else {
+      item.removeAttribute("role");
+      item.removeAttribute("aria-labelledby");
+    }
+  });
+  body.querySelectorAll("[data-choice-step]").forEach((button, index) => {
+    const active = index === state.currentChoiceIndex;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
+  body.dataset.choiceIndex = String(state.currentChoiceIndex);
+}
+
+function goChoiceStep(index) {
+  clearAutoAdvance();
+  state.currentChoiceIndex = index;
+  fitQuestionBody(document.querySelector(".question-body"));
+  document.querySelectorAll("[data-choice-answer]").forEach((button) => { button.disabled = false; });
+  questionScrollArea(document.querySelector(".question-body")).scrollTop = 0;
+  document.querySelector(`[data-choice-step="${index}"]`).focus({ preventScroll: true });
 }
 
 function isQuestionAnswered(question) {
@@ -384,6 +491,7 @@ function advanceAfterAnswer(question) {
     state.advanceTimer = null;
     if (state.tab !== "practice" || state.submitted || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== question.id) return;
     state.currentQuestionIndex += 1;
+    state.currentChoiceIndex = 0;
     render();
     revealQuestion(examId, state.currentExam.questions[state.currentQuestionIndex].id).catch(showError);
   }, 250);
@@ -396,22 +504,22 @@ async function revealQuestion(examId, questionId) {
     await Promise.allSettled([...images.querySelectorAll("img")].map((image) => image.decode()));
   }
   if (!heading?.isConnected || state.tab !== "practice" || state.submitted || state.advanceTimer !== null || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== questionId) return;
-  const header = document.querySelector(".topbar");
-  const offset = header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().height + 16 : 16;
-  const target = images || heading;
-  target.style.scrollMarginTop = `${offset}px`;
   heading.focus({ preventScroll: true });
-  target.scrollIntoView({ block: images ? "start" : "nearest" });
+  questionScrollArea(document.querySelector(".question-body")).scrollTop = 0;
 }
 
 function goToQuestion(index) {
   clearAutoAdvance();
+  state.questionNavOpen = false;
   state.currentQuestionIndex = Math.min(state.currentExam.questions.length - 1, Math.max(0, index));
+  state.currentChoiceIndex = 0;
   render();
+  document.querySelector(".question-title")?.focus({ preventScroll: true });
 }
 
 function scoreExam() {
   clearAutoAdvance();
+  state.questionNavOpen = false;
   const exam = state.currentExam;
   let score = 0;
   let total = 0;
@@ -573,7 +681,7 @@ function renderArticleImages(article) {
 function renderArticleTables(article) {
   return (article.tables || [])
     .map(
-      (table) => `
+      (table, index) => article.slug === "traffic-signs" ? renderTrafficSignTable(table, index) : `
         <div class="table-scroll" role="region" aria-label="${t("table")}" tabindex="0"><table class="article-table">
           <tbody>
             ${table.rows
@@ -598,6 +706,32 @@ function renderArticleTables(article) {
       `,
     )
     .join("");
+}
+
+function renderTrafficSignTable(table, tableIndex) {
+  return `
+    <div class="table-scroll" role="region" aria-label="${t("table")}" tabindex="0">
+      <table class="article-table traffic-sign-table">
+        <colgroup><col class="sign-image-column" /><col /></colgroup>
+        ${table.rows.map((row, rowIndex) => {
+          if (row.length === 1) {
+            return `<tbody class="sign-section"><tr><th colspan="2" scope="colgroup">${escapeHtml(row[0].text)}</th></tr></tbody>`;
+          }
+          const [sign, description] = row;
+          const titleId = `sign-title-${tableIndex}-${rowIndex}`;
+          return `
+            <tbody class="sign-entry">
+              <tr class="sign-heading">
+                <td class="sign-image-cell" rowspan="2">${(sign.images || []).filter((image) => image.local_path).map((image) => `<img class="article-image" src="data/${escapeAttribute(image.local_path)}" alt="${escapeAttribute(image.alt || sign.text)}" loading="lazy" />`).join("")}</td>
+                <th class="sign-title" id="${titleId}" scope="rowgroup">${escapeHtml(sign.text)}</th>
+              </tr>
+              <tr class="sign-description"><td headers="${titleId}">${escapeHtml(description.text)}</td></tr>
+            </tbody>
+          `;
+        }).join("")}
+      </table>
+    </div>
+  `;
 }
 
 async function renderLocationsAsync() {
@@ -647,18 +781,23 @@ function renderLocation(item) {
 }
 
 function bindEvents() {
+  const practiceMenu = document.querySelector(".practice-menu");
   const languageMenu = document.querySelector(".language-menu");
   document.querySelectorAll("[data-locale]").forEach((button) => {
     button.addEventListener("click", () => {
       state.locale = button.dataset.locale;
       localStorage.setItem("mirai-menkyo-locale", state.locale);
       render();
-      document.querySelector(".language-trigger")?.focus({ preventScroll: true });
+      const languageFocus = state.tab === "practice"
+        ? document.querySelector(".practice-menu > summary") : document.querySelector(".language-trigger");
+      languageFocus?.focus({ preventScroll: true });
     });
   });
 
   languageMenu?.addEventListener("keydown", (event) => {
     if (event.key === "Escape") {
+      event.preventDefault();
+      event.stopPropagation();
       languageMenu.open = false;
       languageMenu.querySelector("summary").focus({ preventScroll: true });
     }
@@ -674,11 +813,26 @@ function bindEvents() {
   });
 
   app.onclick = (event) => {
+    if (!event.target.isConnected) return;
     if (languageMenu?.open && !languageMenu.contains(event.target)) languageMenu.open = false;
+    if (practiceMenu?.open && !practiceMenu.contains(event.target)) practiceMenu.open = false;
+    if (state.questionNavOpen && !event.target.closest(".question-nav,[data-toggle-questions]")) toggleQuestionNav(false, false);
   };
 
+  app.onkeydown = (event) => {
+    if (event.key !== "Escape" || event.defaultPrevented) return;
+    if (languageMenu?.open) return;
+    if (practiceMenu?.open) {
+      practiceMenu.open = false;
+      practiceMenu.querySelector("summary").focus({ preventScroll: true });
+    } else if (state.questionNavOpen) toggleQuestionNav(false);
+  };
+
+  document.querySelector("[data-toggle-questions]")?.addEventListener("click", () => toggleQuestionNav(!state.questionNavOpen));
+  document.querySelector("[data-close-questions]")?.addEventListener("click", () => toggleQuestionNav(false));
+
   document.querySelector(".question-list")?.addEventListener("toggle", (event) => {
-    if (event.target.isConnected) state.questionNavOpen = event.target.open;
+    if (event.target.isConnected && state.questionNavOpen !== event.target.open) toggleQuestionNav(event.target.open);
   });
 
   document.querySelectorAll("[data-tab]").forEach((button) => {
@@ -707,6 +861,17 @@ function bindEvents() {
 
   document.querySelectorAll("[data-choice-answer]").forEach((button) => {
     button.addEventListener("click", () => answerChoice(button.dataset.choiceAnswer));
+  });
+
+  document.querySelectorAll("[data-choice-step]").forEach((button) => {
+    button.addEventListener("click", () => goChoiceStep(Number(button.dataset.choiceStep)));
+    button.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const count = state.currentExam.questions[state.currentQuestionIndex].choices.length;
+      const index = event.key === "Home" ? 0 : event.key === "End" ? count - 1 : (state.currentChoiceIndex + (event.key === "ArrowRight" ? 1 : -1) + count) % count;
+      goChoiceStep(index);
+    });
   });
 
   document.querySelector("[data-prev-question]")?.addEventListener("click", () => {
@@ -756,6 +921,22 @@ function bindEvents() {
   };
   locationSearch?.addEventListener("input", updateLocationSearch);
   locationSearch?.addEventListener("compositionend", updateLocationSearch);
+}
+
+function toggleQuestionNav(open, restoreFocus = true) {
+  state.questionNavOpen = open;
+  const nav = document.querySelector(".question-nav");
+  const trigger = document.querySelector("[data-toggle-questions]");
+  if (!nav || !trigger) return;
+  nav.hidden = !open;
+  nav.querySelector(".question-list").open = open;
+  trigger.setAttribute("aria-expanded", String(open));
+  if (open) {
+    document.querySelector(".practice-menu").open = false;
+    nav.querySelector(".dot.current")?.focus({ preventScroll: true });
+  } else if (restoreFocus) {
+    trigger.focus({ preventScroll: true });
+  }
 }
 
 async function fetchJson(url, options) {

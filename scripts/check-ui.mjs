@@ -47,7 +47,7 @@ async function checkLayout(page, name) {
     }
     const nav = document.querySelector(".question-nav")?.getBoundingClientRect();
     const panel = document.querySelector(".question-panel")?.getBoundingClientRect();
-    if (nav && panel && innerWidth > 900 && nav.right > panel.left) problems.push("Sidebar overlaps question panel");
+    if (nav?.width && panel && (nav.left < panel.left || nav.right > panel.right)) problems.push("Question drawer escapes question panel");
     for (const dot of document.querySelectorAll(".dot")) {
       if (!dot.getClientRects().length) continue;
       const rect = dot.getBoundingClientRect();
@@ -71,6 +71,7 @@ async function checkPracticeControls(page, locale, submitted = false) {
   }
   assert.equal(await page.locator("[data-submit-exam] span").textContent(), translate(locale, submitted ? "resubmit" : "submit"));
   const smallTargets = await page.locator(".question-panel button").evaluateAll((buttons) => buttons.filter((button) => {
+    if (!button.getClientRects().length) return false;
     const rect = button.getBoundingClientRect();
     return rect.width < 43.9 || rect.height < 43.9;
   }).map((button) => button.outerHTML));
@@ -91,15 +92,17 @@ async function checkControlsWorkflow(page, width, locale) {
   await page.locator("[data-prev-question]").click();
   await waitForQuestion(page, 0);
   await openQuestionList(page);
-  await page.locator('[data-go-question="90"]').click();
+  await goQuestion(page, 90);
   await checkPracticeControls(page, locale);
   await checkQuestionImages(page, `${width}/${locale}/compact-compound`);
-  await page.locator('[data-choice-answer="1:false"]').click();
+  await chooseAnswer(page, 1, false);
+  await page.waitForTimeout(300);
   const selected = page.locator('[data-choice-answer="1:false"]');
+  if (!(await selected.isVisible())) await page.locator('[data-choice-step="0"]').click();
   assert.equal(await selected.getAttribute("aria-pressed"), "true");
   await selected.hover();
   await page.waitForTimeout(170);
-  assert.deepEqual(await selected.evaluate((button) => ({ color: getComputedStyle(button).color, background: getComputedStyle(button).backgroundColor })), { color: "rgb(255, 255, 255)", background: "rgb(0, 85, 170)" });
+  assert.deepEqual(await selected.evaluate((button) => ({ color: getComputedStyle(button).color, background: getComputedStyle(button).backgroundColor })), { color: "rgb(255, 255, 255)", background: "rgb(169, 27, 96)" });
   await checkLayout(page, `${width}/${locale}/compact-controls`);
   if ((width === 390 || width === 1440) && locale === "vi") {
     await page.mouse.move(0, 0);
@@ -107,7 +110,7 @@ async function checkControlsWorkflow(page, width, locale) {
     await page.screenshot({ path: path.join(screenshots, `${width}-compact-compound.png`), fullPage: true });
   }
   const lastIndex = (await page.locator(".dot").count()) - 1;
-  await page.locator(`[data-go-question="${lastIndex}"]`).click();
+  await goQuestion(page, lastIndex);
   assert.equal(await page.locator("[data-next-question]").isDisabled(), true);
   await page.locator("[data-submit-exam]").click();
   await checkPracticeControls(page, locale, true);
@@ -117,12 +120,26 @@ async function checkControlsWorkflow(page, width, locale) {
 }
 
 async function openQuestionList(page) {
-  if (!(await page.locator(".question-list").evaluate((el) => el.open))) {
-    await page.locator(".question-list summary").click();
-  }
+  if (!(await page.locator(".question-nav").isVisible())) await page.locator("[data-toggle-questions]").click();
+}
+
+async function goQuestion(page, index) {
+  await openQuestionList(page);
+  await page.locator(`[data-go-question="${index}"]`).click();
+}
+
+async function chooseAnswer(page, number, value) {
+  await page.waitForSelector('.question-body[data-layout-ready="true"]');
+  const button = page.locator(`[data-choice-answer="${number}:${value}"]`);
+  if (!(await button.isVisible())) await page.locator(`[data-choice-step="${number - 1}"]`).click();
+  await button.click();
+  await page.waitForTimeout(300);
 }
 
 async function selectLanguage(page, locale) {
+  if (await page.locator(".practice-menu").count()) {
+    if (!(await page.locator(".practice-menu").evaluate((el) => el.open))) await page.locator(".practice-menu > summary").click();
+  }
   if (!(await page.locator(".language-menu").evaluate((el) => el.open))) {
     await page.locator(".language-trigger").click();
   }
@@ -145,11 +162,10 @@ async function checkQuestionImages(page, name) {
     const rect = img.getBoundingClientRect();
     const container = img.parentElement.getBoundingClientRect();
     const title = document.querySelector(".question-title").getBoundingClientRect();
-    const expectedWidth = Math.min(800, container.width);
-    return { width: rect.width, height: rect.height, expectedWidth, expectedHeight: Math.min(560, expectedWidth * img.naturalHeight / img.naturalWidth), centered: Math.abs((rect.left + rect.right) / 2 - (container.left + container.right) / 2), below: title.top >= rect.bottom, fit: getComputedStyle(img).objectFit };
+    return { width: rect.width, height: rect.height, containerWidth: container.width, containerHeight: container.height, centered: Math.abs((rect.left + rect.right) / 2 - (container.left + container.right) / 2), below: title.top >= rect.bottom, fit: getComputedStyle(img).objectFit };
   }));
   assert.ok(checks.length > 0, name);
-  assert.ok(checks.every((item) => Math.abs(item.width - item.expectedWidth) < 2 && Math.abs(item.height - item.expectedHeight) < 2 && item.centered < 1 && item.below && item.fit === "contain"), `${name}: images must be large, centered, uncropped and above the question`);
+  assert.ok(checks.every((item) => item.width > 0 && item.height >= 95 && item.width <= item.containerWidth + 1 && item.height <= item.containerHeight + 1 && item.centered < 1 && item.below && item.fit === "contain"), `${name}: images must fit their viewport budget, centered, uncropped and above the question`);
   await checkLayout(page, name);
 }
 
@@ -162,7 +178,7 @@ async function checkImageWorkflow(page, width, locale) {
     await page.locator(`.exam-card.${type}`).first().click();
     await page.waitForSelector(".question-title");
     await openQuestionList(page);
-    await page.locator(`[data-go-question="${index - 1}"]`).click();
+    await goQuestion(page, index - 1);
     await page.locator('[data-answer="true"]').click();
     await waitForQuestion(page, index);
     await checkQuestionImages(page, `${width}/${locale}/${type}/image-after-advance`);
@@ -170,12 +186,12 @@ async function checkImageWorkflow(page, width, locale) {
     const visible = await page.locator(".question-images").evaluate((el) => {
       const rect = el.getBoundingClientRect();
       const header = document.querySelector(".topbar");
-      return rect.top < innerHeight && rect.bottom > 0 && rect.top >= (getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
+      return rect.top < innerHeight && rect.bottom > 0 && rect.top >= (header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
     });
     assert.equal(visible, true, "Automatic progression skipped the question image");
     const compoundIndex = exam.questions.findIndex((q) => q.choices.length && q.imagePaths.length);
     if (compoundIndex >= 0) {
-      await page.locator(`[data-go-question="${compoundIndex}"]`).click();
+      await goQuestion(page, compoundIndex);
       await checkQuestionImages(page, `${width}/${locale}/${type}/illustration`);
     }
     if ((width === 390 || width === 1440) && locale === "vi") {
@@ -198,22 +214,22 @@ async function checkSlowImageWorkflow(width) {
     await page.locator(".exam-card.honmen").first().click();
     await page.waitForSelector(".question-title");
     await openQuestionList(page);
-    await page.locator('[data-go-question="89"]').click();
+    await goQuestion(page, 89);
     await page.locator('[data-answer="true"]').click();
     await waitForQuestion(page, 90);
     await page.waitForFunction(() => document.activeElement === document.querySelector(".question-title"));
     await checkQuestionImages(page, `${width}/slow-image-load`);
     assert.equal(await page.locator(".question-images img").first().evaluate((image) => {
       const header = document.querySelector(".topbar");
-      return image.getBoundingClientRect().top >= (getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
+      return image.getBoundingClientRect().top >= (header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
     }), true, "Image scrolled out of view after a delayed load");
     const item = manifest.exams.find((exam) => exam.type === "honmen");
     const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
     const otherIndex = exam.questions.findIndex((q, index) => index > 0 && index !== 90 && q.imagePaths.length && !exam.questions[index - 1].choices.length);
-    await page.locator(`[data-go-question="${otherIndex - 1}"]`).click();
+    await goQuestion(page, otherIndex - 1);
     await page.locator('[data-answer="true"]').click();
     await waitForQuestion(page, otherIndex);
-    await page.locator('[data-go-question="0"]').click();
+    await goQuestion(page, 0);
     await page.locator("[data-next-question]").focus();
     const scroll = await page.evaluate(() => window.scrollY);
     await page.waitForTimeout(650);
@@ -231,7 +247,6 @@ async function checkAutoAdvance(page, width, locale) {
     const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
     await page.locator(`.exam-card.${type}`).first().click();
     await page.waitForSelector(".question-title");
-    await openQuestionList(page);
     await page.locator('[data-answer="true"]').dblclick({ delay: 50 });
     await waitForQuestion(page, 1);
     assert.equal(await page.locator('[data-go-question="0"]').evaluate((el) => el.classList.contains("answered")), true);
@@ -239,11 +254,11 @@ async function checkAutoAdvance(page, width, locale) {
     const framing = await page.locator(".question-title").evaluate((el) => {
       const rect = el.getBoundingClientRect();
       const header = document.querySelector(".topbar");
-      return { focused: document.activeElement === el, top: rect.top, headerBottom: getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0 };
+      return { focused: document.activeElement === el, top: rect.top, headerBottom: header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0 };
     });
     assert.equal(framing.focused, true);
     assert.ok(framing.top >= framing.headerBottom - 1, "Next question is hidden beneath the header");
-    await page.locator('[data-go-question="0"]').click();
+    await goQuestion(page, 0);
     assert.equal(await page.locator('[data-answer="true"]').getAttribute("class"), "answer-button selected");
     await page.locator('[data-answer="false"]').click();
     await waitForQuestion(page, 1);
@@ -251,8 +266,8 @@ async function checkAutoAdvance(page, width, locale) {
     if (type === "honmen") {
       const index = exam.questions.findIndex((q) => q.choices.length);
       choiceQuestion = exam.questions[index];
-      await page.locator(`[data-go-question="${index}"]`).click();
-      await page.locator(`[data-choice-answer="${choiceQuestion.choices[0].number}:false"]`).click();
+      await goQuestion(page, index);
+      await chooseAnswer(page, choiceQuestion.choices[0].number, false);
       await page.waitForTimeout(350);
       assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), String(index));
       assert.equal(await page.locator(`[data-go-question="${index}"]`).evaluate((el) => el.classList.contains("answered")), false, "Partial question marked complete");
@@ -261,16 +276,16 @@ async function checkAutoAdvance(page, width, locale) {
       assert.equal(await page.locator(`[data-choice-answer="${choiceQuestion.choices[0].number}:false"]`).getAttribute("class"), "answer-button selected");
       await selectLanguage(page, locale);
       for (const choice of choiceQuestion.choices.slice(1)) {
-        await page.locator(`[data-choice-answer="${choice.number}:false"]`).click();
+        await chooseAnswer(page, choice.number, false);
       }
       await waitForQuestion(page, index + 1);
       assert.equal(await page.locator(`[data-go-question="${index}"]`).evaluate((el) => el.classList.contains("answered")), true, "All-false choices did not complete the question");
     }
     const last = exam.questions.at(-1);
     const lastIndex = exam.questions.length - 1;
-    await page.locator(`[data-go-question="${lastIndex}"]`).click();
+    await goQuestion(page, lastIndex);
     if (last.choices.length) {
-      for (const choice of last.choices) await page.locator(`[data-choice-answer="${choice.number}:${choice.correct}"]`).click();
+      for (const choice of last.choices) await chooseAnswer(page, choice.number, choice.correct);
     } else {
       await page.locator('[data-answer="false"]').click();
     }
@@ -285,7 +300,7 @@ async function checkAutoAdvance(page, width, locale) {
       + (last.choices.length || last.correct === false ? points(last) : 0);
     const total = exam.questions.reduce((sum, q) => sum + points(q), 0);
     assert.equal(await page.locator(".result-score").textContent(), `${expected}/${total}`);
-    await page.locator('[data-go-question="0"]').click();
+    await goQuestion(page, 0);
     await page.locator('[data-answer="true"]').click();
     await page.waitForTimeout(350);
     assert.equal(await page.locator(".dot.current").getAttribute("data-go-question"), "0", "Review answer advanced automatically");
@@ -295,7 +310,6 @@ async function checkAutoAdvance(page, width, locale) {
   if (locale === "vi") {
     await page.locator(".exam-card.karimen").first().click();
     await page.waitForSelector(".question-title");
-    await openQuestionList(page);
     await page.evaluate(() => {
       document.querySelector('[data-answer="true"]').click();
       document.querySelector("[data-next-question]").click();
@@ -368,6 +382,31 @@ async function checkKnowledge(page, width, locale) {
     await checkLayout(page, `${width}/${locale}/${article.slug}`);
     if (article.slug === "traffic-signs") {
       assert.equal(await page.locator(".article-table img").count(), 157);
+      const signs = article.tables.flatMap((table) => table.rows.filter((row) => row.length === 2));
+      const entries = await page.locator(".sign-entry").evaluateAll((items) => items.map((entry) => ({
+        rows: entry.querySelectorAll("tr").length,
+        headingCells: entry.querySelectorAll(".sign-heading > *").length,
+        title: entry.querySelector(".sign-title").textContent,
+        description: entry.querySelector(".sign-description td").textContent,
+        rowspan: entry.querySelector(".sign-image-cell").rowSpan,
+        colspan: entry.querySelector(".sign-description td").colSpan,
+      })));
+      assert.deepEqual(entries, signs.map(([sign, description]) => ({ rows: 2, headingCells: 2, title: sign.text, description: description.text, rowspan: 2, colspan: 1 })));
+      const signLayout = await page.locator(".traffic-sign-table").evaluate((table) => {
+        const entry = table.querySelector(".sign-entry");
+        const image = entry.querySelector(".sign-image-cell").getBoundingClientRect();
+        const title = entry.querySelector(".sign-title").getBoundingClientRect();
+        const description = entry.querySelector(".sign-description td").getBoundingClientRect();
+        return {
+          horizontalScroll: table.parentElement.scrollWidth > table.parentElement.clientWidth + 1,
+          imageFirst: image.right <= title.left + 1,
+          descriptionBelow: description.top >= title.bottom - 1,
+          imageSpansBoth: Math.abs(image.top - title.top) < 1 && Math.abs(image.bottom - description.bottom) < 1,
+          alignedText: Math.abs(description.left - title.left) < 1 && Math.abs(description.width - title.width) < 1,
+          divider: getComputedStyle(entry.querySelector(".sign-title"), "::after").height,
+        };
+      });
+      assert.deepEqual(signLayout, { horizontalScroll: false, imageFirst: true, descriptionBelow: true, imageSpansBoth: true, alignedText: true, divider: "1px" });
       await page.locator(".article-table img").first().scrollIntoViewIfNeeded();
       await page.waitForFunction(() => { const image = document.querySelector(".article-table img"); return image.complete && image.naturalWidth > 0; });
       if ((width === 390 || width === 1440) && locale === "vi") {
@@ -515,9 +554,10 @@ try {
         await openQuestionList(page);
         await checkPracticeControls(page, locale);
         await checkLayout(page, `${width}/${locale}/${type}`);
+        await page.locator("[data-close-questions]").click();
         await page.locator('[data-answer="true"]').click();
         await waitForQuestion(page, 1);
-        await page.locator('[data-go-question="0"]').click();
+        await goQuestion(page, 0);
         const alternative = locale === "en" ? "ja" : "en";
         const timerBefore = await page.locator(".timer").textContent();
         await selectLanguage(page, alternative);
@@ -527,7 +567,7 @@ try {
         assert.ok(seconds(await page.locator(".timer").textContent()) <= seconds(timerBefore));
         await selectLanguage(page, locale);
         const imageIndex = exam.questions.findIndex((q) => q.imagePaths.length && (type !== "honmen" || q.choices.length));
-        await page.locator(`[data-go-question="${imageIndex}"]`).click();
+        await goQuestion(page, imageIndex);
         const images = page.locator(".question-images img");
         await images.first().scrollIntoViewIfNeeded();
         await page.waitForFunction(() => [...document.querySelectorAll(".question-images img")].every((img) => img.complete && img.naturalWidth > 0));
@@ -535,7 +575,7 @@ try {
         if (type === "honmen") {
           const question = exam.questions[imageIndex];
           assert.equal(await page.locator(".choice-text").first().textContent(), question.choices[0].textAll[locale]);
-          await page.locator('[data-choice-answer="1:true"]').click();
+          await chooseAnswer(page, 1, true);
           const navScroll = await page.locator(".question-list").evaluate((el) => el.scrollTop);
           await selectLanguage(page, alternative);
           assert.equal(await page.locator(".question-list").evaluate((el) => el.scrollTop), navScroll);
@@ -545,7 +585,7 @@ try {
         }
         await checkLayout(page, `${width}/${locale}/${type}/image`);
         const explanationIndex = exam.questions.findIndex((q) => q.explanationAll[locale]);
-        if (explanationIndex >= 0) await page.locator(`[data-go-question="${explanationIndex}"]`).click();
+        if (explanationIndex >= 0) await goQuestion(page, explanationIndex);
         await page.locator("[data-submit-exam]").click();
         await checkPracticeControls(page, locale, true);
         const points = (q) => type === "honmen" ? (q.number >= 91 ? 2 : 1) : 2;
@@ -557,7 +597,7 @@ try {
         }
         await checkLayout(page, `${width}/${locale}/${type}/result`);
         if ((width === 390 || width === 1440) && (locale === "vi" || locale === "pt")) {
-          await page.locator('[data-go-question="0"]').click();
+          await goQuestion(page, 0);
           await page.evaluate(() => window.scrollTo(0, 0));
           await page.screenshot({ path: path.join(screenshots, `${width}-${locale}-${type}.png`), fullPage: true });
         }
