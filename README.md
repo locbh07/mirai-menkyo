@@ -19,10 +19,10 @@ Open `http://localhost:8788`.
 
 ## Data
 
-The build script reads local scraped data from:
+The build script reads bundled scraped data from:
 
 ```text
-../vocab-backend/data/karimen-honmen-vi
+data/karimen-honmen-vi
 ```
 
 It writes optimized static files to `dist/data`.

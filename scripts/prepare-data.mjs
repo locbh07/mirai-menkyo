@@ -4,7 +4,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const sourceRoot = path.resolve(root, "..", "vocab-backend", "data", "karimen-honmen-vi");
+const bundledSourceRoot = path.join(root, "data", "karimen-honmen-vi");
+const workspaceSourceRoot = path.resolve(root, "..", "vocab-backend", "data", "karimen-honmen-vi");
+const sourceRoot = existsSync(bundledSourceRoot) ? bundledSourceRoot : workspaceSourceRoot;
 const distData = path.join(root, "dist", "data");
 
 function slimQuestion(question) {
