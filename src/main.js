@@ -1,4 +1,5 @@
 import { languages, languageFlags, translate } from "./i18n.js";
+import { icon } from "./icons.js";
 
 const storedLocale = localStorage.getItem("mirai-menkyo-locale");
 const state = {
@@ -114,7 +115,7 @@ function renderShell(content) {
       <header class="topbar">
         <div class="topbar-inner">
           <div class="brand">
-            <div class="brand-mark">M</div>
+            <div class="brand-mark">${icon("car")}</div>
             <div>
               <div class="brand-name">Mirai Menkyo</div>
               <div class="brand-subtitle">Karimen · Honmen · Gentsuki</div>
@@ -138,7 +139,8 @@ function renderShell(content) {
 
 function tabButton(tab, label) {
   const active = state.tab === tab || (tab === "exams" && state.tab === "practice");
-  return `<button class="tab-button ${active ? "active" : ""}" data-tab="${tab}">${label}</button>`;
+  const symbol = { exams: "clipboard-check", knowledge: "book-open", locations: "map-pin" }[tab];
+  return `<button class="tab-button ${active ? "active" : ""}" data-tab="${tab}" aria-current="${active ? "page" : "false"}">${icon(symbol)}<span>${label}</span></button>`;
 }
 
 function renderExamHome() {
@@ -243,19 +245,21 @@ function renderPractice() {
         </details>
       </aside>
       <section class="question-panel">
+        <div class="question-topline">
+          <button class="icon-button" data-back-exams aria-label="${t("examList")}" data-tooltip="${t("examList")}">${icon("layout-grid")}</button>
+          <span class="question-position">${t("question", { number: state.currentQuestionIndex + 1 })} / ${exam.questions.length}</span>
+        </div>
         ${renderQuestionImages(question)}
         <h2 class="question-title" tabindex="-1">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
         ${question.choices.length ? renderChoiceQuestion(question) : renderTrueFalseQuestion(question)}
         ${state.submitted && localizedText(question, "explanation") ? `<div class="explanation"><strong>${t("explanation")}:</strong> ${escapeHtml(localizedText(question, "explanation"))}</div>` : ""}
         <div class="question-footer">
-          <div>
-            <button class="button secondary" data-prev-question ${state.currentQuestionIndex === 0 ? "disabled" : ""}>${t("previous")}</button>
-            <button class="button secondary" data-next-question ${state.currentQuestionIndex === exam.questions.length - 1 ? "disabled" : ""}>${t("next")}</button>
+          <div class="question-pager">
+            <button class="icon-button" data-prev-question aria-label="${t("previous")}" data-tooltip="${t("previous")}" ${state.currentQuestionIndex === 0 ? "disabled" : ""}>${icon("chevron-left")}</button>
+            <span class="pager-position">${state.currentQuestionIndex + 1}<span> / ${exam.questions.length}</span></span>
+            <button class="icon-button" data-next-question aria-label="${t("next")}" data-tooltip="${t("next")}" ${state.currentQuestionIndex === exam.questions.length - 1 ? "disabled" : ""}>${icon("chevron-right")}</button>
           </div>
-          <div>
-            <button class="button secondary" data-back-exams>${t("examList")}</button>
-            <button class="button warn" data-submit-exam>${t(state.submitted ? "resubmit" : "submit")}</button>
-          </div>
+          <button class="button submit-button" data-submit-exam>${icon(state.submitted ? "rotate-ccw" : "clipboard-check")}<span>${t(state.submitted ? "resubmit" : "submit")}</span></button>
         </div>
       </section>
     </section>
@@ -289,7 +293,7 @@ function answerButton(question, value, label, selected) {
     if (value === question.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-answer="${value}" ${state.advanceTimer !== null ? "disabled" : ""}>${label}</button>`;
+  return `<button class="answer-button ${cls}" data-answer="${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}>${icon(value ? "check" : "x")}<span>${label}</span></button>`;
 }
 
 function renderChoiceQuestion(question) {
@@ -319,7 +323,7 @@ function choiceButton(question, choice, value, selected) {
     if (value === choice.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" ${state.advanceTimer !== null ? "disabled" : ""}>${t(value ? "correct" : "incorrect")}</button>`;
+  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}>${icon(value ? "check" : "x")}<span>${t(value ? "correct" : "incorrect")}</span></button>`;
 }
 
 function renderDot(question, index) {

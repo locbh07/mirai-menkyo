@@ -4,7 +4,8 @@ import { readFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
-import { languages, languageFlags } from "../src/i18n.js";
+import { languages, languageFlags, translate } from "../src/i18n.js";
+import { iconNames } from "../src/icons.js";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dist = path.join(root, "dist");
@@ -15,7 +16,8 @@ const knowledge = JSON.parse(await readFile(path.join(dist, "data/knowledge.json
 const knowledgeOnly = process.argv.includes("--knowledge");
 const autoAdvanceOnly = process.argv.includes("--auto-advance");
 const imagesOnly = process.argv.includes("--images");
-const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg" };
+const controlsOnly = process.argv.includes("--controls");
+const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg", ".svg": "image/svg+xml" };
 const server = http.createServer(async (request, response) => {
   try {
     const pathname = new URL(request.url, "http://localhost").pathname;
@@ -36,7 +38,7 @@ async function checkLayout(page, name) {
   const errors = await page.evaluate(() => {
     const problems = [];
     if (document.documentElement.scrollWidth > innerWidth + 1) problems.push("Page overflows horizontally");
-    const selectors = ".topbar-inner,.nav-tabs,.language-options,.language-trigger,.exam-section-head,.exam-shortcuts,.question-nav,.question-panel,.question-dots,.question-footer,.exam-card,.article-row,.article-summary,.knowledge-list,.answer-button,.article-view,.article-body,.locations-list";
+    const selectors = ".topbar-inner,.nav-tabs,.language-options,.language-trigger,.exam-section-head,.exam-shortcuts,.question-nav,.question-panel,.question-dots,.question-topline,.question-footer,.question-pager,.choice-item,.answer-actions,.exam-card,.article-row,.article-summary,.knowledge-list,.answer-button,.article-view,.article-body,.locations-list";
     for (const element of document.querySelectorAll(selectors)) {
       if (!element.getClientRects().length) continue;
       if (element.scrollWidth > element.clientWidth + 1) problems.push(`${element.className} overflows internally`);
@@ -53,6 +55,63 @@ async function checkLayout(page, name) {
     return problems;
   });
   assert.deepEqual(errors, [], name);
+}
+
+async function checkPracticeControls(page, locale, submitted = false) {
+  assert.equal(await page.locator(".question-topline [data-back-exams]").count(), 1);
+  assert.equal(await page.locator(".question-footer button").count(), 3);
+  assert.equal(await page.locator(".question-footer [data-back-exams]").count(), 0);
+  for (const [attribute, label] of [["data-back-exams", "examList"], ["data-prev-question", "previous"], ["data-next-question", "next"]]) {
+    const button = page.locator(`[${attribute}]`);
+    assert.equal(await button.getAttribute("aria-label"), translate(locale, label));
+    assert.equal(await button.getAttribute("data-tooltip"), translate(locale, label));
+    assert.equal(await button.locator(".ui-icon").count(), 1);
+  }
+  assert.equal(await page.locator("[data-submit-exam] span").textContent(), translate(locale, submitted ? "resubmit" : "submit"));
+  const smallTargets = await page.locator(".question-panel button").evaluateAll((buttons) => buttons.filter((button) => {
+    const rect = button.getBoundingClientRect();
+    return rect.width < 43.9 || rect.height < 43.9;
+  }).map((button) => button.outerHTML));
+  assert.deepEqual(smallTargets, [], "Compact controls must preserve 44px touch targets");
+  await page.keyboard.press("Tab");
+  await page.locator("[data-back-exams]").focus();
+  assert.equal(await page.locator("[data-back-exams]").evaluate((button) => getComputedStyle(button, "::after").visibility), "visible");
+}
+
+async function checkControlsWorkflow(page, width, locale) {
+  await page.locator(".exam-card.honmen").first().click();
+  await page.waitForSelector(".question-title");
+  await checkPracticeControls(page, locale);
+  assert.equal(await page.locator("[data-prev-question]").isDisabled(), true);
+  await page.locator("[data-next-question]").click();
+  await waitForQuestion(page, 1);
+  assert.equal(await page.locator("[data-prev-question]").isDisabled(), false);
+  await page.locator("[data-prev-question]").click();
+  await waitForQuestion(page, 0);
+  await openQuestionList(page);
+  await page.locator('[data-go-question="90"]').click();
+  await checkPracticeControls(page, locale);
+  await checkQuestionImages(page, `${width}/${locale}/compact-compound`);
+  await page.locator('[data-choice-answer="1:false"]').click();
+  const selected = page.locator('[data-choice-answer="1:false"]');
+  assert.equal(await selected.getAttribute("aria-pressed"), "true");
+  await selected.hover();
+  await page.waitForTimeout(170);
+  assert.deepEqual(await selected.evaluate((button) => ({ color: getComputedStyle(button).color, background: getComputedStyle(button).backgroundColor })), { color: "rgb(255, 255, 255)", background: "rgb(0, 85, 170)" });
+  await checkLayout(page, `${width}/${locale}/compact-controls`);
+  if ((width === 390 || width === 1440) && locale === "vi") {
+    await page.mouse.move(0, 0);
+    await page.locator(".choice-list").scrollIntoViewIfNeeded();
+    await page.screenshot({ path: path.join(screenshots, `${width}-compact-compound.png`), fullPage: true });
+  }
+  const lastIndex = (await page.locator(".dot").count()) - 1;
+  await page.locator(`[data-go-question="${lastIndex}"]`).click();
+  assert.equal(await page.locator("[data-next-question]").isDisabled(), true);
+  await page.locator("[data-submit-exam]").click();
+  await checkPracticeControls(page, locale, true);
+  await checkLayout(page, `${width}/${locale}/compact-review`);
+  await page.locator("[data-back-exams]").click();
+  await page.waitForSelector(".exam-card");
 }
 
 async function openQuestionList(page) {
@@ -326,6 +385,12 @@ async function checkKnowledge(page, width, locale) {
 }
 
 try {
+  for (const name of iconNames) {
+    const response = await fetch(`${base}/assets/icons/${name}.svg`);
+    assert.equal(response.status, 200, `Missing icon: ${name}`);
+    assert.ok(response.headers.get("content-type").includes("image/svg+xml"));
+    assert.ok((await response.text()).includes("<svg"), `Invalid icon: ${name}`);
+  }
   browser = await chromium.launch();
   let checks = 0;
   for (const width of autoAdvanceOnly ? [390, 1024, 1440] : [320, 390, 768, 1024, 1440, 1920]) {
@@ -353,6 +418,11 @@ try {
         await checkImageWorkflow(page, width, locale);
         if (locale === "vi" && (width === 390 || width === 1440)) await checkSlowImageWorkflow(width);
         checks += 3;
+        continue;
+      }
+      if (controlsOnly) {
+        await checkControlsWorkflow(page, width, locale);
+        checks++;
         continue;
       }
       assert.equal(await page.locator(".exam-section").count(), 3);
@@ -396,6 +466,7 @@ try {
           await page.screenshot({ path: path.join(screenshots, `${width}-vi-practice.png`), fullPage: true });
         }
         await openQuestionList(page);
+        await checkPracticeControls(page, locale);
         await checkLayout(page, `${width}/${locale}/${type}`);
         await page.locator('[data-answer="true"]').click();
         await waitForQuestion(page, 1);
@@ -429,6 +500,7 @@ try {
         const explanationIndex = exam.questions.findIndex((q) => q.explanationAll[locale]);
         if (explanationIndex >= 0) await page.locator(`[data-go-question="${explanationIndex}"]`).click();
         await page.locator("[data-submit-exam]").click();
+        await checkPracticeControls(page, locale, true);
         const points = (q) => type === "honmen" ? (q.number >= 91 ? 2 : 1) : 2;
         const expectedScore = exam.questions[0].correct === true ? points(exam.questions[0]) : 0;
         const total = exam.questions.reduce((sum, q) => sum + points(q), 0);
@@ -458,9 +530,9 @@ try {
     }
     assert.deepEqual(pageErrors, [], `Browser errors at width ${width}`);
     await context.close();
-    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : imagesOnly ? "large centered images before question text and automatic progression" : "all exam types, knowledge and locations"}`);
+    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : imagesOnly ? "large centered images before question text and automatic progression" : controlsOnly ? "compact controls, icons, labels, touch targets and review" : "all exam types, knowledge and locations"}`);
   }
-  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : imagesOnly ? "image" : "exam"} workflows. Screenshots: ${screenshots}`);
+  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : imagesOnly ? "image" : controlsOnly ? "control" : "exam"} workflows. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));

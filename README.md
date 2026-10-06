@@ -66,6 +66,17 @@ these behaviors, double-click protection and cancellation on navigation or exit.
 `npm run test:images` checks large, centered, uncropped exam images above question
 text and confirms automatic progression brings the next image into view.
 
+The interface uses a light, system-inspired theme with translucent navigation,
+segmented tabs and compact exam controls. Previous/next are labelled icon buttons
+with hover and keyboard-focus tooltips; exit sits above the question, while
+grading remains one explicit button. Multi-part answers use separated rows.
+Icons come from [Lucide](https://lucide.dev), bundled locally at build time from
+`lucide-static`; only the selected SVGs and their ISC license are deployed.
+UI checks also verify localized icon labels and 44px question-control targets.
+`npm run test:controls` checks compact navigation, disabled first/last arrows,
+multi-part answer states, hover contrast and grading on all six languages and
+viewport widths.
+
 ## Question Bank Audit
 
 `npm run audit:questions` writes `reports/question-audit.json` and

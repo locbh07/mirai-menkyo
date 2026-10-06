@@ -11,9 +11,11 @@
     "test:knowledge": "npm run build && node scripts/check-ui.mjs --knowledge",
     "test:auto-advance": "npm run build && node scripts/check-ui.mjs --auto-advance",
     "test:images": "npm run build && node scripts/check-ui.mjs --images",
+    "test:controls": "npm run build && node scripts/check-ui.mjs --controls",
     "audit:questions": "node scripts/audit-questions.mjs"
   },
   "devDependencies": {
+    "lucide-static": "1.52.0",
     "playwright": "1.58.2"
   }
 }
