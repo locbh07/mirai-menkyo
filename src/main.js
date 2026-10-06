@@ -243,8 +243,8 @@ function renderPractice() {
         </details>
       </aside>
       <section class="question-panel">
-        <h2 class="question-title" tabindex="-1">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
         ${renderQuestionImages(question)}
+        <h2 class="question-title" tabindex="-1">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
         ${question.choices.length ? renderChoiceQuestion(question) : renderTrueFalseQuestion(question)}
         ${state.submitted && localizedText(question, "explanation") ? `<div class="explanation"><strong>${t("explanation")}:</strong> ${escapeHtml(localizedText(question, "explanation"))}</div>` : ""}
         <div class="question-footer">
@@ -267,7 +267,7 @@ function renderQuestionImages(question) {
   return `
     <div class="question-images">
       ${question.imagePaths
-        .map((imagePath) => `<img src="data/${escapeAttribute(imagePath)}" alt="${t("questionImage", { number: question.number })}" loading="lazy" />`)
+        .map((imagePath) => `<img src="data/${escapeAttribute(imagePath)}" alt="${t("questionImage", { number: question.number })}" loading="eager" decoding="async" />`)
         .join("")}
     </div>
   `;
@@ -385,9 +385,11 @@ function advanceAfterAnswer(question) {
     const header = document.querySelector(".topbar");
     if (heading) {
       const offset = header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().height + 16 : 16;
-      heading.style.scrollMarginTop = `${offset}px`;
+      const images = document.querySelector(".question-images");
+      const target = images || heading;
+      target.style.scrollMarginTop = `${offset}px`;
       heading.focus({ preventScroll: true });
-      heading.scrollIntoView({ block: "nearest" });
+      target.scrollIntoView({ block: images ? "start" : "nearest" });
     }
   }, 250);
 }

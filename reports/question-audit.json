@@ -1,0 +1,515 @@
+{
+  "sourceSha256": "d3b143057a53ae80bee13884eac82e02c6b697befca13b6547e9c643b6d9bcdd",
+  "scrapedAt": "2026-10-05T13:42:36.126927+00:00",
+  "method": "Exact normalized Japanese prompt, ordered choice text, correct answers and SHA-256 image contents. NFKC and whitespace normalization only. Image filenames, question IDs, explanations and translated wording are not part of the Japanese key. Missing images retain distinct unresolved references. Similar meanings with different wording are not merged.",
+  "examSets": 37,
+  "occurrences": 2570,
+  "unique": 2564,
+  "redundantOccurrences": 6,
+  "duplicateGroups": [
+    {
+      "questionIds": [
+        "karimen-9-20",
+        "karimen-14-40"
+      ],
+      "examIds": [
+        "karimen-9",
+        "karimen-14"
+      ],
+      "types": [
+        "karimen"
+      ],
+      "text": "道路のカーブから5メートル以内の駐車または停止は禁止されている。"
+    },
+    {
+      "questionIds": [
+        "karimen-9-34",
+        "karimen-10-45"
+      ],
+      "examIds": [
+        "karimen-9",
+        "karimen-10"
+      ],
+      "types": [
+        "karimen"
+      ],
+      "text": "横断歩道に近づき、歩行者がいないことが明らかな場合、停止せずに進むことができる。"
+    },
+    {
+      "questionIds": [
+        "honmen-2-79",
+        "honmen-2-89"
+      ],
+      "examIds": [
+        "honmen-2"
+      ],
+      "types": [
+        "honmen"
+      ],
+      "text": "夏に二輪車を運転する際、運転者は半袖シャツや短パンなどの涼しい服装を着るべきです。"
+    },
+    {
+      "questionIds": [
+        "honmen-8-24",
+        "honmen-9-38"
+      ],
+      "examIds": [
+        "honmen-8",
+        "honmen-9"
+      ],
+      "types": [
+        "honmen"
+      ],
+      "text": "二輪車に乗るときは、転倒したときのことを考えて、体の露出がなるべく少なくなるような服装にするのがよい。"
+    },
+    {
+      "questionIds": [
+        "honmen-10-62",
+        "honmen-12-77"
+      ],
+      "examIds": [
+        "honmen-10",
+        "honmen-12"
+      ],
+      "types": [
+        "honmen"
+      ],
+      "text": "雪道の下り坂はすべりやすいので、エンジンブレーキを使い、フットブレーキは小きざみに軽く踏むとよい。"
+    },
+    {
+      "questionIds": [
+        "honmen-13-1",
+        "honmen-14-77"
+      ],
+      "examIds": [
+        "honmen-13",
+        "honmen-14"
+      ],
+      "types": [
+        "honmen"
+      ],
+      "text": "走行中に水温計が異常に上がり、下がらなくなった（オーバーヒートした）ときは、すぐにエンジンスイッチを切り、ラジエータキャップをはずすとよい。"
+    }
+  ],
+  "perType": [
+    {
+      "type": "karimen",
+      "examSets": 16,
+      "occurrences": 800,
+      "unique": 798,
+      "redundantOccurrences": 2,
+      "duplicateGroups": 2,
+      "uniqueVietnamese": 796,
+      "compoundQuestions": 0,
+      "explanationsVietnamese": 639
+    },
+    {
+      "type": "honmen",
+      "examSets": 16,
+      "occurrences": 1520,
+      "unique": 1516,
+      "redundantOccurrences": 4,
+      "duplicateGroups": 4,
+      "uniqueVietnamese": 1519,
+      "compoundQuestions": 80,
+      "explanationsVietnamese": 802
+    },
+    {
+      "type": "gentsuki",
+      "examSets": 5,
+      "occurrences": 250,
+      "unique": 250,
+      "redundantOccurrences": 0,
+      "duplicateGroups": 0,
+      "uniqueVietnamese": 248,
+      "compoundQuestions": 0,
+      "explanationsVietnamese": 123
+    }
+  ],
+  "perLocale": {
+    "en": {
+      "occurrences": 2570,
+      "unique": 2563,
+      "redundantOccurrences": 7,
+      "duplicateGroups": 7
+    },
+    "ja": {
+      "occurrences": 2570,
+      "unique": 2564,
+      "redundantOccurrences": 6,
+      "duplicateGroups": 6
+    },
+    "vi": {
+      "occurrences": 2570,
+      "unique": 2562,
+      "redundantOccurrences": 8,
+      "duplicateGroups": 8
+    },
+    "zh-Hans": {
+      "occurrences": 2570,
+      "unique": 2566,
+      "redundantOccurrences": 4,
+      "duplicateGroups": 4
+    },
+    "zh-Hant": {
+      "occurrences": 2570,
+      "unique": 2566,
+      "redundantOccurrences": 4,
+      "duplicateGroups": 4
+    },
+    "pt": {
+      "occurrences": 2570,
+      "unique": 2565,
+      "redundantOccurrences": 5,
+      "duplicateGroups": 5
+    }
+  },
+  "crossExamDuplicateGroups": 5,
+  "withinExamDuplicateGroups": 1,
+  "vietnameseDuplicateGroups": [
+    {
+      "questionIds": [
+        "karimen-7-27",
+        "karimen-9-19"
+      ],
+      "examIds": [
+        "karimen-7",
+        "karimen-9"
+      ],
+      "types": [
+        "karimen"
+      ],
+      "text": "Trừ xe máy, chủ xe phải đảm bảo nơi lưu giữ xe trong vòng 5 km từ nơi sử dụng chính."
+    },
+    {
+      "questionIds": [
+        "karimen-7-38",
+        "karimen-15-18"
+      ],
+      "examIds": [
+        "karimen-7",
+        "karimen-15"
+      ],
+      "types": [
+        "karimen"
+      ],
+      "text": "Trên các con dốc xuống dốc, phương tiện phải di chuyển chậm."
+    },
+    {
+      "questionIds": [
+        "karimen-9-34",
+        "karimen-10-45"
+      ],
+      "examIds": [
+        "karimen-9",
+        "karimen-10"
+      ],
+      "types": [
+        "karimen"
+      ],
+      "text": "Khi tiếp cận vạch qua đường và rõ ràng không có người đi bộ, bạn có thể đi tiếp mà không dừng."
+    },
+    {
+      "questionIds": [
+        "karimen-14-50",
+        "karimen-15-1"
+      ],
+      "examIds": [
+        "karimen-14",
+        "karimen-15"
+      ],
+      "types": [
+        "karimen"
+      ],
+      "text": "Không có giới hạn thời gian cho việc dừng xe để đón hoặc trả khách."
+    },
+    {
+      "questionIds": [
+        "honmen-1-8",
+        "gentsuki-1-4"
+      ],
+      "examIds": [
+        "honmen-1",
+        "gentsuki-1"
+      ],
+      "types": [
+        "honmen",
+        "gentsuki"
+      ],
+      "text": "Trên đường dốc xuống, việc tăng tốc độ khiến khoảng cách dừng trở nên dài hơn, vì vậy người lái xe nên giữ khoảng cách giữa các xe dài hơn so với khi đi trên mặt đường bằng phẳng."
+    },
+    {
+      "questionIds": [
+        "honmen-2-79",
+        "honmen-2-89"
+      ],
+      "examIds": [
+        "honmen-2"
+      ],
+      "types": [
+        "honmen"
+      ],
+      "text": "Khi lái xe hai bánh vào mùa hè, người lái xe nên mặc trang phục thoáng mát như áo sơ mi ngắn tay và quần short."
+    },
+    {
+      "questionIds": [
+        "gentsuki-2-19",
+        "gentsuki-4-22"
+      ],
+      "examIds": [
+        "gentsuki-2",
+        "gentsuki-4"
+      ],
+      "types": [
+        "gentsuki"
+      ],
+      "text": "Trên đường không có làn xe, bạn có thể đi bất kỳ đâu ở phía bên trái của vạch giữa."
+    },
+    {
+      "questionIds": [
+        "gentsuki-2-38",
+        "gentsuki-3-26"
+      ],
+      "examIds": [
+        "gentsuki-2",
+        "gentsuki-3"
+      ],
+      "types": [
+        "gentsuki"
+      ],
+      "text": "Trên đường có biển báo này, vì số làn đường giảm, bạn phải đi ở làn bên phải."
+    }
+  ],
+  "answerConflicts": [],
+  "explanationsVietnamese": 1564,
+  "missingImages": [
+    {
+      "questionId": "honmen-5-48",
+      "path": "assets/honmen/exams/5/images/48.png"
+    }
+  ],
+  "examFormats": [
+    {
+      "id": "karimen-1",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-2",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-3",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-4",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-5",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-6",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-7",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-8",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-9",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-10",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-11",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-12",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-13",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-14",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-15",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "karimen-16",
+      "type": "karimen",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "honmen-1",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-2",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-3",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-4",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-5",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-6",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-7",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-8",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-9",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-10",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-11",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-12",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-13",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-14",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-15",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "honmen-16",
+      "type": "honmen",
+      "questions": 95,
+      "compoundQuestions": 5
+    },
+    {
+      "id": "gentsuki-1",
+      "type": "gentsuki",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "gentsuki-2",
+      "type": "gentsuki",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "gentsuki-3",
+      "type": "gentsuki",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "gentsuki-4",
+      "type": "gentsuki",
+      "questions": 50,
+      "compoundQuestions": 0
+    },
+    {
+      "id": "gentsuki-5",
+      "type": "gentsuki",
+      "questions": 50,
+      "compoundQuestions": 0
+    }
+  ]
+}

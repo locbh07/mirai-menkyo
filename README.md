@@ -62,3 +62,13 @@ Answers advance after a short selection feedback. Multi-part questions advance
 only when all statements are answered. The final question waits for manual
 grading, and graded review does not advance. `npm run test:auto-advance` checks
 these behaviors, double-click protection and cancellation on navigation or exit.
+
+`npm run test:images` checks large, centered, uncropped exam images above question
+text and confirms automatic progression brings the next image into view.
+
+## Question Bank Audit
+
+`npm run audit:questions` writes `reports/question-audit.json` and
+`reports/question-audit.md`. It counts exact duplicates using normalized text,
+correct answers, ordered choices and image-content hashes, with separate counts
+for each language. It does not merge semantically similar wording or change data.

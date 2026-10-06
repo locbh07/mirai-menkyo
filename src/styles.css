@@ -711,13 +711,13 @@ a:hover {
 }
 
 .question-images {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 14px;
-  margin: 16px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 20px;
+  margin: 0 0 24px;
 }
 
-.question-images img,
 .article-image {
   max-width: min(100%, 460px);
   max-height: 300px;
@@ -730,7 +730,14 @@ a:hover {
 }
 
 .question-images img {
+  display: block;
+  width: 100%;
   min-width: 0;
+  max-width: 800px;
+  height: auto;
+  max-height: 560px;
+  object-fit: contain;
+  border-radius: 12px;
 }
 
 .answer-actions {

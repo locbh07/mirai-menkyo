@@ -14,6 +14,7 @@ const manifest = JSON.parse(await readFile(path.join(dist, "data/manifest.json")
 const knowledge = JSON.parse(await readFile(path.join(dist, "data/knowledge.json"), "utf8"));
 const knowledgeOnly = process.argv.includes("--knowledge");
 const autoAdvanceOnly = process.argv.includes("--auto-advance");
+const imagesOnly = process.argv.includes("--images");
 const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg" };
 const server = http.createServer(async (request, response) => {
   try {
@@ -75,6 +76,52 @@ async function selectLanguage(page, locale) {
 
 async function waitForQuestion(page, index) {
   await page.waitForFunction((expected) => document.querySelector(".dot.current")?.dataset.goQuestion === String(expected), index);
+}
+
+async function checkQuestionImages(page, name) {
+  await page.waitForFunction(() => [...document.querySelectorAll(".question-images img")].every((img) => img.complete && img.naturalWidth > 0));
+  const checks = await page.locator(".question-images img").evaluateAll((images) => images.map((img) => {
+    const rect = img.getBoundingClientRect();
+    const container = img.parentElement.getBoundingClientRect();
+    const title = document.querySelector(".question-title").getBoundingClientRect();
+    const expectedWidth = Math.min(800, container.width);
+    return { width: rect.width, height: rect.height, expectedWidth, expectedHeight: Math.min(560, expectedWidth * img.naturalHeight / img.naturalWidth), centered: Math.abs((rect.left + rect.right) / 2 - (container.left + container.right) / 2), below: title.top >= rect.bottom, fit: getComputedStyle(img).objectFit };
+  }));
+  assert.ok(checks.length > 0, name);
+  assert.ok(checks.every((item) => Math.abs(item.width - item.expectedWidth) < 2 && Math.abs(item.height - item.expectedHeight) < 2 && item.centered < 1 && item.below && item.fit === "contain"), `${name}: images must be large, centered, uncropped and above the question`);
+  await checkLayout(page, name);
+}
+
+async function checkImageWorkflow(page, width, locale) {
+  for (const type of ["karimen", "honmen", "gentsuki"]) {
+    const item = manifest.exams.find((exam) => exam.type === type);
+    const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+    const index = exam.questions.findIndex((q, index) => index > 0 && q.imagePaths.length && !exam.questions[index - 1].choices.length);
+    assert.ok(index > 0);
+    await page.locator(`.exam-card.${type}`).first().click();
+    await page.waitForSelector(".question-title");
+    await openQuestionList(page);
+    await page.locator(`[data-go-question="${index - 1}"]`).click();
+    await page.locator('[data-answer="true"]').click();
+    await waitForQuestion(page, index);
+    await checkQuestionImages(page, `${width}/${locale}/${type}/image-after-advance`);
+    const visible = await page.locator(".question-images").evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      const header = document.querySelector(".topbar");
+      return rect.top < innerHeight && rect.bottom > 0 && rect.top >= (getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
+    });
+    assert.equal(visible, true, "Automatic progression skipped the question image");
+    const compoundIndex = exam.questions.findIndex((q) => q.choices.length && q.imagePaths.length);
+    if (compoundIndex >= 0) {
+      await page.locator(`[data-go-question="${compoundIndex}"]`).click();
+      await checkQuestionImages(page, `${width}/${locale}/${type}/illustration`);
+    }
+    if ((width === 390 || width === 1440) && locale === "vi") {
+      await page.locator(".question-images").scrollIntoViewIfNeeded();
+      await page.screenshot({ path: path.join(screenshots, `${width}-${type}-large-image.png`), fullPage: true });
+    }
+    await page.locator("[data-back-exams]").click();
+  }
 }
 
 async function checkAutoAdvance(page, width, locale) {
@@ -262,6 +309,11 @@ try {
         checks += 3;
         continue;
       }
+      if (imagesOnly) {
+        await checkImageWorkflow(page, width, locale);
+        checks += 3;
+        continue;
+      }
       assert.equal(await page.locator(".exam-section").count(), 3);
       assert.equal(await page.locator(".exam-card").count(), manifest.exams.length);
       for (const type of ["karimen", "honmen", "gentsuki"]) {
@@ -320,6 +372,7 @@ try {
         const images = page.locator(".question-images img");
         await images.first().scrollIntoViewIfNeeded();
         await page.waitForFunction(() => [...document.querySelectorAll(".question-images img")].every((img) => img.complete && img.naturalWidth > 0));
+        await checkQuestionImages(page, `${width}/${locale}/${type}/image-layout`);
         if (type === "honmen") {
           const question = exam.questions[imageIndex];
           assert.equal(await page.locator(".choice-text").first().textContent(), question.choices[0].textAll[locale]);
@@ -364,9 +417,9 @@ try {
     }
     assert.deepEqual(pageErrors, [], `Browser errors at width ${width}`);
     await context.close();
-    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : "all exam types, knowledge and locations"}`);
+    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : imagesOnly ? "large centered images before question text and automatic progression" : "all exam types, knowledge and locations"}`);
   }
-  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : "exam"} workflows. Screenshots: ${screenshots}`);
+  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : imagesOnly ? "image" : "exam"} workflows. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));

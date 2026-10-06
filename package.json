@@ -9,7 +9,9 @@
     "dev": "node scripts/dev.mjs",
     "test:ui": "npm run build && node scripts/check-ui.mjs",
     "test:knowledge": "npm run build && node scripts/check-ui.mjs --knowledge",
-    "test:auto-advance": "npm run build && node scripts/check-ui.mjs --auto-advance"
+    "test:auto-advance": "npm run build && node scripts/check-ui.mjs --auto-advance",
+    "test:images": "npm run build && node scripts/check-ui.mjs --images",
+    "audit:questions": "node scripts/audit-questions.mjs"
   },
   "devDependencies": {
     "playwright": "1.58.2"
