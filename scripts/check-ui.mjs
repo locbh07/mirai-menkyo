@@ -11,6 +11,8 @@ const dist = path.join(root, "dist");
 const screenshots = path.join(dist, "ui-check");
 await mkdir(screenshots, { recursive: true });
 const manifest = JSON.parse(await readFile(path.join(dist, "data/manifest.json"), "utf8"));
+const knowledge = JSON.parse(await readFile(path.join(dist, "data/knowledge.json"), "utf8"));
+const knowledgeOnly = process.argv.includes("--knowledge");
 const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg" };
 const server = http.createServer(async (request, response) => {
   try {
@@ -32,7 +34,7 @@ async function checkLayout(page, name) {
   const errors = await page.evaluate(() => {
     const problems = [];
     if (document.documentElement.scrollWidth > innerWidth + 1) problems.push("Page overflows horizontally");
-    const selectors = ".topbar-inner,.nav-tabs,.language-options,.language-trigger,.exam-section-head,.exam-shortcuts,.question-nav,.question-panel,.question-dots,.question-footer,.exam-card,.article-card,.answer-button,.article-view,.locations-list";
+    const selectors = ".topbar-inner,.nav-tabs,.language-options,.language-trigger,.exam-section-head,.exam-shortcuts,.question-nav,.question-panel,.question-dots,.question-footer,.exam-card,.article-row,.article-summary,.knowledge-list,.answer-button,.article-view,.article-body,.locations-list";
     for (const element of document.querySelectorAll(selectors)) {
       if (!element.getClientRects().length) continue;
       if (element.scrollWidth > element.clientWidth + 1) problems.push(`${element.className} overflows internally`);
@@ -70,6 +72,63 @@ async function selectLanguage(page, locale) {
   assert.equal(await page.locator(".language-trigger img").getAttribute("src"), `assets/flags/${languageFlags[locale]}.png`);
 }
 
+async function checkKnowledge(page, width, locale) {
+  await page.locator('[data-tab="knowledge"]').click();
+  await page.waitForSelector(".article-row");
+  assert.equal(await page.locator(".article-row").count(), knowledge.length);
+  if (locale !== "vi") assert.equal(await page.locator(".content-language").count(), 1);
+  const dimensions = await page.locator(".article-row").evaluateAll((rows) => rows.map((row) => ({ row: row.getBoundingClientRect().width, list: row.parentElement.clientWidth })));
+  assert.ok(dimensions.every(({ row, list }) => Math.abs(row - list) < 1), "Article rows must occupy the entire list width");
+  await checkLayout(page, `${width}/${locale}/knowledge`);
+  const search = page.locator("[data-knowledge-search]");
+  await search.fill("bien bao");
+  assert.equal(await page.locator('[data-open-article="vi-knowledge-traffic-signs"]').count(), 1);
+  assert.ok(await page.locator(".article-row").count() < knowledge.length);
+  await search.fill("zzzz-no-match");
+  assert.equal(await page.locator(".empty-state").count(), 1);
+  await search.fill("");
+  assert.equal(await page.locator(".article-row").count(), knowledge.length);
+  assert.equal(await page.locator(".article-row:disabled").count(), knowledge.filter((article) => !article.blocks.length && !article.tables.length && !article.images.length).length);
+  if ((width === 390 || width === 1440) && locale === "vi") {
+    await page.screenshot({ path: path.join(screenshots, `${width}-knowledge-list.png`) });
+  }
+  const readable = knowledge.filter((article) => article.blocks.length || article.tables.length || article.images.length);
+  const articles = locale === "vi" ? readable : readable.filter((article) => ["traffic-signs", "license-vehicle"].includes(article.slug));
+  for (const article of articles) {
+    const row = page.locator(`[data-open-article="${article.id}"]`);
+    await row.scrollIntoViewIfNeeded();
+    const previousScroll = await page.evaluate(() => window.scrollY);
+    await row.click();
+    assert.equal(await page.locator(".article-view h1").count(), 1, article.slug);
+    assert.equal(await page.locator(".article-view h1").textContent(), article.title);
+    assert.equal(await page.evaluate(() => window.scrollY), 0);
+    const headings = await page.locator(".article-view h1,.article-view h2,.article-view h3,.article-view h4").allTextContents();
+    assert.equal(headings.filter((text) => text.trim() === article.title.trim()).length, 1, `Duplicate title in ${article.slug}`);
+    for (const block of article.blocks.filter((block) => /^h[1-4]$/.test(block.tag) && block.text !== article.title)) {
+      assert.ok(headings.includes(block.text), `Subheading removed from ${article.slug}`);
+    }
+    assert.equal(await page.locator(".article-body > li").count(), 0);
+    await checkLayout(page, `${width}/${locale}/${article.slug}`);
+    if (article.slug === "traffic-signs") {
+      assert.equal(await page.locator(".article-table img").count(), 157);
+      await page.locator(".article-table img").first().scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => { const image = document.querySelector(".article-table img"); return image.complete && image.naturalWidth > 0; });
+      if ((width === 390 || width === 1440) && locale === "vi") {
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.screenshot({ path: path.join(screenshots, `${width}-knowledge-article.png`) });
+      }
+    }
+    if (article.slug === "license-vehicle") assert.equal(await page.locator(".table-scroll").count(), 1);
+    if (article.slug === "priority-at-intersections") {
+      assert.equal(await page.locator(".article-gallery img").count(), 3);
+      await page.locator(".article-gallery img").first().scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => [...document.querySelectorAll(".article-gallery img")].every((img) => img.complete && img.naturalWidth > 0));
+    }
+    await page.locator("[data-close-article]").click();
+    assert.ok(Math.abs((await page.evaluate(() => window.scrollY)) - previousScroll) < 2, `List scroll position lost after ${article.slug}`);
+  }
+}
+
 try {
   browser = await chromium.launch();
   let checks = 0;
@@ -84,6 +143,11 @@ try {
       await page.waitForSelector(".exam-card");
       await selectLanguage(page, locale);
       assert.equal(await page.locator("html").getAttribute("lang"), locale);
+      if (knowledgeOnly) {
+        await checkKnowledge(page, width, locale);
+        checks++;
+        continue;
+      }
       assert.equal(await page.locator(".exam-section").count(), 3);
       assert.equal(await page.locator(".exam-card").count(), manifest.exams.length);
       for (const type of ["karimen", "honmen", "gentsuki"]) {
@@ -171,13 +235,7 @@ try {
         await page.locator("[data-back-exams]").click();
         checks++;
       }
-      await page.locator('[data-tab="knowledge"]').click();
-      await page.waitForSelector(".article-card");
-      await checkLayout(page, `${width}/${locale}/knowledge`);
-      if (locale !== "vi") assert.equal(await page.locator(".content-language").count(), 1);
-      await page.locator('[data-open-article="vi-knowledge-license-vehicle"]').click();
-      await checkLayout(page, `${width}/${locale}/wide-table`);
-      assert.equal(await page.locator(".table-scroll").count(), 1);
+      await checkKnowledge(page, width, locale);
       await page.locator('[data-tab="locations"]').click();
       await page.waitForSelector(".location-row");
       await checkLayout(page, `${width}/${locale}/locations`);
@@ -190,9 +248,9 @@ try {
     }
     assert.deepEqual(pageErrors, [], `Browser errors at width ${width}`);
     await context.close();
-    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, all exam types, knowledge and locations`);
+    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : "all exam types, knowledge and locations"}`);
   }
-  console.log(`Passed ${checks} exam workflows. Screenshots: ${screenshots}`);
+  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : "exam"} workflows. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));

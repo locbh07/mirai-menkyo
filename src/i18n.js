@@ -13,6 +13,7 @@ export const languageFlags = {
 
 const messages = {
   vi: {
+    knowledgeSearch: "Tìm bài học, biển báo, quy định...", knowledgeCount: "{count} bài học", articleUnavailable: "Chưa có nội dung",
     karimenDescription: "Bằng tạm thời", honmenDescription: "Bằng chính thức", gentsukiDescription: "Bằng xe gắn máy",
     navigation: "Điều hướng", language: "Ngôn ngữ", exams: "Đề thi", knowledge: "Kiến thức", locations: "Địa điểm thi",
     premium: "Premium sắp mở", all: "Tất cả", gentsuki: "Xe gắn máy", loading: "Đang tải dữ liệu...", loadError: "Không tải được dữ liệu",
@@ -29,6 +30,7 @@ const messages = {
     search: "Tìm tỉnh, trung tâm, địa chỉ...", empty: "Không có kết quả phù hợp.", maps: "Mở Google Maps",
   },
   ja: {
+    knowledgeSearch: "記事・標識・交通ルールを検索...", knowledgeCount: "{count}件の記事", articleUnavailable: "本文はまだありません",
     karimenDescription: "仮免許", honmenDescription: "本免許", gentsukiDescription: "原付免許",
     navigation: "ナビゲーション", language: "言語", exams: "模擬試験", knowledge: "基礎知識", locations: "試験場",
     premium: "Premium 近日公開", all: "すべて", gentsuki: "原付", loading: "読み込み中...", loadError: "データを読み込めません",
@@ -42,6 +44,7 @@ const messages = {
     locationsKicker: "運転免許試験場", locationsCopy: "都道府県、試験場名、住所で検索。", search: "都道府県、試験場、住所を検索...", empty: "該当する結果がありません。", maps: "Google Mapsで開く",
   },
   en: {
+    knowledgeSearch: "Search articles, signs, rules...", knowledgeCount: "{count} articles", articleUnavailable: "Content not available",
     karimenDescription: "Learner's permit", honmenDescription: "Full driving license", gentsukiDescription: "Moped license",
     navigation: "Navigation", language: "Language", exams: "Practice Tests", knowledge: "Knowledge", locations: "Test Centers",
     premium: "Premium coming soon", all: "All", gentsuki: "Moped", loading: "Loading...", loadError: "Unable to load data",
@@ -55,6 +58,7 @@ const messages = {
     locationsKicker: "Driving test centers", locationsCopy: "Search by prefecture, center name or address.", search: "Search prefecture, center, address...", empty: "No matching results.", maps: "Open Google Maps",
   },
   "zh-Hans": {
+    knowledgeSearch: "搜索文章、标志、规则...", knowledgeCount: "{count}篇文章", articleUnavailable: "暂无内容",
     karimenDescription: "临时驾照", honmenDescription: "正式驾照", gentsukiDescription: "轻便摩托车驾照",
     navigation: "导航", language: "语言", exams: "模拟考试", knowledge: "基础知识", locations: "考试地点",
     premium: "Premium 即将推出", all: "全部", gentsuki: "轻便摩托车", loading: "正在加载...", loadError: "无法加载数据",
@@ -68,6 +72,7 @@ const messages = {
     locationsKicker: "驾驶考试中心", locationsCopy: "按都道府县、考试中心名称或地址搜索。", search: "搜索都道府县、考试中心、地址...", empty: "没有匹配的结果。", maps: "打开 Google Maps",
   },
   "zh-Hant": {
+    knowledgeSearch: "搜尋文章、標誌、規則...", knowledgeCount: "{count}篇文章", articleUnavailable: "暫無內容",
     karimenDescription: "臨時駕照", honmenDescription: "正式駕照", gentsukiDescription: "輕便機車駕照",
     navigation: "導覽", language: "語言", exams: "模擬考試", knowledge: "基礎知識", locations: "考試地點",
     premium: "Premium 即將推出", all: "全部", gentsuki: "輕便機車", loading: "正在載入...", loadError: "無法載入資料",
@@ -81,6 +86,7 @@ const messages = {
     locationsKicker: "駕駛考試中心", locationsCopy: "按都道府縣、考試中心名稱或地址搜尋。", search: "搜尋都道府縣、考試中心、地址...", empty: "沒有符合的結果。", maps: "開啟 Google Maps",
   },
   pt: {
+    knowledgeSearch: "Buscar artigos, sinais, regras...", knowledgeCount: "{count} artigos", articleUnavailable: "Conteúdo indisponível",
     karimenDescription: "Licença provisória", honmenDescription: "Habilitação definitiva", gentsukiDescription: "Licença para ciclomotor",
     navigation: "Navegação", language: "Idioma", exams: "Simulados", knowledge: "Conhecimentos", locations: "Locais de prova",
     premium: "Premium em breve", all: "Todos", gentsuki: "Ciclomotor", loading: "Carregando...", loadError: "Não foi possível carregar os dados",

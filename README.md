@@ -53,3 +53,7 @@ The home page separates Karimen, Honmen and Gentsuki into independent sections.
 UI checks also cover section shortcuts, flag images and keyboard navigation in
 the language picker. Flag PNGs are hosted locally under `src/assets/flags` and
 were downloaded from [Flagpedia/FlagCDN](https://flagpedia.net/download/api).
+
+`npm run test:knowledge` checks the full-width knowledge list, accent-insensitive
+search, single article titles, preserved subheadings, tables, images and return
+scroll position on six viewport widths and all interface languages.

@@ -15,6 +15,8 @@ const state = {
   timerId: null,
   secondsLeft: 0,
   knowledge: null,
+  knowledgeSearch: "",
+  knowledgeScroll: 0,
   currentArticle: null,
   locations: null,
   search: "",
@@ -415,52 +417,99 @@ function renderKnowledge() {
     else return renderArticle(article);
   }
 
+  const keyword = normalizeSearch(state.knowledgeSearch);
+  const articles = state.knowledge.filter((article) => normalizeSearch(`${article.title} ${article.text || ""}`).includes(keyword));
   return `
-    <section class="page-head">
+    <section class="page-head knowledge-head">
       <div>
         <p class="page-kicker">${t("knowledgeKicker")}</p>
         <h1 class="page-title">${t("knowledgeTitle")}</h1>
         <p class="page-copy">${t("knowledgeCopy")}</p>
         ${state.locale !== (state.manifest.knowledgeLocale || "vi") ? `<p class="content-language">${t("knowledgeLanguage")}</p>` : ""}
       </div>
+      <span class="knowledge-count">${t("knowledgeCount", { count: state.knowledge.length })}</span>
     </section>
-    <section class="article-grid">
-      ${state.knowledge
-        .map(
-          (article) => `
-            <button class="article-card" data-open-article="${article.id}" lang="${article.locale || "vi"}">
-              <h3>${escapeHtml(article.title)}</h3>
-              <p>${escapeHtml((article.text || "").slice(0, 130))}...</p>
-            </button>
-          `,
-        )
-        .join("")}
+    <div class="knowledge-toolbar">
+      <input class="search knowledge-search" type="search" data-knowledge-search value="${escapeAttribute(state.knowledgeSearch)}" placeholder="${t("knowledgeSearch")}" aria-label="${t("knowledgeSearch")}" />
+      <span class="knowledge-results" aria-live="polite">${keyword ? t("knowledgeCount", { count: articles.length }) : ""}</span>
+    </div>
+    <section class="knowledge-list" aria-label="${t("knowledgeTitle")}">
+      ${articles.map(renderKnowledgeRow).join("") || `<div class="empty-state">${t("empty")}</div>`}
     </section>
+  `;
+}
+
+function normalizeSearch(value) {
+  return String(value || "").normalize("NFD").replace(/\p{M}/gu, "").replace(/[đĐ]/g, "d").toLowerCase().trim();
+}
+
+function articleBodyBlocks(article) {
+  const normalizeHeading = (text) => String(text || "").normalize("NFC").replace(/\s+/g, " ").trim().toLowerCase();
+  const title = normalizeHeading(article.title);
+  return (article.blocks || []).filter((block) => !(/^h[1-6]$/.test(block.tag) && normalizeHeading(block.text) === title));
+}
+
+function articleExcerpt(article) {
+  const blocks = articleBodyBlocks(article);
+  const text = blocks.find((block) => block.tag === "p" || block.tag === "li")?.text?.trim() || "";
+  return text.length > 180 ? `${text.slice(0, 180).trimEnd()}...` : text;
+}
+
+function renderKnowledgeRow(article) {
+  const index = state.knowledge.indexOf(article) + 1;
+  const available = articleBodyBlocks(article).length || article.tables?.length || article.images?.length;
+  return `
+    <button class="article-row" data-open-article="${escapeAttribute(article.id)}" ${available ? "" : "disabled"}>
+      <span class="article-number" aria-hidden="true">${String(index).padStart(2, "0")}</span>
+      <span class="article-summary">
+        <span class="article-row-title" lang="${article.locale || "vi"}">${escapeHtml(article.title)}</span>
+        <span class="article-excerpt" ${available ? `lang="${article.locale || "vi"}"` : ""}>${escapeHtml(articleExcerpt(article) || (available ? "" : t("articleUnavailable")))}</span>
+      </span>
+      <span class="article-arrow" aria-hidden="true"></span>
+    </button>
   `;
 }
 
 function renderArticle(article) {
   return `
     <section class="article-view">
-      <button class="button secondary" data-close-article>${t("back")}</button>
+      <div class="article-toolbar">
+        <button class="button secondary" data-close-article>${t("back")}</button>
+        <span>${t("knowledgeTitle")}</span>
+      </div>
       ${state.locale !== (article.locale || "vi") ? `<p class="content-language">${t("knowledgeLanguage")}</p>` : ""}
-      <div lang="${article.locale || "vi"}">
-      <h1>${escapeHtml(article.title)}</h1>
+      <h1 lang="${article.locale || "vi"}">${escapeHtml(article.title)}</h1>
+      <div class="article-body" lang="${article.locale || "vi"}">
       ${renderArticleBlocks(article)}
       ${renderArticleTables(article)}
+      ${renderArticleImages(article)}
       </div>
     </section>
   `;
 }
 
 function renderArticleBlocks(article) {
-  return (article.blocks || [])
-    .slice(0, 80)
-    .map((block) => {
-      const tag = ["h1", "h2", "h3", "h4", "p", "li"].includes(block.tag) ? block.tag : "p";
-      return `<${tag} class="article-block">${escapeHtml(block.text)}</${tag}>`;
-    })
-    .join("");
+  let content = "";
+  let inList = false;
+  for (const block of articleBodyBlocks(article)) {
+    if (block.tag === "li" && !inList) {
+      content += '<ul class="article-block-list">';
+      inList = true;
+    } else if (block.tag !== "li" && inList) {
+      content += "</ul>";
+      inList = false;
+    }
+    const tag = block.tag === "h1" ? "h2" : ["h2", "h3", "h4", "p", "li"].includes(block.tag) ? block.tag : "p";
+    content += `<${tag} class="article-block">${escapeHtml(block.text)}</${tag}>`;
+  }
+  return content + (inList ? "</ul>" : "");
+}
+
+function renderArticleImages(article) {
+  const tablePaths = new Set((article.tables || []).flatMap((table) => table.rows.flatMap((row) => row.flatMap((cell) => (cell.images || []).map((image) => image.local_path)))));
+  const images = (article.images || []).filter((image) => image.local_path && !tablePaths.has(image.local_path));
+  if (!images.length) return "";
+  return `<div class="article-gallery">${images.map((image) => `<img class="article-image" src="data/${escapeAttribute(image.local_path)}" alt="${escapeAttribute(image.alt || "")}" loading="lazy" />`).join("")}</div>`;
 }
 
 function renderArticleTables(article) {
@@ -621,14 +670,26 @@ function bindEvents() {
 
   document.querySelectorAll("[data-open-article]").forEach((button) => {
     button.addEventListener("click", () => {
+      state.knowledgeScroll = window.scrollY;
       state.currentArticle = button.dataset.openArticle;
       render();
+      window.scrollTo(0, 0);
     });
   });
 
   document.querySelector("[data-close-article]")?.addEventListener("click", () => {
     state.currentArticle = null;
     render();
+    window.scrollTo(0, state.knowledgeScroll);
+  });
+
+  document.querySelector("[data-knowledge-search]")?.addEventListener("input", (event) => {
+    const cursor = event.target.selectionStart;
+    state.knowledgeSearch = event.target.value;
+    render();
+    const input = document.querySelector("[data-knowledge-search]");
+    input?.focus({ preventScroll: true });
+    if (cursor !== null) input?.setSelectionRange(cursor, cursor);
   });
 
   document.querySelector("[data-location-search]")?.addEventListener("input", (event) => {
