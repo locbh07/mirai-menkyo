@@ -8,10 +8,58 @@ import subprocess
 import time
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageStat
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data" / "karimen-honmen-vi"
+
+
+def white_rgb(image):
+    rgba = image.convert("RGBA")
+    background = Image.new("RGBA", rgba.size, (255, 255, 255, 255))
+    return Image.alpha_composite(background, rgba).convert("RGB")
+
+
+def restore_alpha(source, rgb, scale):
+    expected = tuple(edge * scale for edge in source.size)
+    if rgb.size != expected:
+        raise ValueError(f"Unexpected output dimensions: {rgb.size}; expected {expected}")
+    result = rgb.convert("RGB")
+    alpha = source.convert("RGBA").getchannel("A")
+    if alpha.getextrema() != (255, 255):
+        result.putalpha(alpha.resize(expected, Image.Resampling.LANCZOS))
+    return result
+
+
+def validate_upscale(source, candidate, scale):
+    expected = tuple(edge * scale for edge in source.size)
+    if candidate.size != expected:
+        raise ValueError(f"Unexpected output dimensions: {candidate.size}; expected {expected}")
+    expected_alpha = source.convert("RGBA").getchannel("A").resize(expected, Image.Resampling.LANCZOS)
+    actual_alpha = candidate.convert("RGBA").getchannel("A")
+    alpha_error = ImageChops.difference(expected_alpha, actual_alpha).getextrema()[1]
+    if alpha_error:
+        raise ValueError(f"Alpha mask changed or content became invisible (maximum error {alpha_error})")
+    reference = white_rgb(source)
+    reduced = white_rgb(candidate).resize(source.size, Image.Resampling.LANCZOS)
+    difference = ImageChops.difference(reference, reduced)
+    mean_error = sum(ImageStat.Stat(difference).mean) / 3
+    grid = min(8, *source.size)
+    tile_errors = []
+    for y in range(grid):
+        for x in range(grid):
+            box = (x * source.width // grid, y * source.height // grid,
+                   (x + 1) * source.width // grid, (y + 1) * source.height // grid)
+            tile_errors.append(sum(ImageStat.Stat(difference.crop(box)).mean) / 3)
+    max_tile_error = max(tile_errors)
+    original_range = max(high - low for low, high in reference.getextrema())
+    output_range = max(high - low for low, high in reduced.getextrema())
+    if original_range > 30 and output_range < 10:
+        raise ValueError("Output lost visible content and became flat/blank")
+    if mean_error > 20 or max_tile_error > 45:
+        raise ValueError(f"Output lost/changed a region (mean error {mean_error:.2f}, maximum tile error {max_tile_error:.2f})")
+    return {"alpha_max_error": alpha_error, "visible_mae": round(mean_error, 4),
+            "max_tile_mae": round(max_tile_error, 4), "grid": grid}
 
 
 def digest(path):
@@ -88,7 +136,7 @@ section{{padding:24px 0;border-top:1px solid #ddd}}.versions{{display:grid;grid-
 figure{{min-width:0;margin:0;padding:12px;background:white;border:1px solid #ddd;border-radius:8px}}figcaption{{font-weight:600;margin-bottom:12px}}
 .canvas{{display:flex;align-items:center;justify-content:center;height:360px;min-height:0;overflow:hidden;background:white}}img{{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;min-width:0;min-height:0}}
 @media(max-width:720px){{body{{padding:16px}}.versions{{grid-template-columns:1fr}}}}
-</style><main><h1>Menkyo Image Comparison</h1><p>{len(report["images"])} unique images &middot; noise {report["noise"]} &middot; source files unchanged &middot; not deployed</p>{"".join(rows)}</main></html>"""
+</style><main><h1>Menkyo Image Comparison</h1><p>{len(report["images"])} unique images &middot; pipeline {report["settings"]["pipeline_version"]} &middot; noise {report["noise"]} &middot; source files unchanged &middot; not deployed</p>{"".join(rows)}</main></html>"""
     (output / "index.html").write_text(page, encoding="utf-8")
     (output / "manifest.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
@@ -118,10 +166,11 @@ def main():
     if output == ROOT or output.is_relative_to(SOURCE) or SOURCE.is_relative_to(output):
         parser.error("Output must be separate from original data and repository root")
     output.mkdir(parents=True, exist_ok=True)
-    for folder in ("original", "upscaled"):
+    for folder in ("original", "upscaled", "working"):
         (output / folder).mkdir(exist_ok=True)
     scales = list(dict.fromkeys(args.scales))
     settings = {
+        "pipeline_version": 2, "rgb_matte": "white", "alpha_filter": "lanczos",
         "tool_sha256": digest(tool), "noise": args.noise, "scales": scales,
         "models": {path.name: digest(path) for path in sorted(model.iterdir()) if path.is_file()},
     }
@@ -151,8 +200,10 @@ def main():
         original = output / "original" / f'{item["sha256"]}.png'
         with Image.open(source) as image:
             rgba = image.convert("RGBA")
-            transparent = rgba.getchannel("A").getextrema()[0] < 255
             rgba.save(original)
+        # Avoid the backend's RGBA path; preserve the original alpha separately.
+        rgb_input = output / "working" / f'{item["sha256"]}-rgb.png'
+        white_rgb(rgba).save(rgb_input)
         entry = {**item, "original": original.relative_to(output).as_posix(), "outputs": {}}
         for scale in scales:
             destination = output / "upscaled" / f'{item["sha256"]}-{settings_id}-{scale}x.png'
@@ -163,22 +214,26 @@ def main():
                     with Image.open(destination) as image:
                         image.load()
                         cached = image.size == expected and digest(destination) == previous_hashes.get(destination.relative_to(output).as_posix())
+                        if cached:
+                            validate_upscale(rgba, image, scale)
                 except (OSError, ValueError):
-                    pass
+                    cached = False
             start = time.perf_counter()
             if not cached:
-                command = [str(tool), "-i", str(original), "-o", str(destination), "-s", str(scale), "-n", str(args.noise), "-m", str(model), "-f", "png"]
+                raw_output = output / "working" / f'{item["sha256"]}-{settings_id}-{scale}x-rgb.png'
+                command = [str(tool), "-i", str(rgb_input), "-o", str(raw_output), "-s", str(scale), "-n", str(args.noise), "-m", str(model), "-f", "png"]
                 if args.gpu is not None:
                     command.extend(["-g", str(args.gpu)])
                 result = subprocess.run(command, cwd=tool.parent, capture_output=True, text=True, errors="replace", timeout=180)
                 if result.returncode != 0:
                     raise RuntimeError(f"Waifu2x failed ({result.returncode}) for {item['path']}: {result.stderr[-3000:]}")
+                with Image.open(raw_output) as image:
+                    candidate = restore_alpha(rgba, image, scale)
+                validate_upscale(rgba, candidate, scale)
+                candidate.save(destination)
             seconds = time.perf_counter() - start
             with Image.open(destination) as image:
-                if image.size != expected:
-                    raise RuntimeError(f"Unexpected output dimensions for {destination}")
-                if transparent and ("A" not in image.getbands() or image.getchannel("A").getextrema()[0] == 255):
-                    raise RuntimeError(f"Transparency lost for {destination}")
+                quality = validate_upscale(rgba, image, scale)
                 size = image.size
             if digest(source) != item["sha256"]:
                 raise RuntimeError(f"Source image changed while processing: {source}")
@@ -186,6 +241,7 @@ def main():
                 "path": destination.relative_to(output).as_posix(), "size": size,
                 "seconds": round(seconds, 4), "cached": cached,
                 "bytes": destination.stat().st_size, "sha256": digest(destination),
+                "quality": quality,
             }
             print(f"[{index}/{len(selected)}] {item['references'][0]} {scale}x: {size[0]}x{size[1]}, {seconds:.3f}s{' (cached)' if cached else ''}", flush=True)
         report["images"].append(entry)

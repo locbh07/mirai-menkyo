@@ -103,9 +103,18 @@ py -m venv .venv-images
 Open `output/upscale-preview/index.html` to compare originals with 2x and 4x
 versions. `manifest.json` records source hashes, references, dimensions, output
 hashes, elapsed times and cache hits. The script deduplicates identical bytes,
-skips animated/corrupt images, converts static GIFs to RGBA PNG without altering
-originals, and checks output dimensions, transparency and unchanged source hashes.
+skips animated/corrupt images, and creates original RGBA PNG previews without
+altering sources. Only RGB, composited on white, is passed into Waifu2x; alpha is
+resized separately from the original using Lanczos and reattached afterward.
+This bypasses the backend's RGBA corruption observed in the initial experiment.
+Fully opaque sources stay opaque. Pipeline version 2 invalidates earlier caches.
+The script checks exact alpha-mask equality, output dimensions, source hashes,
+blank/flat results and visible-color differences across an 8x8 region grid before
+saving or accepting an output. These checks detect lost content, not semantic
+correctness of traffic signs or text; visual review is still required.
 Outputs are cached by source content, tool/model hashes and processing settings.
+Only use output paths listed in the current manifest; older experimental cache
+files can remain on disk but are not referenced by the regenerated preview.
 The preview includes the reported blurry police diagram and a multi-part driving
 scene, plus samples from Karimen, Honmen and Gentsuki.
 
@@ -121,7 +130,13 @@ Vulkan/GPU inference is automatic otherwise. Binaries, virtual environment and
 preview outputs are gitignored. Review arrows, signs and small text before any
 production image replacement; upscaling cannot recover missing original detail.
 `npm run test:upscale-preview` verifies all source/output hashes, deduplication,
-dimensions, loaded preview images and containment at 390px and 1440px.
+dimensions, browser canvas pixels (color and alpha by region), loaded preview
+images and containment at 390px and 1440px. It saves a screenshot of every row.
+Run regression tests for blank, invisible and partially missing content with:
+
+```powershell
+.\.venv-images\Scripts\python.exe scripts/test-upscale-exam-images.py
+```
 
 ## Question Bank Audit
 
