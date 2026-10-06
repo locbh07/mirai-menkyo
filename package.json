@@ -1,0 +1,11 @@
+{
+  "name": "mirai-menkyo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare:data": "node scripts/prepare-data.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs"
+  }
+}
