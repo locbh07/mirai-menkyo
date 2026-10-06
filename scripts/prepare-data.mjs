@@ -37,9 +37,16 @@ export async function prepareData() {
   await mkdir(path.join(distData, "exams"), { recursive: true });
 
   const all = JSON.parse(await readFile(path.join(sourceRoot, "all.json"), "utf8"));
+  const questions = all.exam_sets.flatMap((exam) => exam.questions || []);
+  const entries = questions.flatMap((question) => [question, ...(question.choices || [])]);
+  const locales = Object.keys(entries[0]?.text || {}).filter((locale) =>
+    entries.every((entry) => typeof entry.text?.[locale] === "string" && entry.text[locale].trim()),
+  );
   const manifest = {
     brand: "Mirai Menkyo",
     locale: all.metadata?.locale || "vi",
+    locales,
+    knowledgeLocale: all.metadata?.locale || "vi",
     generatedAt: all.metadata?.scraped_at,
     exams: [],
     stats: {
@@ -81,6 +88,7 @@ export async function prepareData() {
     JSON.stringify(
       all.knowledge_articles.map((article) => ({
         id: article.source_id,
+        locale: article.locale || all.metadata?.locale || "vi",
         slug: article.slug,
         title: article.title,
         text: article.content_text,

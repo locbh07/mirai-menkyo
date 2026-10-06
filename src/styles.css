@@ -34,6 +34,7 @@ body {
     sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  letter-spacing: 0;
 }
 
 button,
@@ -44,6 +45,16 @@ select {
 
 button {
   border: 0;
+  overflow-wrap: anywhere;
+}
+
+button:focus-visible,
+select:focus-visible,
+summary:focus-visible,
+a:focus-visible,
+.table-scroll:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 3px;
 }
 
 a {
@@ -71,7 +82,7 @@ a:hover {
 
 .topbar-inner {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto minmax(250px, 1fr);
+  grid-template-columns: minmax(200px, 1fr) auto auto;
   align-items: center;
   gap: 20px;
   max-width: 1200px;
@@ -95,6 +106,7 @@ a:hover {
   background: #fff;
   color: var(--navy);
   font-weight: 900;
+  flex-shrink: 0;
 }
 
 .brand-name {
@@ -116,17 +128,18 @@ a:hover {
   border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.08);
+  min-width: 0;
 }
 
 .tab-button {
   min-height: 44px;
-  padding: 0 16px;
+  padding: 10px 16px;
   border-radius: 8px;
   background: transparent;
   color: rgba(255, 255, 255, 0.82);
   cursor: pointer;
   font-weight: 700;
-  white-space: nowrap;
+  min-width: 0;
 }
 
 .tab-button:hover {
@@ -144,6 +157,8 @@ a:hover {
   justify-content: flex-end;
   align-items: center;
   gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .language-select {
@@ -155,6 +170,7 @@ a:hover {
   color: var(--navy);
   cursor: pointer;
   font-weight: 800;
+  max-width: 100%;
 }
 
 .premium-chip {
@@ -167,7 +183,7 @@ a:hover {
   background: #fff7ed;
   color: #92400e;
   font-weight: 800;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 .main {
@@ -189,6 +205,15 @@ a:hover {
   box-shadow: var(--shadow);
 }
 
+.page-head > div,
+.exam-layout > *,
+.question-list,
+.exam-card,
+.article-card,
+.article-view {
+  min-width: 0;
+}
+
 .page-kicker {
   margin: 0 0 8px;
   color: var(--navy);
@@ -201,9 +226,10 @@ a:hover {
   max-width: 760px;
   margin: 0 0 10px;
   color: var(--navy-dark);
-  font-size: clamp(32px, 5vw, 48px);
-  line-height: 1.08;
+  font-size: 32px;
+  line-height: 1.35;
   letter-spacing: 0;
+  overflow-wrap: anywhere;
 }
 
 .page-copy {
@@ -216,7 +242,7 @@ a:hover {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -238,8 +264,9 @@ a:hover {
 .stat-label {
   display: block;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 
 .toolbar {
@@ -263,7 +290,7 @@ a:hover {
 
 .segment {
   min-height: 44px;
-  padding: 0 16px;
+  padding: 10px 16px;
   border-radius: 8px;
   background: transparent;
   color: var(--muted);
@@ -283,7 +310,8 @@ a:hover {
 
 .search {
   flex: 1;
-  min-width: 240px;
+  min-width: min(240px, 100%);
+  max-width: 100%;
   min-height: 48px;
   padding: 0 16px;
   border: 1px solid var(--line);
@@ -368,6 +396,7 @@ a:hover {
   gap: 10px;
   align-self: end;
   margin-top: 8px;
+  flex-wrap: wrap;
 }
 
 .score-pill,
@@ -399,19 +428,23 @@ a:hover {
 
 .question-nav {
   position: sticky;
-  top: 92px;
+  top: 112px;
   align-self: start;
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--surface);
   box-shadow: var(--shadow);
+  max-height: calc(100dvh - 140px);
+  display: flex;
+  flex-direction: column;
 }
 
 .exam-header {
   display: grid;
   gap: 10px;
   margin-bottom: 14px;
+  flex-shrink: 0;
 }
 
 .exam-header strong {
@@ -436,20 +469,44 @@ a:hover {
   font-weight: 900;
 }
 
+.question-list {
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+.question-list summary {
+  min-height: 44px;
+  padding: 6px 4px;
+  cursor: pointer;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.question-list summary span {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+}
+
 .question-dots {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(44px, 1fr));
   gap: 6px;
+  padding: 4px;
 }
 
 .dot {
-  min-width: 28px;
+  min-width: 0;
+  min-height: 44px;
+  width: 100%;
   aspect-ratio: 1;
+  padding: 0;
   border-radius: 8px;
   background: var(--surface-soft);
   color: var(--muted);
   cursor: pointer;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
 }
 
@@ -469,6 +526,11 @@ a:hover {
   color: var(--navy);
 }
 
+.dot.current.answered {
+  background: var(--navy);
+  color: #fff;
+}
+
 .dot.good {
   background: #d1fae5;
   color: #047857;
@@ -480,7 +542,7 @@ a:hover {
 }
 
 .question-panel {
-  min-height: 560px;
+  align-self: start;
   padding: 24px;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -493,6 +555,7 @@ a:hover {
   color: var(--navy-dark);
   font-size: 24px;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .question-images {
@@ -511,6 +574,11 @@ a:hover {
   border-radius: 12px;
   background: #fff;
   box-shadow: var(--shadow);
+  height: auto;
+}
+
+.question-images img {
+  min-width: 0;
 }
 
 .answer-actions {
@@ -528,7 +596,7 @@ a:hover {
   background: var(--surface-soft);
   color: var(--navy-dark);
   cursor: pointer;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 900;
   transition:
     transform 140ms ease,
@@ -599,7 +667,7 @@ a:hover {
 
 .button {
   min-height: 44px;
-  padding: 0 18px;
+  padding: 10px 18px;
   border-radius: 8px;
   background: var(--navy);
   color: #fff;
@@ -700,6 +768,7 @@ a:hover {
   color: var(--navy-dark);
   font-size: 20px;
   line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .article-card p,
@@ -720,25 +789,37 @@ a:hover {
 .article-view h1 {
   margin: 22px 0 12px;
   color: var(--navy-dark);
-  font-size: clamp(28px, 4vw, 42px);
-  line-height: 1.18;
+  font-size: 28px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
 }
 
 .article-block {
   line-height: 1.72;
 }
 
-.article-block h1,
-.article-block h2,
-.article-block h3 {
+h1.article-block,
+h2.article-block,
+h3.article-block {
   margin: 22px 0 8px;
+}
+
+.content-language {
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 16px 0;
 }
 
 .article-table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  margin: 16px 0;
+  margin: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 12px;
@@ -752,6 +833,11 @@ a:hover {
   border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
+  min-width: 120px;
+}
+
+.article-table img {
+  max-width: min(100%, 280px);
 }
 
 .article-table tr:last-child th,
@@ -792,27 +878,19 @@ a:hover {
   color: var(--bad);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .topbar-inner {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 12px;
   }
 
-  .nav-tabs,
-  .top-actions {
-    justify-self: stretch;
-  }
-
   .nav-tabs {
-    overflow-x: auto;
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .tab-button {
     flex: 1;
-  }
-
-  .top-actions {
-    justify-content: space-between;
   }
 
   .page-head {
@@ -820,12 +898,18 @@ a:hover {
     padding: 22px;
   }
 
+  .question-nav {
+    position: static;
+    max-height: none;
+  }
+}
+
+@media (max-width: 900px) {
   .exam-layout {
     display: block;
   }
 
   .question-nav {
-    position: static;
     margin-bottom: 14px;
   }
 }
@@ -837,6 +921,30 @@ a:hover {
 
   .topbar-inner {
     padding: 12px 16px;
+  }
+
+  .topbar {
+    position: static;
+  }
+
+  .brand-name {
+    font-size: 16px;
+  }
+
+  .brand-subtitle {
+    display: none;
+  }
+
+  .premium-chip {
+    display: none;
+  }
+
+  .language-select {
+    width: 140px;
+  }
+
+  .tab-button {
+    padding: 10px 8px;
   }
 
   .main {
@@ -858,7 +966,18 @@ a:hover {
   }
 
   .stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .stat {
+    padding: 12px 8px;
+    border: 0;
+    background: transparent;
+  }
+
+  .stat-value {
+    font-size: 22px;
   }
 
   .exam-grid,
@@ -867,11 +986,16 @@ a:hover {
   }
 
   .answer-actions {
-    grid-template-columns: 1fr;
+    gap: 10px;
   }
 
-  .question-dots {
-    grid-template-columns: repeat(8, 1fr);
+  .answer-button {
+    padding: 12px 8px;
+    font-size: 20px;
+  }
+
+  .question-title {
+    font-size: 20px;
   }
 
   .question-footer {
@@ -880,6 +1004,11 @@ a:hover {
 
   .question-footer > div,
   .question-footer .button {
-    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  .question-list[open] .question-dots {
+    max-height: 260px;
+    overflow-y: auto;
   }
 }

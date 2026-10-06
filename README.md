@@ -26,3 +26,22 @@ data/karimen-honmen-vi
 ```
 
 It writes optimized static files to `dist/data`.
+
+Exam questions, choices and available explanations contain Vietnamese, Japanese,
+English, Simplified Chinese, Traditional Chinese and Portuguese translations.
+The build lists only languages with complete question and choice coverage in the
+manifest. Knowledge articles currently contain Vietnamese text; their language
+is displayed when another interface language is selected. Location names and
+addresses are available in Japanese and romaji.
+
+## UI Checks
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:ui
+```
+
+Checks six viewport widths from 320px to 1920px, all available languages, question
+navigation bounds and 44px touch targets, images, grading, language persistence,
+knowledge tables and location search. Screenshots are saved under `dist/ui-check`.

@@ -1,4 +1,9 @@
+import { languages, translate } from "./i18n.js";
+
+const storedLocale = localStorage.getItem("mirai-menkyo-locale");
 const state = {
+  locale: languages[storedLocale] ? storedLocale : "vi",
+  questionNavOpen: window.matchMedia("(min-width: 901px)").matches,
   tab: "exams",
   manifest: null,
   examsByType: "all",
@@ -15,28 +20,46 @@ const state = {
   search: "",
 };
 
-const examTypeLabels = {
-  all: "Tất cả",
-  karimen: "Karimen",
-  honmen: "Honmen",
-  gentsuki: "Xe gắn máy",
-};
+const examTypes = ["all", "karimen", "honmen", "gentsuki"];
+
+function t(key, values) {
+  return translate(state.locale, key, values);
+}
+
+function examTypeLabel(type) {
+  if (type === "all" || type === "gentsuki") return t(type);
+  if (state.locale === "ja") return type === "karimen" ? "仮免" : "本免";
+  return type === "karimen" ? "Karimen" : "Honmen";
+}
+
+function examTitle(exam) {
+  return t("examTitle", { type: examTypeLabel(exam.type), number: exam.number });
+}
+
+function localizedText(item, field = "text") {
+  return item[`${field}All`]?.[state.locale] || item[field] || "";
+}
 
 const app = document.querySelector("#app");
 
 init();
 
 async function init() {
-  app.innerHTML = renderShell("<div class=\"loading\">Đang tải dữ liệu...</div>");
+  app.innerHTML = renderShell(`<div class="loading">${t("loading")}</div>`);
   try {
-    state.manifest = await fetchJson("data/manifest.json");
+    state.manifest = await fetchJson("data/manifest.json", { cache: "no-cache" });
+    if (!state.manifest.locales?.includes(state.locale)) state.locale = state.manifest.locale;
     render();
   } catch (error) {
-    app.innerHTML = renderShell(`<div class="error">Không tải được dữ liệu: ${escapeHtml(error.message)}</div>`);
+    showError(new Error(`${t("loadError")}: ${error.message}`));
   }
 }
 
 function render() {
+  const oldNav = document.querySelector(".question-nav");
+  const navScroll = oldNav && oldNav.dataset.examId === state.currentExam?.id
+    ? [oldNav.querySelector(".question-list").scrollTop, oldNav.querySelector(".question-dots").scrollTop]
+    : [0, 0];
   if (state.timerId && state.tab !== "practice") {
     clearInterval(state.timerId);
     state.timerId = null;
@@ -49,9 +72,16 @@ function render() {
   if (state.tab === "locations") content = renderLocations();
   app.innerHTML = renderShell(content);
   bindEvents();
+  const newNav = document.querySelector(".question-nav");
+  if (newNav) {
+    newNav.querySelector(".question-list").scrollTop = navScroll[0];
+    newNav.querySelector(".question-dots").scrollTop = navScroll[1];
+  }
 }
 
 function renderShell(content) {
+  document.documentElement.lang = state.locale;
+  document.title = `Mirai Menkyo - ${t("homeTitle")}`;
   return `
     <div class="app-shell">
       <header class="topbar">
@@ -63,18 +93,16 @@ function renderShell(content) {
               <div class="brand-subtitle">Karimen · Honmen · Gentsuki</div>
             </div>
           </div>
-          <nav class="nav-tabs" aria-label="Điều hướng">
-            ${tabButton("exams", "Đề thi")}
-            ${tabButton("knowledge", "Kiến thức")}
-            ${tabButton("locations", "Địa điểm thi")}
+          <nav class="nav-tabs" aria-label="${t("navigation")}">
+            ${tabButton("exams", t("exams"))}
+            ${tabButton("knowledge", t("knowledge"))}
+            ${tabButton("locations", t("locations"))}
           </nav>
           <div class="top-actions">
-            <select class="language-select" aria-label="Ngôn ngữ">
-              <option value="vi">VN</option>
-              <option value="ja" disabled>JP</option>
-              <option value="en" disabled>EN</option>
+            <select class="language-select" aria-label="${t("language")}">
+              ${(state.manifest?.locales || [state.locale]).map((locale) => `<option value="${escapeAttribute(locale)}" ${locale === state.locale ? "selected" : ""}>${escapeHtml(languages[locale] || locale)}</option>`).join("")}
             </select>
-            <span class="premium-chip">Premium sắp mở</span>
+            <span class="premium-chip">${t("premium")}</span>
           </div>
         </div>
       </header>
@@ -94,22 +122,22 @@ function renderExamHome() {
   return `
     <section class="page-head">
       <div>
-        <p class="page-kicker">Hệ thống thi bằng lái Mirai Menkyo</p>
-        <h1 class="page-title">Luyện thi bằng lái Nhật Bản</h1>
+        <p class="page-kicker">${t("homeKicker")}</p>
+        <h1 class="page-title">${t("homeTitle")}</h1>
         <p class="page-copy">
-          Bộ đề Karimen, Honmen và xe gắn máy bằng tiếng Việt, kèm hình ảnh, giải thích và dữ liệu địa điểm thi.
+          ${t("homeCopy")}
         </p>
       </div>
       <div class="stats">
-        ${stat(stats.examSets, "bộ đề")}
-        ${stat(stats.examQuestions, "câu hỏi")}
-        ${stat(stats.knowledgeArticles, "bài học")}
+        ${stat(stats.examSets, t("sets"))}
+        ${stat(stats.examQuestions, t("questions"))}
+        ${stat(stats.knowledgeArticles, t("lessons"))}
       </div>
     </section>
     <section class="toolbar">
       <div class="segmented">
-        ${Object.keys(examTypeLabels)
-          .map((type) => `<button class="segment ${state.examsByType === type ? "active" : ""}" data-exam-filter="${type}">${examTypeLabels[type]}</button>`)
+        ${examTypes
+          .map((type) => `<button class="segment ${state.examsByType === type ? "active" : ""}" data-exam-filter="${type}">${examTypeLabel(type)}</button>`)
           .join("")}
       </div>
     </section>
@@ -118,12 +146,12 @@ function renderExamHome() {
         .map(
           (exam) => `
             <button class="exam-card ${exam.type}" data-start-exam="${exam.id}">
-              <span class="exam-type">${escapeHtml(examTypeLabels[exam.type])}</span>
-              <span class="exam-title">${escapeHtml(exam.title)}</span>
-              <span class="exam-meta">${exam.questionCount} câu · ${exam.type === "honmen" ? "50 phút" : "30 phút"}</span>
+              <span class="exam-type">${escapeHtml(examTypeLabel(exam.type))}</span>
+              <span class="exam-title">${escapeHtml(examTitle(exam))}</span>
+              <span class="exam-meta">${t("examMeta", { count: exam.questionCount, minutes: exam.type === "honmen" ? 50 : 30 })}</span>
               <span class="card-bottom">
-                <span class="score-pill">${savedScore(exam.id)}</span>
-                <span class="start-pill">Bắt đầu</span>
+                <span class="score-pill">${escapeHtml(savedScore(exam.id))}</span>
+                <span class="start-pill">${t("start")}</span>
               </span>
             </button>
           `,
@@ -146,6 +174,7 @@ async function startExam(id) {
   const item = state.manifest.exams.find((exam) => exam.id === id);
   if (!item) return;
   state.currentExam = await fetchJson(item.path);
+  state.questionNavOpen = window.matchMedia("(min-width: 901px)").matches;
   state.currentQuestionIndex = 0;
   state.answers = {};
   state.submitted = false;
@@ -165,32 +194,35 @@ function renderPractice() {
   const question = exam.questions[state.currentQuestionIndex];
   return `
     <section class="exam-layout">
-      <aside class="question-nav">
+      <aside class="question-nav" data-exam-id="${escapeAttribute(exam.id)}">
         <div class="exam-header">
-          <strong>${escapeHtml(exam.title)}</strong>
+          <strong>${escapeHtml(examTitle(exam))}</strong>
           <div class="timer-row">
-            <span>${exam.questions.length} câu</span>
+            <span>${t("count", { count: exam.questions.length })}</span>
             <span class="timer">${formatTime(state.secondsLeft)}</span>
           </div>
           ${state.result ? renderResult() : ""}
         </div>
-        <div class="question-dots">
-          ${exam.questions.map((item, index) => renderDot(item, index)).join("")}
-        </div>
+        <details class="question-list" ${state.questionNavOpen ? "open" : ""}>
+          <summary>${t("questionList")}<span>${t("answered", { count: Object.keys(state.answers).length, total: exam.questions.length })}</span></summary>
+          <div class="question-dots">
+            ${exam.questions.map((item, index) => renderDot(item, index)).join("")}
+          </div>
+        </details>
       </aside>
       <section class="question-panel">
-        <h2 class="question-title">Câu ${state.currentQuestionIndex + 1}. ${escapeHtml(question.text)}</h2>
+        <h2 class="question-title">${t("question", { number: state.currentQuestionIndex + 1 })}. ${escapeHtml(localizedText(question))}</h2>
         ${renderQuestionImages(question)}
         ${question.choices.length ? renderChoiceQuestion(question) : renderTrueFalseQuestion(question)}
-        ${state.submitted && question.explanation ? `<div class="explanation"><strong>Giải thích:</strong> ${escapeHtml(question.explanation)}</div>` : ""}
+        ${state.submitted && localizedText(question, "explanation") ? `<div class="explanation"><strong>${t("explanation")}:</strong> ${escapeHtml(localizedText(question, "explanation"))}</div>` : ""}
         <div class="question-footer">
           <div>
-            <button class="button secondary" data-prev-question ${state.currentQuestionIndex === 0 ? "disabled" : ""}>Trước</button>
-            <button class="button secondary" data-next-question ${state.currentQuestionIndex === exam.questions.length - 1 ? "disabled" : ""}>Sau</button>
+            <button class="button secondary" data-prev-question ${state.currentQuestionIndex === 0 ? "disabled" : ""}>${t("previous")}</button>
+            <button class="button secondary" data-next-question ${state.currentQuestionIndex === exam.questions.length - 1 ? "disabled" : ""}>${t("next")}</button>
           </div>
           <div>
-            <button class="button secondary" data-back-exams>Danh sách đề</button>
-            <button class="button warn" data-submit-exam>${state.submitted ? "Chấm lại" : "Chấm điểm"}</button>
+            <button class="button secondary" data-back-exams>${t("examList")}</button>
+            <button class="button warn" data-submit-exam>${t(state.submitted ? "resubmit" : "submit")}</button>
           </div>
         </div>
       </section>
@@ -203,7 +235,7 @@ function renderQuestionImages(question) {
   return `
     <div class="question-images">
       ${question.imagePaths
-        .map((imagePath) => `<img src="data/${escapeAttribute(imagePath)}" alt="Hình câu ${question.number}" loading="lazy" />`)
+        .map((imagePath) => `<img src="data/${escapeAttribute(imagePath)}" alt="${t("questionImage", { number: question.number })}" loading="lazy" />`)
         .join("")}
     </div>
   `;
@@ -213,8 +245,8 @@ function renderTrueFalseQuestion(question) {
   const answer = state.answers[question.id]?.value;
   return `
     <div class="answer-actions">
-      ${answerButton(question, true, "Đúng", answer === true)}
-      ${answerButton(question, false, "Sai", answer === false)}
+      ${answerButton(question, true, t("correct"), answer === true)}
+      ${answerButton(question, false, t("incorrect"), answer === false)}
     </div>
   `;
 }
@@ -236,7 +268,7 @@ function renderChoiceQuestion(question) {
         .map(
           (choice) => `
             <div class="choice-item">
-              <div class="choice-text">${escapeHtml(choice.text)}</div>
+              <div class="choice-text">${escapeHtml(localizedText(choice))}</div>
               <div class="answer-actions">
                 ${choiceButton(question, choice, true, selected[choice.number] === true)}
                 ${choiceButton(question, choice, false, selected[choice.number] === false)}
@@ -255,7 +287,7 @@ function choiceButton(question, choice, value, selected) {
     if (value === choice.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}">${value ? "Đúng" : "Sai"}</button>`;
+  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}">${t(value ? "correct" : "incorrect")}</button>`;
 }
 
 function renderDot(question, index) {
@@ -263,7 +295,7 @@ function renderDot(question, index) {
   if (index === state.currentQuestionIndex) cls += " current";
   if (state.answers[question.id]) cls += " answered";
   if (state.submitted) cls += isQuestionCorrect(question) ? " good" : " bad";
-  return `<button class="dot ${cls}" data-go-question="${index}">${index + 1}</button>`;
+  return `<button class="dot ${cls}" data-go-question="${index}" aria-label="${t("question", { number: index + 1 })}" ${index === state.currentQuestionIndex ? 'aria-current="step"' : ""}>${index + 1}</button>`;
 }
 
 function renderResult() {
@@ -271,7 +303,7 @@ function renderResult() {
   return `
     <div class="result-box">
       <p class="result-score">${result.score}/${result.total}</p>
-      <p>${result.passed ? "Đạt mốc 90 điểm." : "Chưa đạt mốc 90 điểm."}</p>
+      <p>${t(result.passed ? "passed" : "failed", { score: state.currentExam.passingScore })}</p>
     </div>
   `;
 }
@@ -322,7 +354,7 @@ function isQuestionCorrect(question) {
 }
 
 function savedScore(id) {
-  return localStorage.getItem(`mirai-menkyo-score:${id}`) || "Chưa làm";
+  return localStorage.getItem(`mirai-menkyo-score:${id}`) || t("notStarted");
 }
 
 function startTimer() {
@@ -347,7 +379,7 @@ async function renderKnowledgeAsync() {
 function renderKnowledge() {
   if (!state.knowledge) {
     renderKnowledgeAsync().catch(showError);
-    return "<div class=\"loading\">Đang tải kiến thức...</div>";
+    return `<div class="loading">${t("loading")}</div>`;
   }
 
   if (state.currentArticle) {
@@ -359,16 +391,17 @@ function renderKnowledge() {
   return `
     <section class="page-head">
       <div>
-        <p class="page-kicker">Ôn tập nền tảng</p>
-        <h1 class="page-title">Kiến thức cơ bản</h1>
-        <p class="page-copy">Biển báo, tốc độ, quy định dừng đỗ, khoảng cách dừng xe và các chủ đề hay gặp trong bài thi.</p>
+        <p class="page-kicker">${t("knowledgeKicker")}</p>
+        <h1 class="page-title">${t("knowledgeTitle")}</h1>
+        <p class="page-copy">${t("knowledgeCopy")}</p>
+        ${state.locale !== (state.manifest.knowledgeLocale || "vi") ? `<p class="content-language">${t("knowledgeLanguage")}</p>` : ""}
       </div>
     </section>
     <section class="article-grid">
       ${state.knowledge
         .map(
           (article) => `
-            <button class="article-card" data-open-article="${article.id}">
+            <button class="article-card" data-open-article="${article.id}" lang="${article.locale || "vi"}">
               <h3>${escapeHtml(article.title)}</h3>
               <p>${escapeHtml((article.text || "").slice(0, 130))}...</p>
             </button>
@@ -382,10 +415,13 @@ function renderKnowledge() {
 function renderArticle(article) {
   return `
     <section class="article-view">
-      <button class="button secondary" data-close-article>Quay lại</button>
+      <button class="button secondary" data-close-article>${t("back")}</button>
+      ${state.locale !== (article.locale || "vi") ? `<p class="content-language">${t("knowledgeLanguage")}</p>` : ""}
+      <div lang="${article.locale || "vi"}">
       <h1>${escapeHtml(article.title)}</h1>
       ${renderArticleBlocks(article)}
       ${renderArticleTables(article)}
+      </div>
     </section>
   `;
 }
@@ -404,7 +440,7 @@ function renderArticleTables(article) {
   return (article.tables || [])
     .map(
       (table) => `
-        <table class="article-table">
+        <div class="table-scroll" role="region" aria-label="${t("table")}" tabindex="0"><table class="article-table">
           <tbody>
             ${table.rows
               .map(
@@ -424,7 +460,7 @@ function renderArticleTables(article) {
               )
               .join("")}
           </tbody>
-        </table>
+        </table></div>
       `,
     )
     .join("");
@@ -438,7 +474,7 @@ async function renderLocationsAsync() {
 function renderLocations() {
   if (!state.locations) {
     renderLocationsAsync().catch(showError);
-    return "<div class=\"loading\">Đang tải địa điểm thi...</div>";
+    return `<div class="loading">${t("loading")}</div>`;
   }
 
   const keyword = state.search.trim().toLowerCase();
@@ -450,16 +486,16 @@ function renderLocations() {
   return `
     <section class="page-head">
       <div>
-        <p class="page-kicker">Trung tâm sát hạch</p>
-        <h1 class="page-title">Địa điểm thi</h1>
-        <p class="page-copy">Tra nhanh trung tâm thi theo tỉnh, tên trung tâm hoặc địa chỉ romaji.</p>
+        <p class="page-kicker">${t("locationsKicker")}</p>
+        <h1 class="page-title">${t("locations")}</h1>
+        <p class="page-copy">${t("locationsCopy")}</p>
       </div>
     </section>
     <section class="toolbar">
-      <input class="search" data-location-search value="${escapeAttribute(state.search)}" placeholder="Tìm tỉnh, trung tâm, địa chỉ..." />
+      <input class="search" data-location-search value="${escapeAttribute(state.search)}" placeholder="${t("search")}" aria-label="${t("search")}" />
     </section>
     <section class="locations-list">
-      ${locations.map(renderLocation).join("") || "<div class=\"empty-state\">Không có kết quả phù hợp.</div>"}
+      ${locations.map(renderLocation).join("") || `<div class="empty-state">${t("empty")}</div>`}
     </section>
   `;
 }
@@ -470,12 +506,22 @@ function renderLocation(item) {
       <h3>${escapeHtml(item.center.ja)} · ${escapeHtml(item.center.romaji)}</h3>
       <p>${escapeHtml(item.prefecture.ja)} · ${escapeHtml(item.prefecture.romaji)}</p>
       <p>${escapeHtml(item.address.ja)} · ${escapeHtml(item.address.romaji)}</p>
-      ${item.google_maps_url ? `<p><a href="${escapeAttribute(item.google_maps_url)}" target="_blank" rel="noreferrer">Mở Google Maps</a></p>` : ""}
+      ${item.google_maps_url ? `<p><a href="${escapeAttribute(item.google_maps_url)}" target="_blank" rel="noreferrer">${t("maps")}</a></p>` : ""}
     </article>
   `;
 }
 
 function bindEvents() {
+  document.querySelector(".language-select")?.addEventListener("change", (event) => {
+    state.locale = event.target.value;
+    localStorage.setItem("mirai-menkyo-locale", state.locale);
+    render();
+  });
+
+  document.querySelector(".question-list")?.addEventListener("toggle", (event) => {
+    if (event.target.isConnected) state.questionNavOpen = event.target.open;
+  });
+
   document.querySelectorAll("[data-tab]").forEach((button) => {
     button.addEventListener("click", () => {
       state.tab = button.dataset.tab;
@@ -545,8 +591,8 @@ function bindEvents() {
   });
 }
 
-async function fetchJson(url) {
-  const response = await fetch(url);
+async function fetchJson(url, options) {
+  const response = await fetch(url, options);
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
   return response.json();
 }
