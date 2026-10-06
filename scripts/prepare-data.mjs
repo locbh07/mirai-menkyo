@@ -37,7 +37,7 @@ async function enhancedImageOverrides(questions) {
     if (replacement) overrides.set(original, replacement);
   }
   console.log(`Enhanced images: ${overrides.size} original paths mapped to ${pack.images.length} verified sources`);
-  return { overrides, version: sha256(manifestBytes).slice(0, 12) };
+  return { overrides, version: sha256(JSON.stringify(pack)).slice(0, 12) };
 }
 
 function slimQuestion(question, imageOverrides) {

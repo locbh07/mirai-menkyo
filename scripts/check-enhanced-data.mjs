@@ -12,7 +12,7 @@ const pack = JSON.parse(packBytes.toString("utf8"));
 const manifest = JSON.parse(await readFile(path.join(root, "dist/data/manifest.json"), "utf8"));
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const originalMode = process.env.MENKYO_ORIGINAL_IMAGES === "1";
-assert.equal(manifest.imageVersion, originalMode ? null : sha256(packBytes).slice(0, 12));
+assert.equal(manifest.imageVersion, originalMode ? null : sha256(JSON.stringify(pack)).slice(0, 12));
 const byHash = new Map(pack.images.map((item) => [item.sourceSha256, item]));
 const expectedPaths = new Map();
 let questions = 0, upgraded = 0, fallback = 0;
