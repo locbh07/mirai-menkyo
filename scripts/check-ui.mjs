@@ -13,10 +13,12 @@ const screenshots = path.join(dist, "ui-check");
 await mkdir(screenshots, { recursive: true });
 const manifest = JSON.parse(await readFile(path.join(dist, "data/manifest.json"), "utf8"));
 const knowledge = JSON.parse(await readFile(path.join(dist, "data/knowledge.json"), "utf8"));
+const locations = JSON.parse(await readFile(path.join(dist, "data/locations.json"), "utf8"));
 const knowledgeOnly = process.argv.includes("--knowledge");
 const autoAdvanceOnly = process.argv.includes("--auto-advance");
 const imagesOnly = process.argv.includes("--images");
 const controlsOnly = process.argv.includes("--controls");
+const locationsOnly = process.argv.includes("--locations");
 const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg", ".svg": "image/svg+xml" };
 const server = http.createServer(async (request, response) => {
   try {
@@ -384,6 +386,46 @@ async function checkKnowledge(page, width, locale) {
   }
 }
 
+async function checkLocations(page, width, locale) {
+  await page.locator('[data-tab="locations"]').click();
+  await page.waitForSelector(".location-row");
+  const search = page.locator("[data-location-search]");
+  await search.fill("");
+  assert.equal(await page.locator(".location-row").count(), locations.length);
+  await search.evaluate((input) => { input.dataset.testIdentity = "original-input"; });
+  await search.pressSequentially("Tokyo", { delay: 20 });
+  assert.equal(await search.inputValue(), "Tokyo", "Typing reversed the search query");
+  assert.equal(await search.getAttribute("data-test-identity"), "original-input", "Search input was replaced");
+  assert.equal(await search.evaluate((input) => input.selectionStart), 5);
+  assert.equal(await page.locator(".location-row").count(), locations.filter((item) => JSON.stringify(item).toLowerCase().includes("tokyo")).length);
+  await search.evaluate((input) => input.setSelectionRange(2, 4));
+  await search.press("Backspace");
+  assert.equal(await search.inputValue(), "Too");
+  await search.pressSequentially("ky", { delay: 20 });
+  assert.equal(await search.inputValue(), "Tokyo", "Editing in the middle moved the cursor");
+  assert.equal(await search.evaluate((input) => input.selectionStart), 4);
+  await search.fill("");
+  const composedQuery = locations[0].prefecture.ja;
+  await search.evaluate((input, text) => {
+    input.dispatchEvent(new CompositionEvent("compositionstart", { bubbles: true }));
+    input.value = text;
+    input.dispatchEvent(new InputEvent("input", { bubbles: true, data: text, inputType: "insertCompositionText", isComposing: true }));
+  }, composedQuery);
+  assert.equal(await page.locator(".location-row").count(), locations.length, "Filtering interrupted composition");
+  await search.evaluate((input, text) => input.dispatchEvent(new CompositionEvent("compositionend", { bubbles: true, data: text })), composedQuery);
+  assert.equal(await search.inputValue(), composedQuery);
+  assert.equal(await search.getAttribute("data-test-identity"), "original-input");
+  assert.equal(await search.evaluate((input) => input === document.activeElement), true);
+  assert.equal(await page.locator(".location-row").count(), locations.filter((item) => JSON.stringify(item).toLowerCase().includes(composedQuery.toLowerCase())).length);
+  await search.fill("");
+  await search.pressSequentially("zzzz-no-match");
+  assert.equal(await search.inputValue(), "zzzz-no-match");
+  assert.equal(await page.locator(".empty-state").count(), 1);
+  await search.fill("");
+  assert.equal(await page.locator(".location-row").count(), locations.length);
+  await checkLayout(page, `${width}/${locale}/location-search`);
+}
+
 try {
   for (const name of iconNames) {
     const response = await fetch(`${base}/assets/icons/${name}.svg`);
@@ -422,6 +464,11 @@ try {
       }
       if (controlsOnly) {
         await checkControlsWorkflow(page, width, locale);
+        checks++;
+        continue;
+      }
+      if (locationsOnly) {
+        await checkLocations(page, width, locale);
         checks++;
         continue;
       }
@@ -518,11 +565,7 @@ try {
         checks++;
       }
       await checkKnowledge(page, width, locale);
-      await page.locator('[data-tab="locations"]').click();
-      await page.waitForSelector(".location-row");
-      await checkLayout(page, `${width}/${locale}/locations`);
-      await page.locator("[data-location-search]").fill("zzzz-no-match");
-      assert.equal(await page.locator(".empty-state").count(), 1);
+      await checkLocations(page, width, locale);
       await page.locator('[data-tab="exams"]').click();
       await page.reload();
       await page.waitForSelector(".exam-card");
@@ -530,9 +573,9 @@ try {
     }
     assert.deepEqual(pageErrors, [], `Browser errors at width ${width}`);
     await context.close();
-    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : imagesOnly ? "large centered images before question text and automatic progression" : controlsOnly ? "compact controls, icons, labels, touch targets and review" : "all exam types, knowledge and locations"}`);
+    console.log(`OK: ${width}px, all ${manifest.locales.length} languages, ${knowledgeOnly ? "knowledge list, search and article content" : autoAdvanceOnly ? "automatic progression, last question, review and cancellation" : imagesOnly ? "large centered images before question text and automatic progression" : controlsOnly ? "compact controls, icons, labels, touch targets and review" : locationsOnly ? "location search, typing order, cursor, selection and IME composition" : "all exam types, knowledge and locations"}`);
   }
-  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : imagesOnly ? "image" : controlsOnly ? "control" : "exam"} workflows. Screenshots: ${screenshots}`);
+  console.log(`Passed ${checks} ${knowledgeOnly ? "knowledge" : autoAdvanceOnly ? "auto-advance" : imagesOnly ? "image" : controlsOnly ? "control" : locationsOnly ? "location-search" : "exam"} workflows. Screenshots: ${screenshots}`);
 } finally {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));

@@ -12,6 +12,8 @@
     "test:auto-advance": "npm run build && node scripts/check-ui.mjs --auto-advance",
     "test:images": "npm run build && node scripts/check-ui.mjs --images",
     "test:controls": "npm run build && node scripts/check-ui.mjs --controls",
+    "test:locations": "npm run build && node scripts/check-ui.mjs --locations",
+    "test:upscale-preview": "node scripts/check-upscale-preview.mjs",
     "audit:questions": "node scripts/audit-questions.mjs"
   },
   "devDependencies": {

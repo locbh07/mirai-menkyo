@@ -611,12 +611,6 @@ function renderLocations() {
     return `<div class="loading">${t("loading")}</div>`;
   }
 
-  const keyword = state.search.trim().toLowerCase();
-  const locations = state.locations.filter((item) => {
-    if (!keyword) return true;
-    return JSON.stringify(item).toLowerCase().includes(keyword);
-  });
-
   return `
     <section class="page-head">
       <div>
@@ -626,12 +620,19 @@ function renderLocations() {
       </div>
     </section>
     <section class="toolbar">
-      <input class="search" data-location-search value="${escapeAttribute(state.search)}" placeholder="${t("search")}" aria-label="${t("search")}" />
+      <input class="search" type="search" data-location-search value="${escapeAttribute(state.search)}" placeholder="${t("search")}" aria-label="${t("search")}" />
     </section>
     <section class="locations-list">
-      ${locations.map(renderLocation).join("") || `<div class="empty-state">${t("empty")}</div>`}
+      ${renderLocationResults()}
     </section>
   `;
+}
+
+function renderLocationResults() {
+  const keyword = state.search.trim().toLowerCase();
+  return state.locations
+    .filter((item) => !keyword || JSON.stringify(item).toLowerCase().includes(keyword))
+    .map(renderLocation).join("") || `<div class="empty-state">${t("empty")}</div>`;
 }
 
 function renderLocation(item) {
@@ -747,11 +748,14 @@ function bindEvents() {
     if (cursor !== null) input?.setSelectionRange(cursor, cursor);
   });
 
-  document.querySelector("[data-location-search]")?.addEventListener("input", (event) => {
+  const locationSearch = document.querySelector("[data-location-search]");
+  const updateLocationSearch = (event) => {
     state.search = event.target.value;
-    render();
-    document.querySelector("[data-location-search]")?.focus();
-  });
+    if (event.isComposing) return;
+    document.querySelector(".locations-list").innerHTML = renderLocationResults();
+  };
+  locationSearch?.addEventListener("input", updateLocationSearch);
+  locationSearch?.addEventListener("compositionend", updateLocationSearch);
 }
 
 async function fetchJson(url, options) {

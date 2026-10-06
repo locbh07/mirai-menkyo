@@ -77,6 +77,52 @@ UI checks also verify localized icon labels and 44px question-control targets.
 multi-part answer states, hover contrast and grading on all six languages and
 viewport widths.
 
+`npm run test:locations` checks sequential typing, cursor edits, selected-text
+replacement, Japanese composition and clear/no-match results at six widths in
+all languages. Location filtering updates only the result list, never replacing
+the active search input.
+
+## Local Image Upscale Preview
+
+This is an offline, non-destructive experiment, not part of the Cloudflare build.
+Original question images and JSON references are not changed. No API is called.
+
+Download the official [Waifu2x Windows release 20250915](https://github.com/nihui/waifu2x-ncnn-vulkan/releases/download/20250915/waifu2x-ncnn-vulkan-20250915-windows.zip)
+and extract it under `tools/waifu2x`. Keep the executable and `models-cunet`
+directory together. The archive SHA-256 is
+`7425be94b94e4c8f37a1e433ac0e0100c43790e2c37418f4b65d8235adfbdc87`.
+
+Requires Python 3.11 or later. From the repo root on Windows:
+
+```powershell
+py -m venv .venv-images
+.\.venv-images\Scripts\python.exe -m pip install -r scripts/requirements-images.txt
+.\.venv-images\Scripts\python.exe scripts/upscale-exam-images.py --limit 10
+```
+
+Open `output/upscale-preview/index.html` to compare originals with 2x and 4x
+versions. `manifest.json` records source hashes, references, dimensions, output
+hashes, elapsed times and cache hits. The script deduplicates identical bytes,
+skips animated/corrupt images, converts static GIFs to RGBA PNG without altering
+originals, and checks output dimensions, transparency and unchanged source hashes.
+Outputs are cached by source content, tool/model hashes and processing settings.
+The preview includes the reported blurry police diagram and a multi-part driving
+scene, plus samples from Karimen, Honmen and Gentsuki.
+
+After visual review, generate the eligible full batch with:
+
+```powershell
+.\.venv-images\Scripts\python.exe scripts/upscale-exam-images.py --all --scales 4
+```
+
+Images with an original edge above 600px are excluded by default; override with
+`--max-edge`. Use `--tool` for another executable location or `--gpu -1` for CPU.
+Vulkan/GPU inference is automatic otherwise. Binaries, virtual environment and
+preview outputs are gitignored. Review arrows, signs and small text before any
+production image replacement; upscaling cannot recover missing original detail.
+`npm run test:upscale-preview` verifies all source/output hashes, deduplication,
+dimensions, loaded preview images and containment at 390px and 1440px.
+
 ## Question Bank Audit
 
 `npm run audit:questions` writes `reports/question-audit.json` and
