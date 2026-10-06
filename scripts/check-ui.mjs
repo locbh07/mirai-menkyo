@@ -190,7 +190,7 @@ async function checkSlowImageWorkflow(width) {
   const context = await browser.newContext({ viewport: { width, height: width === 390 ? 844 : 960 } });
   const page = await context.newPage();
   try {
-    await page.route("**/data/assets/**", async (route) => {
+    await page.route(/\/data\/(?:assets|enhanced-exams)\//, async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       await route.continue();
     });

@@ -118,6 +118,18 @@ def choose_samples(images, limit):
 
 def write_comparison(output, report):
     rows = []
+    rejected = report.get("rejected", [])
+    review = ""
+    if rejected:
+        review = '<details><summary>Rejected for review: ' + str(len(rejected)) + '</summary><ul>'
+        for item in rejected:
+            original = f'original/{item["sha256"]}.png'
+            label = html.escape(item["references"][0])
+            if (output / original).is_file():
+                label = f'<a href="{original}">{label}</a>'
+            review += f'<li>{label}: {html.escape(item["reason"])}</li>'
+        review += "</ul></details>"
+    status = "complete" if report.get("completed") else "in progress"
     for item in report["images"]:
         figures = []
         versions = [("Original", item["original"], item["size"], None, False)]
@@ -136,7 +148,7 @@ section{{padding:24px 0;border-top:1px solid #ddd}}.versions{{display:grid;grid-
 figure{{min-width:0;margin:0;padding:12px;background:white;border:1px solid #ddd;border-radius:8px}}figcaption{{font-weight:600;margin-bottom:12px}}
 .canvas{{display:flex;align-items:center;justify-content:center;height:360px;min-height:0;overflow:hidden;background:white}}img{{display:block;width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;min-width:0;min-height:0}}
 @media(max-width:720px){{body{{padding:16px}}.versions{{grid-template-columns:1fr}}}}
-</style><main><h1>Menkyo Image Comparison</h1><p>{len(report["images"])} unique images &middot; pipeline {report["settings"]["pipeline_version"]} &middot; noise {report["noise"]} &middot; source files unchanged &middot; not deployed</p>{"".join(rows)}</main></html>"""
+</style><main><h1>Menkyo Image Comparison</h1><p>{len(report["images"])} accepted &middot; {len(rejected)} rejected &middot; {status} &middot; pipeline {report["settings"]["pipeline_version"]} &middot; noise {report["noise"]} &middot; source files unchanged &middot; not deployed</p>{review}{"".join(rows)}</main></html>"""
     (output / "index.html").write_text(page, encoding="utf-8")
     (output / "manifest.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
 
@@ -152,6 +164,7 @@ def main():
     parser.add_argument("--gpu", type=int, help="GPU index; -1 uses CPU; default is automatic")
     parser.add_argument("--max-edge", type=int, default=600, help="Skip originals larger than this (default: 600px)")
     parser.add_argument("--output", type=Path, default=ROOT / "output" / "upscale-preview")
+    parser.add_argument("--continue-on-error", action="store_true", help="Record failed images for review and process the rest")
     args = parser.parse_args()
     if args.limit < 1 or args.max_edge < 1:
         parser.error("--limit and --max-edge must be positive")
@@ -192,10 +205,11 @@ def main():
     report = {
         "engine": "waifu2x-ncnn-vulkan", "settings": settings, "noise": args.noise,
         "scales": scales, "unique_images": len(images), "eligible_images": len(eligible),
-        "images": [], "skipped": skipped,
+        "selected_images": len(selected), "completed": False,
+        "images": [], "skipped": skipped, "rejected": [],
     }
     batch_start = time.perf_counter()
-    for index, item in enumerate(selected, 1):
+    def process_image(item, index):
         source = SOURCE / item["path"]
         original = output / "original" / f'{item["sha256"]}.png'
         with Image.open(source) as image:
@@ -236,7 +250,7 @@ def main():
                 quality = validate_upscale(rgba, image, scale)
                 size = image.size
             if digest(source) != item["sha256"]:
-                raise RuntimeError(f"Source image changed while processing: {source}")
+                raise AssertionError(f"Source image changed while processing: {source}")
             entry["outputs"][str(scale)] = {
                 "path": destination.relative_to(output).as_posix(), "size": size,
                 "seconds": round(seconds, 4), "cached": cached,
@@ -244,11 +258,23 @@ def main():
                 "quality": quality,
             }
             print(f"[{index}/{len(selected)}] {item['references'][0]} {scale}x: {size[0]}x{size[1]}, {seconds:.3f}s{' (cached)' if cached else ''}", flush=True)
-        report["images"].append(entry)
+        return entry
+
+    for index, item in enumerate(selected, 1):
+        try:
+            report["images"].append(process_image(item, index))
+        except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as error:
+            if not args.continue_on_error:
+                raise
+            report["rejected"].append({**item, "reason": str(error)})
+            print(f"[{index}/{len(selected)}] REJECTED {item['references'][0]}: {error}", flush=True)
         report["seconds"] = round(time.perf_counter() - batch_start, 3)
         write_comparison(output, report)
+    report["completed"] = True
+    write_comparison(output, report)
     print(f"Comparison: {output / 'index.html'}", flush=True)
     print(f"Batch: {report['seconds']}s. Original data unchanged.", flush=True)
+    print(f"Accepted: {len(report['images'])}; rejected for review: {len(report['rejected'])}.", flush=True)
 
 
 if __name__ == "__main__":

@@ -14,6 +14,9 @@
     "test:controls": "npm run build && node scripts/check-ui.mjs --controls",
     "test:locations": "npm run build && node scripts/check-ui.mjs --locations",
     "test:upscale-preview": "node scripts/check-upscale-preview.mjs",
+    "backup:images": "node scripts/backup-image-data.mjs",
+    "promote:images": "node scripts/promote-upscaled-images.mjs",
+    "test:enhanced-data": "node scripts/check-enhanced-data.mjs",
     "audit:questions": "node scripts/audit-questions.mjs"
   },
   "devDependencies": {

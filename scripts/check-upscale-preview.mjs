@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -7,8 +7,13 @@ import { chromium } from "playwright";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const output = path.resolve(root, process.argv[2] || "output/upscale-preview");
-const report = JSON.parse(await readFile(path.join(output, "manifest.json"), "utf8"));
+const manifestBytes = await readFile(path.join(output, "manifest.json"));
+const report = JSON.parse(manifestBytes.toString("utf8"));
 assert.ok(report.images.length > 0);
+if (report.selected_images !== undefined) {
+  assert.equal(report.completed, true, "Batch is not complete");
+  assert.equal(report.images.length + (report.rejected?.length || 0), report.selected_images);
+}
 const hashes = new Set();
 const pixelInputs = [];
 const mime = { ".gif": "image/gif", ".jpg": "image/jpeg", ".jpeg": "image/jpeg", ".png": "image/png" };
@@ -25,39 +30,40 @@ for (const item of report.images) {
     assert.equal(result.quality?.alpha_max_error, 0, "Missing alpha/content validation");
     pixelInputs.push({
       name: `${item.references[0]}/${scale}x`,
-      source: `data:${mime[path.extname(item.path).toLowerCase()]};base64,${source.toString("base64")}`,
-      target: `data:image/png;base64,${bytes.toString("base64")}`,
+      sourcePath: path.join(root, "data/karimen-honmen-vi", item.path),
+      targetPath: path.join(output, result.path),
     });
   }
 }
-const browser = await chromium.launch();
-try {
-  const analysisPage = await browser.newPage();
-  const pixelChecks = await analysisPage.evaluate(async (inputs) => {
-    function pixels(image, white) {
+async function inspectPixels(inputs) {
+    function pixels(image, white, width, height) {
       const canvas = document.createElement("canvas");
-      canvas.width = canvas.height = 128;
+      canvas.width = width;
+      canvas.height = height;
       const context = canvas.getContext("2d", { willReadFrequently: true });
       if (white) {
         context.fillStyle = "white";
-        context.fillRect(0, 0, 128, 128);
+        context.fillRect(0, 0, width, height);
       }
       context.imageSmoothingQuality = "high";
-      context.drawImage(image, 0, 0, 128, 128);
-      return context.getImageData(0, 0, 128, 128).data;
+      context.drawImage(image, 0, 0, width, height);
+      return context.getImageData(0, 0, width, height).data;
     }
-    function errors(left, right, alpha) {
-      const totals = Array(64).fill(0);
+    function errors(left, right, alpha, width, height) {
+      const grid = Math.min(8, width, height);
+      const totals = Array(grid * grid).fill(0);
+      const samples = Array(grid * grid).fill(0);
       const channels = alpha ? [3] : [0, 1, 2];
-      for (let y = 0; y < 128; y++) {
-        for (let x = 0; x < 128; x++) {
-          const tile = Math.floor(y / 16) * 8 + Math.floor(x / 16);
-          const offset = (y * 128 + x) * 4;
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const tile = Math.floor(y * grid / height) * grid + Math.floor(x * grid / width);
+          const offset = (y * width + x) * 4;
           for (const channel of channels) totals[tile] += Math.abs(left[offset + channel] - right[offset + channel]);
+          samples[tile] += channels.length;
         }
       }
-      const means = totals.map((sum) => sum / (256 * channels.length));
-      return { mean: means.reduce((sum, value) => sum + value, 0) / 64, maximum: Math.max(...means) };
+      const means = totals.map((sum, index) => sum / samples[index]);
+      return { mean: totals.reduce((sum, value) => sum + value, 0) / samples.reduce((sum, value) => sum + value, 0), maximum: Math.max(...means) };
     }
     const checks = [];
     for (const input of inputs) {
@@ -68,16 +74,33 @@ try {
       target.src = input.target;
       await source.decode();
       await target.decode();
-      checks.push({ name: input.name, rgb: errors(pixels(source, true), pixels(target, true), false), alpha: errors(pixels(source, false), pixels(target, false), true) });
+      // Never enlarge the reference during validation; that measures interpolation.
+      const factor = Math.min(1, 128 / Math.max(source.naturalWidth, source.naturalHeight));
+      const width = Math.max(1, Math.round(source.naturalWidth * factor));
+      const height = Math.max(1, Math.round(source.naturalHeight * factor));
+      checks.push({ name: input.name, rgb: errors(pixels(source, true, width, height), pixels(target, true, width, height), false, width, height), alpha: errors(pixels(source, false, width, height), pixels(target, false, width, height), true, width, height) });
     }
     return checks;
-  }, pixelInputs);
-  for (const check of pixelChecks) {
-    assert.ok(check.rgb.mean <= 20 && check.rgb.maximum <= 45, `${check.name}: color/content lost in a region (${JSON.stringify(check.rgb)})`);
-    assert.ok(check.alpha.mean <= 10 && check.alpha.maximum <= 20, `${check.name}: content made transparent (${JSON.stringify(check.alpha)})`);
+}
+const browser = await chromium.launch();
+try {
+  const analysisPage = await browser.newPage();
+  const pixelChecks = [];
+  for (let offset = 0; offset < pixelInputs.length; offset += 16) {
+    const inputs = [];
+    for (const item of pixelInputs.slice(offset, offset + 16)) {
+      const source = await readFile(item.sourcePath);
+      const target = await readFile(item.targetPath);
+      inputs.push({ name: item.name, source: `data:${mime[path.extname(item.sourcePath).toLowerCase()]};base64,${source.toString("base64")}`, target: `data:image/png;base64,${target.toString("base64")}` });
+    }
+    const checks = await analysisPage.evaluate(inspectPixels, inputs);
+    pixelChecks.push(...checks);
   }
+  const failures = pixelChecks.filter((check) => check.rgb.mean > 20 || check.rgb.maximum > 45 || check.alpha.mean > 10 || check.alpha.maximum > 20);
+  await writeFile(path.join(output, "browser-review.json"), JSON.stringify({ checked: pixelChecks.length, failures, checks: pixelChecks }, null, 2), "utf8");
+  assert.equal(failures.length, 0, `Outputs held for review: ${JSON.stringify(failures)}`);
   await analysisPage.close();
-  console.log(`OK: ${pixelChecks.length} outputs checked for visible content and opacity on an 8x8 region grid`);
+  console.log(`OK: ${pixelInputs.length} outputs checked for visible content and opacity on an 8x8 region grid`);
   for (const width of [390, 1440]) {
     const page = await browser.newPage({ viewport: { width, height: 960 } });
     const errors = [];
@@ -115,3 +138,10 @@ try {
   await browser.close();
 }
 console.log(`Passed: ${report.images.length} unique sources unchanged, correct dimensions and hashes.`);
+await writeFile(path.join(output, "validation.json"), JSON.stringify({
+  verified: true, verifiedAt: new Date().toISOString(),
+  manifestSha256: createHash("sha256").update(manifestBytes).digest("hex"),
+  checkerSha256: createHash("sha256").update(await readFile(fileURLToPath(import.meta.url))).digest("hex"),
+  acceptedImages: report.images.length, verifiedOutputs: pixelInputs.length,
+  pixelGrid: 8, viewports: [390, 1440],
+}, null, 2), "utf8");

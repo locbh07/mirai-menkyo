@@ -121,8 +121,39 @@ scene, plus samples from Karimen, Honmen and Gentsuki.
 After visual review, generate the eligible full batch with:
 
 ```powershell
-.\.venv-images\Scripts\python.exe scripts/upscale-exam-images.py --all --scales 4
+npm run backup:images
+.\.venv-images\Scripts\python.exe scripts/upscale-exam-images.py --all --scales 4 --continue-on-error --output output/upscale-batch
+node scripts/check-upscale-preview.mjs output/upscale-batch
 ```
+
+Backups are timestamped under `output/backups` and include all original images
+and JSON data. The backup command verifies every copied SHA-256 against the
+source, checks that the source stayed unchanged during copying, and records
+`backup-manifest.json`. Existing backups are never overwritten.
+The full batch keeps originals untouched and writes accepted outputs separately.
+`--continue-on-error` records failed images in `manifest.json` and the comparison
+page, without accepting bad outputs. Changes to a source during processing remain
+fatal. The manifest records whether the full run completed and selected/accepted/
+rejected counts. Review rejected images before considering production replacement.
+
+## Enhanced Images On The Website
+
+After the completed batch passes `check-upscale-preview.mjs`, promote it with
+`npm run promote:images`, then run `npm run build` and `npm run test:enhanced-data`.
+Promotion requires the checker's matching validation stamp and rechecks every
+source/output hash before creating `data/enhanced-exam-images`. Only accepted
+outputs are promoted; rejected sources keep their original image references.
+
+The build matches originals by SHA-256, so duplicate files across exams reuse one
+enhanced PNG. Original exported JSON and images remain unchanged. PNG filenames
+use output-content hashes for immutable caching. Exam JSON paths in the manifest
+include the image-pack version to avoid stale image references; legacy exam JSON
+filenames remain available. The frontend, all six languages and grading data use
+the same image pack, without runtime upscaling or API calls.
+
+To build with original images instead, set `MENKYO_ORIGINAL_IMAGES=1` for the build.
+This does not delete originals or the enhanced pack. `test:enhanced-data` verifies
+both modes, unchanged text/answers/explanations and all image-path mappings.
 
 Images with an original edge above 600px are excluded by default; override with
 `--max-edge`. Use `--tool` for another executable location or `--gpu -1` for CPU.

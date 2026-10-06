@@ -1,4 +1,5 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { cp, mkdir, readFile, rm, writeFile, copyFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,7 +8,39 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const sourceRoot = path.join(root, "data", "karimen-honmen-vi");
 const distData = path.join(root, "dist", "data");
 
-function slimQuestion(question) {
+function questionImagePaths(question) {
+  return question.image_paths || question.image_assets?.map((asset) => asset.local_path).filter(Boolean) || [];
+}
+
+async function enhancedImageOverrides(questions) {
+  const packRoot = path.join(root, "data/enhanced-exam-images");
+  const packManifest = path.join(packRoot, "manifest.json");
+  const overrides = new Map();
+  if (!existsSync(packManifest) || process.env.MENKYO_ORIGINAL_IMAGES === "1") return { overrides, version: null };
+  const manifestBytes = await readFile(packManifest);
+  const pack = JSON.parse(manifestBytes.toString("utf8"));
+  if (pack.version !== 1 || pack.scale !== 4 || pack.pipelineVersion !== 2) throw new Error("Unsupported enhanced image pack");
+  const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+  const replacements = new Map();
+  await mkdir(path.join(distData, "enhanced-exams"), { recursive: true });
+  for (const item of pack.images) {
+    if (!/^[a-f0-9]{64}$/.test(item.sourceSha256) || !/^[a-f0-9]{64}$/.test(item.outputSha256) || item.file !== `${item.outputSha256}.png`) throw new Error("Invalid enhanced image identity");
+    const bytes = await readFile(path.join(packRoot, item.file));
+    if (sha256(bytes) !== item.outputSha256 || bytes.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a" || bytes.readUInt32BE(16) !== item.originalSize[0] * 4 || bytes.readUInt32BE(20) !== item.originalSize[1] * 4) throw new Error(`Invalid enhanced image: ${item.file}`);
+    replacements.set(item.sourceSha256, `enhanced-exams/${item.file}`);
+    await copyFile(path.join(packRoot, item.file), path.join(distData, "enhanced-exams", item.file));
+  }
+  for (const original of new Set(questions.flatMap(questionImagePaths))) {
+    const sourceFile = path.resolve(sourceRoot, original);
+    if (!sourceFile.startsWith(sourceRoot + path.sep)) throw new Error(`Invalid source image path: ${original}`);
+    const replacement = replacements.get(sha256(await readFile(sourceFile)));
+    if (replacement) overrides.set(original, replacement);
+  }
+  console.log(`Enhanced images: ${overrides.size} original paths mapped to ${pack.images.length} verified sources`);
+  return { overrides, version: sha256(manifestBytes).slice(0, 12) };
+}
+
+function slimQuestion(question, imageOverrides) {
   return {
     id: question.source_id,
     number: question.question_number,
@@ -16,7 +49,7 @@ function slimQuestion(question) {
     correct: question.correct,
     explanation: question.explanation?.vi || "",
     explanationAll: question.explanation || {},
-    imagePaths: question.image_paths || question.image_assets?.map((asset) => asset.local_path).filter(Boolean) || [],
+    imagePaths: questionImagePaths(question).map((imagePath) => imageOverrides.get(imagePath) || imagePath),
     choices: (question.choices || []).map((choice) => ({
       number: choice.number,
       text: choice.text?.vi || choice.text?.ja || choice.text?.en || "",
@@ -36,6 +69,7 @@ export async function prepareData() {
 
   const all = JSON.parse(await readFile(path.join(sourceRoot, "all.json"), "utf8"));
   const questions = all.exam_sets.flatMap((exam) => exam.questions || []);
+  const { overrides: imageOverrides, version: imageVersion } = await enhancedImageOverrides(questions);
   const entries = questions.flatMap((question) => [question, ...(question.choices || [])]);
   const locales = Object.keys(entries[0]?.text || {}).filter((locale) =>
     entries.every((entry) => typeof entry.text?.[locale] === "string" && entry.text[locale].trim()),
@@ -46,6 +80,7 @@ export async function prepareData() {
     locales,
     knowledgeLocale: all.metadata?.locale || "vi",
     generatedAt: all.metadata?.scraped_at,
+    imageVersion,
     exams: [],
     stats: {
       examSets: all.exam_sets.length,
@@ -58,7 +93,7 @@ export async function prepareData() {
   for (const examSet of all.exam_sets) {
     const examDir = path.join(distData, "exams", examSet.exam_type);
     await mkdir(examDir, { recursive: true });
-    const questions = (examSet.questions || []).map(slimQuestion);
+    const questions = (examSet.questions || []).map((question) => slimQuestion(question, imageOverrides));
     const examPayload = {
       id: examSet.source_id,
       type: examSet.exam_type,
@@ -68,8 +103,11 @@ export async function prepareData() {
       passingScore: 90,
       questions,
     };
-    const file = `exam-${examSet.exam_number}.json`;
-    await writeFile(path.join(examDir, file), JSON.stringify(examPayload, null, 2), "utf8");
+    const legacyFile = `exam-${examSet.exam_number}.json`;
+    const file = imageVersion ? `exam-${examSet.exam_number}-${imageVersion}.json` : legacyFile;
+    const examJson = JSON.stringify(examPayload, null, 2);
+    await writeFile(path.join(examDir, file), examJson, "utf8");
+    if (file !== legacyFile) await writeFile(path.join(examDir, legacyFile), examJson, "utf8");
     manifest.exams.push({
       id: examSet.source_id,
       type: examSet.exam_type,

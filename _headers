@@ -4,6 +4,9 @@
 /data/assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+/data/enhanced-exams/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
