@@ -69,6 +69,11 @@ function renderShell(content) {
             ${tabButton("locations", "Địa điểm thi")}
           </nav>
           <div class="top-actions">
+            <select class="language-select" aria-label="Ngôn ngữ">
+              <option value="vi">VN</option>
+              <option value="ja" disabled>JP</option>
+              <option value="en" disabled>EN</option>
+            </select>
             <span class="premium-chip">Premium sắp mở</span>
           </div>
         </div>
@@ -89,8 +94,8 @@ function renderExamHome() {
   return `
     <section class="page-head">
       <div>
-        <p class="page-kicker">Bằng lái Nhật Bản</p>
-        <h1 class="page-title">Luyện đề sáng rõ, vào bài thật nhanh.</h1>
+        <p class="page-kicker">Hệ thống thi bằng lái Mirai Menkyo</p>
+        <h1 class="page-title">Luyện thi bằng lái Nhật Bản</h1>
         <p class="page-copy">
           Bộ đề Karimen, Honmen và xe gắn máy bằng tiếng Việt, kèm hình ảnh, giải thích và dữ liệu địa điểm thi.
         </p>
