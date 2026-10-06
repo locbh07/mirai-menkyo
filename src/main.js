@@ -60,7 +60,7 @@ function renderShell(content) {
             <div class="brand-mark">M</div>
             <div>
               <div class="brand-name">Mirai Menkyo</div>
-              <div class="brand-subtitle">Luyện thi bằng lái Nhật Bản</div>
+              <div class="brand-subtitle">Karimen · Honmen · Gentsuki</div>
             </div>
           </div>
           <nav class="nav-tabs" aria-label="Điều hướng">
@@ -89,9 +89,10 @@ function renderExamHome() {
   return `
     <section class="page-head">
       <div>
-        <h1 class="page-title">Luyện thi thật gọn, nhớ thật chắc.</h1>
+        <p class="page-kicker">Bằng lái Nhật Bản</p>
+        <h1 class="page-title">Luyện đề sáng rõ, vào bài thật nhanh.</h1>
         <p class="page-copy">
-          Chọn một đề Karimen, Honmen hoặc xe gắn máy. Làm bài, chấm điểm, xem giải thích và luyện lại những câu sai ngay trên trình duyệt.
+          Bộ đề Karimen, Honmen và xe gắn máy bằng tiếng Việt, kèm hình ảnh, giải thích và dữ liệu địa điểm thi.
         </p>
       </div>
       <div class="stats">
@@ -111,10 +112,14 @@ function renderExamHome() {
       ${exams
         .map(
           (exam) => `
-            <button class="exam-card" data-start-exam="${exam.id}">
+            <button class="exam-card ${exam.type}" data-start-exam="${exam.id}">
+              <span class="exam-type">${escapeHtml(examTypeLabels[exam.type])}</span>
               <span class="exam-title">${escapeHtml(exam.title)}</span>
-              <span class="exam-meta">${escapeHtml(examTypeLabels[exam.type])} · ${exam.questionCount} câu</span>
-              <span class="score-pill">${savedScore(exam.id)}</span>
+              <span class="exam-meta">${exam.questionCount} câu · ${exam.type === "honmen" ? "50 phút" : "30 phút"}</span>
+              <span class="card-bottom">
+                <span class="score-pill">${savedScore(exam.id)}</span>
+                <span class="start-pill">Bắt đầu</span>
+              </span>
             </button>
           `,
         )
@@ -349,8 +354,9 @@ function renderKnowledge() {
   return `
     <section class="page-head">
       <div>
+        <p class="page-kicker">Ôn tập nền tảng</p>
         <h1 class="page-title">Kiến thức cơ bản</h1>
-        <p class="page-copy">Ôn nhanh biển báo, tốc độ, quy định dừng đỗ, khoảng cách dừng xe và các chủ đề hay gặp trong bài thi.</p>
+        <p class="page-copy">Biển báo, tốc độ, quy định dừng đỗ, khoảng cách dừng xe và các chủ đề hay gặp trong bài thi.</p>
       </div>
     </section>
     <section class="article-grid">
@@ -439,6 +445,7 @@ function renderLocations() {
   return `
     <section class="page-head">
       <div>
+        <p class="page-kicker">Trung tâm sát hạch</p>
         <h1 class="page-title">Địa điểm thi</h1>
         <p class="page-copy">Tra nhanh trung tâm thi theo tỉnh, tên trung tâm hoặc địa chỉ romaji.</p>
       </div>
