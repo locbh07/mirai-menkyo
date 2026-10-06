@@ -7,8 +7,13 @@ export const languages = {
   pt: "Português",
 };
 
+export const languageFlags = {
+  vi: "vn", ja: "jp", en: "gb", "zh-Hans": "cn", "zh-Hant": "tw", pt: "pt",
+};
+
 const messages = {
   vi: {
+    karimenDescription: "Bằng tạm thời", honmenDescription: "Bằng chính thức", gentsukiDescription: "Bằng xe gắn máy",
     navigation: "Điều hướng", language: "Ngôn ngữ", exams: "Đề thi", knowledge: "Kiến thức", locations: "Địa điểm thi",
     premium: "Premium sắp mở", all: "Tất cả", gentsuki: "Xe gắn máy", loading: "Đang tải dữ liệu...", loadError: "Không tải được dữ liệu",
     homeKicker: "Mirai Menkyo", homeTitle: "Luyện thi bằng lái Nhật Bản",
@@ -24,6 +29,7 @@ const messages = {
     search: "Tìm tỉnh, trung tâm, địa chỉ...", empty: "Không có kết quả phù hợp.", maps: "Mở Google Maps",
   },
   ja: {
+    karimenDescription: "仮免許", honmenDescription: "本免許", gentsukiDescription: "原付免許",
     navigation: "ナビゲーション", language: "言語", exams: "模擬試験", knowledge: "基礎知識", locations: "試験場",
     premium: "Premium 近日公開", all: "すべて", gentsuki: "原付", loading: "読み込み中...", loadError: "データを読み込めません",
     homeKicker: "Mirai Menkyo", homeTitle: "日本の運転免許 学科試験", homeCopy: "仮免・本免・原付", sets: "試験セット", questions: "問題", lessons: "学習記事",
@@ -36,6 +42,7 @@ const messages = {
     locationsKicker: "運転免許試験場", locationsCopy: "都道府県、試験場名、住所で検索。", search: "都道府県、試験場、住所を検索...", empty: "該当する結果がありません。", maps: "Google Mapsで開く",
   },
   en: {
+    karimenDescription: "Learner's permit", honmenDescription: "Full driving license", gentsukiDescription: "Moped license",
     navigation: "Navigation", language: "Language", exams: "Practice Tests", knowledge: "Knowledge", locations: "Test Centers",
     premium: "Premium coming soon", all: "All", gentsuki: "Moped", loading: "Loading...", loadError: "Unable to load data",
     homeKicker: "Mirai Menkyo", homeTitle: "Japanese Driving Theory Tests", homeCopy: "Karimen, Honmen and moped", sets: "test sets", questions: "questions", lessons: "articles",
@@ -48,6 +55,7 @@ const messages = {
     locationsKicker: "Driving test centers", locationsCopy: "Search by prefecture, center name or address.", search: "Search prefecture, center, address...", empty: "No matching results.", maps: "Open Google Maps",
   },
   "zh-Hans": {
+    karimenDescription: "临时驾照", honmenDescription: "正式驾照", gentsukiDescription: "轻便摩托车驾照",
     navigation: "导航", language: "语言", exams: "模拟考试", knowledge: "基础知识", locations: "考试地点",
     premium: "Premium 即将推出", all: "全部", gentsuki: "轻便摩托车", loading: "正在加载...", loadError: "无法加载数据",
     homeKicker: "Mirai Menkyo", homeTitle: "日本驾照理论考试练习", homeCopy: "临时驾照、正式驾照和轻便摩托车", sets: "套试题", questions: "道题目", lessons: "篇文章",
@@ -60,6 +68,7 @@ const messages = {
     locationsKicker: "驾驶考试中心", locationsCopy: "按都道府县、考试中心名称或地址搜索。", search: "搜索都道府县、考试中心、地址...", empty: "没有匹配的结果。", maps: "打开 Google Maps",
   },
   "zh-Hant": {
+    karimenDescription: "臨時駕照", honmenDescription: "正式駕照", gentsukiDescription: "輕便機車駕照",
     navigation: "導覽", language: "語言", exams: "模擬考試", knowledge: "基礎知識", locations: "考試地點",
     premium: "Premium 即將推出", all: "全部", gentsuki: "輕便機車", loading: "正在載入...", loadError: "無法載入資料",
     homeKicker: "Mirai Menkyo", homeTitle: "日本駕照理論考試練習", homeCopy: "臨時駕照、正式駕照和輕便機車", sets: "套試題", questions: "道題目", lessons: "篇文章",
@@ -72,6 +81,7 @@ const messages = {
     locationsKicker: "駕駛考試中心", locationsCopy: "按都道府縣、考試中心名稱或地址搜尋。", search: "搜尋都道府縣、考試中心、地址...", empty: "沒有符合的結果。", maps: "開啟 Google Maps",
   },
   pt: {
+    karimenDescription: "Licença provisória", honmenDescription: "Habilitação definitiva", gentsukiDescription: "Licença para ciclomotor",
     navigation: "Navegação", language: "Idioma", exams: "Simulados", knowledge: "Conhecimentos", locations: "Locais de prova",
     premium: "Premium em breve", all: "Todos", gentsuki: "Ciclomotor", loading: "Carregando...", loadError: "Não foi possível carregar os dados",
     homeKicker: "Mirai Menkyo", homeTitle: "Prova Teórica de Habilitação no Japão", homeCopy: "Karimen, Honmen e ciclomotor", sets: "simulados", questions: "questões", lessons: "artigos",

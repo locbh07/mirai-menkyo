@@ -1,4 +1,4 @@
-import { languages, translate } from "./i18n.js";
+import { languages, languageFlags, translate } from "./i18n.js";
 
 const storedLocale = localStorage.getItem("mirai-menkyo-locale");
 const state = {
@@ -6,7 +6,7 @@ const state = {
   questionNavOpen: window.matchMedia("(min-width: 901px)").matches,
   tab: "exams",
   manifest: null,
-  examsByType: "all",
+  examHomeScroll: 0,
   currentExam: null,
   currentQuestionIndex: 0,
   answers: {},
@@ -20,7 +20,7 @@ const state = {
   search: "",
 };
 
-const examTypes = ["all", "karimen", "honmen", "gentsuki"];
+const examTypes = ["karimen", "honmen", "gentsuki"];
 
 function t(key, values) {
   return translate(state.locale, key, values);
@@ -38,6 +38,29 @@ function examTitle(exam) {
 
 function localizedText(item, field = "text") {
   return item[`${field}All`]?.[state.locale] || item[field] || "";
+}
+
+function languageFlag(locale) {
+  return `<img class="language-flag" src="assets/flags/${languageFlags[locale]}.png" width="24" height="16" alt="" aria-hidden="true" />`;
+}
+
+function renderLanguageMenu() {
+  const locales = state.manifest?.locales || [state.locale];
+  return `
+    <details class="language-menu">
+      <summary class="language-trigger" aria-label="${t("language")}: ${escapeAttribute(languages[state.locale])}">
+        ${languageFlag(state.locale)}<span>${escapeHtml(languages[state.locale])}</span>
+      </summary>
+      <div class="language-options" role="group" aria-label="${t("language")}">
+        ${locales.map((locale) => `
+          <button class="language-option" data-locale="${escapeAttribute(locale)}" lang="${escapeAttribute(locale)}" aria-pressed="${locale === state.locale}">
+            ${languageFlag(locale)}<span>${escapeHtml(languages[locale] || locale)}</span>
+            <span class="language-choice" aria-hidden="true"></span>
+          </button>
+        `).join("")}
+      </div>
+    </details>
+  `;
 }
 
 const app = document.querySelector("#app");
@@ -99,9 +122,7 @@ function renderShell(content) {
             ${tabButton("locations", t("locations"))}
           </nav>
           <div class="top-actions">
-            <select class="language-select" aria-label="${t("language")}">
-              ${(state.manifest?.locales || [state.locale]).map((locale) => `<option value="${escapeAttribute(locale)}" ${locale === state.locale ? "selected" : ""}>${escapeHtml(languages[locale] || locale)}</option>`).join("")}
-            </select>
+            ${renderLanguageMenu()}
             <span class="premium-chip">${t("premium")}</span>
           </div>
         </div>
@@ -117,7 +138,6 @@ function tabButton(tab, label) {
 }
 
 function renderExamHome() {
-  const exams = filteredExams();
   const stats = state.manifest.stats;
   return `
     <section class="page-head">
@@ -134,30 +154,40 @@ function renderExamHome() {
         ${stat(stats.knowledgeArticles, t("lessons"))}
       </div>
     </section>
-    <section class="toolbar">
-      <div class="segmented">
-        ${examTypes
-          .map((type) => `<button class="segment ${state.examsByType === type ? "active" : ""}" data-exam-filter="${type}">${examTypeLabel(type)}</button>`)
-          .join("")}
+    <nav class="exam-shortcuts" aria-label="${t("exams")}">
+      ${examTypes.map((type) => `<a class="exam-shortcut ${type}" href="#exams-${type}">${escapeHtml(examTypeLabel(type))}<span>${state.manifest.exams.filter((exam) => exam.type === type).length}</span></a>`).join("")}
+    </nav>
+    ${examTypes.map(renderExamSection).join("")}
+  `;
+}
+
+function renderExamSection(type) {
+  const exams = state.manifest.exams.filter((exam) => exam.type === type);
+  return `
+    <section class="exam-section ${type}" id="exams-${type}" data-exam-type="${type}" aria-labelledby="heading-${type}">
+      <div class="exam-section-head">
+        <div>
+          <h2 id="heading-${type}">${escapeHtml(examTypeLabel(type))}</h2>
+          <p>${t(`${type}Description`)}</p>
+        </div>
+        <span class="exam-section-count">${exams.length} ${t("sets")}</span>
       </div>
+      <div class="exam-grid">${exams.map(renderExamCard).join("")}</div>
     </section>
-    <section class="exam-grid">
-      ${exams
-        .map(
-          (exam) => `
-            <button class="exam-card ${exam.type}" data-start-exam="${exam.id}">
-              <span class="exam-type">${escapeHtml(examTypeLabel(exam.type))}</span>
-              <span class="exam-title">${escapeHtml(examTitle(exam))}</span>
-              <span class="exam-meta">${t("examMeta", { count: exam.questionCount, minutes: exam.type === "honmen" ? 50 : 30 })}</span>
-              <span class="card-bottom">
-                <span class="score-pill">${escapeHtml(savedScore(exam.id))}</span>
-                <span class="start-pill">${t("start")}</span>
-              </span>
-            </button>
-          `,
-        )
-        .join("")}
-    </section>
+  `;
+}
+
+function renderExamCard(exam) {
+  return `
+    <button class="exam-card ${exam.type}" data-start-exam="${exam.id}">
+      <span class="exam-type">${escapeHtml(examTypeLabel(exam.type))}</span>
+      <span class="exam-title">${escapeHtml(examTitle(exam))}</span>
+      <span class="exam-meta">${t("examMeta", { count: exam.questionCount, minutes: exam.type === "honmen" ? 50 : 30 })}</span>
+      <span class="card-bottom">
+        <span class="score-pill">${escapeHtml(savedScore(exam.id))}</span>
+        <span class="start-pill">${t("start")}</span>
+      </span>
+    </button>
   `;
 }
 
@@ -165,14 +195,10 @@ function stat(value, label) {
   return `<div class="stat"><span class="stat-value">${value}</span><span class="stat-label">${label}</span></div>`;
 }
 
-function filteredExams() {
-  const exams = state.manifest?.exams || [];
-  return exams.filter((exam) => state.examsByType === "all" || exam.type === state.examsByType);
-}
-
 async function startExam(id) {
   const item = state.manifest.exams.find((exam) => exam.id === id);
   if (!item) return;
+  state.examHomeScroll = window.scrollY;
   state.currentExam = await fetchJson(item.path);
   state.questionNavOpen = window.matchMedia("(min-width: 901px)").matches;
   state.currentQuestionIndex = 0;
@@ -183,6 +209,7 @@ async function startExam(id) {
   state.tab = "practice";
   startTimer();
   render();
+  window.scrollTo(0, 0);
 }
 
 function renderPractice() {
@@ -512,11 +539,35 @@ function renderLocation(item) {
 }
 
 function bindEvents() {
-  document.querySelector(".language-select")?.addEventListener("change", (event) => {
-    state.locale = event.target.value;
-    localStorage.setItem("mirai-menkyo-locale", state.locale);
-    render();
+  const languageMenu = document.querySelector(".language-menu");
+  document.querySelectorAll("[data-locale]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.locale = button.dataset.locale;
+      localStorage.setItem("mirai-menkyo-locale", state.locale);
+      render();
+      document.querySelector(".language-trigger")?.focus({ preventScroll: true });
+    });
   });
+
+  languageMenu?.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      languageMenu.open = false;
+      languageMenu.querySelector("summary").focus({ preventScroll: true });
+    }
+    if (!["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    languageMenu.open = true;
+    const options = [...languageMenu.querySelectorAll("[data-locale]")];
+    const current = options.indexOf(document.activeElement);
+    let index = event.key === "ArrowUp" ? (current <= 0 ? options.length - 1 : current - 1) : (current + 1) % options.length;
+    if (event.key === "Home") index = 0;
+    if (event.key === "End") index = options.length - 1;
+    options[index]?.focus({ preventScroll: true });
+  });
+
+  app.onclick = (event) => {
+    if (languageMenu?.open && !languageMenu.contains(event.target)) languageMenu.open = false;
+  };
 
   document.querySelector(".question-list")?.addEventListener("toggle", (event) => {
     if (event.target.isConnected) state.questionNavOpen = event.target.open;
@@ -524,16 +575,11 @@ function bindEvents() {
 
   document.querySelectorAll("[data-tab]").forEach((button) => {
     button.addEventListener("click", () => {
+      const restoreHome = state.tab === "practice" && button.dataset.tab === "exams";
       state.tab = button.dataset.tab;
       state.currentArticle = null;
       render();
-    });
-  });
-
-  document.querySelectorAll("[data-exam-filter]").forEach((button) => {
-    button.addEventListener("click", () => {
-      state.examsByType = button.dataset.examFilter;
-      render();
+      window.scrollTo(0, restoreHome ? state.examHomeScroll : 0);
     });
   });
 
@@ -570,6 +616,7 @@ function bindEvents() {
   document.querySelector("[data-back-exams]")?.addEventListener("click", () => {
     state.tab = "exams";
     render();
+    window.scrollTo(0, state.examHomeScroll);
   });
 
   document.querySelectorAll("[data-open-article]").forEach((button) => {

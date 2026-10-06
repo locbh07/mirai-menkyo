@@ -1,0 +1,1651 @@
+[
+  {
+    "source_id": "vi-test-location-1",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "北海道",
+      "romaji": "Hokkaido"
+    },
+    "center": {
+      "ja": "札幌運転免許試験場",
+      "romaji": "Sapporo Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "札幌市手稲区曙5条4-1-1",
+      "romaji": "Sapporo-shi Teine-ku Akebono 5-jo 4-1-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9C%AD%E5%B9%8C%E5%B8%82%E6%89%8B%E7%A8%B2%E5%8C%BA%E6%9B%995%E6%9D%A14-1-1"
+  },
+  {
+    "source_id": "vi-test-location-2",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "北海道",
+      "romaji": "Hokkaido"
+    },
+    "center": {
+      "ja": "函館運転免許試験場",
+      "romaji": "Hakodate Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "函館市石川町149-23",
+      "romaji": "Hakodate-shi Ishikawa-cho 149-23"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%87%BD%E9%A4%A8%E5%B8%82%E7%9F%B3%E5%B7%9D%E7%94%BA149-23"
+  },
+  {
+    "source_id": "vi-test-location-3",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "北海道",
+      "romaji": "Hokkaido"
+    },
+    "center": {
+      "ja": "旭川運転免許試験場",
+      "romaji": "Asahikawa Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "旭川市近文町17-2699-5",
+      "romaji": "Asahikawa-shi Chikabumi-cho 17-2699-5"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%97%AD%E5%B7%9D%E5%B8%82%E8%BF%91%E6%96%87%E7%94%BA17-2699-5"
+  },
+  {
+    "source_id": "vi-test-location-4",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "北海道",
+      "romaji": "Hokkaido"
+    },
+    "center": {
+      "ja": "釧路運転免許試験場",
+      "romaji": "Kushiro Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "釧路市大楽毛北1-15-8",
+      "romaji": "Kushiro-shi Orakumo Kita 1-15-8"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%87%A7%E8%B7%AF%E5%B8%82%E5%A4%A7%E6%A5%BD%E6%AF%9B%E5%8C%971-15-8"
+  },
+  {
+    "source_id": "vi-test-location-5",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "北海道",
+      "romaji": "Hokkaido"
+    },
+    "center": {
+      "ja": "帯広運転免許試験場",
+      "romaji": "Obihiro Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "帯広市西19条北2-1",
+      "romaji": "Obihiro-shi Nishi 19-jo Kita 2-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%B8%AF%E5%BA%83%E5%B8%82%E8%A5%BF19%E6%9D%A1%E5%8C%972-1"
+  },
+  {
+    "source_id": "vi-test-location-6",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "北海道",
+      "romaji": "Hokkaido"
+    },
+    "center": {
+      "ja": "北見運転免許試験場",
+      "romaji": "Kitami Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "北見市大正141-1",
+      "romaji": "Kitami-shi Taisho 141-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%8C%97%E8%A6%8B%E5%B8%82%E5%A4%A7%E6%AD%A3141-1"
+  },
+  {
+    "source_id": "vi-test-location-7",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "青森県",
+      "romaji": "Aomori-ken"
+    },
+    "center": {
+      "ja": "青森県運転免許センター",
+      "romaji": "Aomori-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "青森市三内丸山198-4",
+      "romaji": "Aomori-shi Sannai Maruyama 198-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%9D%92%E6%A3%AE%E5%B8%82%E4%B8%89%E5%86%85%E4%B8%B8%E5%B1%B1198-4"
+  },
+  {
+    "source_id": "vi-test-location-8",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "青森県",
+      "romaji": "Aomori-ken"
+    },
+    "center": {
+      "ja": "八戸自動車運転免許試験場",
+      "romaji": "Hachinohe Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "八戸市城下1-16-25",
+      "romaji": "Hachinohe-shi Shiroshita 1-16-25"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%85%AB%E6%88%B8%E5%B8%82%E5%9F%8E%E4%B8%8B1-16-25"
+  },
+  {
+    "source_id": "vi-test-location-9",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "青森県",
+      "romaji": "Aomori-ken"
+    },
+    "center": {
+      "ja": "弘前自動車運転免許試験場",
+      "romaji": "Hirosaki Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "弘前市大字大久保字西田38-2",
+      "romaji": "Hirosaki-shi Oaza Okubo Nishita 38-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%BC%98%E5%89%8D%E5%B8%82%E5%A4%A7%E5%AD%97%E5%A4%A7%E4%B9%85%E4%BF%9D%E5%AD%97%E8%A5%BF%E7%94%B038-2"
+  },
+  {
+    "source_id": "vi-test-location-10",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "青森県",
+      "romaji": "Aomori-ken"
+    },
+    "center": {
+      "ja": "むつ試験場",
+      "romaji": "Mutsu Shikenjo"
+    },
+    "address": {
+      "ja": "むつ市南町2-4",
+      "romaji": "Mutsu-shi Minami-machi 2-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E3%82%80%E3%81%A4%E5%B8%82%E5%8D%97%E7%94%BA2-4"
+  },
+  {
+    "source_id": "vi-test-location-11",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岩手県",
+      "romaji": "Iwate-ken"
+    },
+    "center": {
+      "ja": "盛岡運転免許センター",
+      "romaji": "Morioka Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "盛岡市盛岡駅西通1-7-1",
+      "romaji": "Morioka-shi Morioka-eki Nishi-dori 1-7-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%9B%9B%E5%B2%A1%E5%B8%82%E7%9B%9B%E5%B2%A1%E9%A7%85%E8%A5%BF%E9%80%9A1-7-1"
+  },
+  {
+    "source_id": "vi-test-location-12",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岩手県",
+      "romaji": "Iwate-ken"
+    },
+    "center": {
+      "ja": "沿岸運転免許センター",
+      "romaji": "Engan Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "釜石市嬉石町2-5-1",
+      "romaji": "Kamaishi-shi Ureshi-cho 2-5-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%87%9C%E7%9F%B3%E5%B8%82%E5%AC%89%E7%9F%B3%E7%94%BA2-5-1"
+  },
+  {
+    "source_id": "vi-test-location-13",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岩手県",
+      "romaji": "Iwate-ken"
+    },
+    "center": {
+      "ja": "県南運転免許センター",
+      "romaji": "Kennan Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "胆沢郡金ヶ崎町西根北荒巻100-2",
+      "romaji": "Isawa-gun Kanegasaki-cho Nishine Kita Aramaki 100-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E8%83%86%E6%B2%A2%E9%83%A1%E9%87%91%E3%83%B6%E5%B4%8E%E7%94%BA%E8%A5%BF%E6%A0%B9%E5%8C%97%E8%8D%92%E5%B7%BB100-2"
+  },
+  {
+    "source_id": "vi-test-location-14",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岩手県",
+      "romaji": "Iwate-ken"
+    },
+    "center": {
+      "ja": "県北運転免許センター",
+      "romaji": "Kenhoku Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "久慈市川崎町2-1",
+      "romaji": "Kuji-shi Kawasaki-cho 2-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%B9%85%E6%85%88%E5%B8%82%E5%B7%9D%E5%B4%8E%E7%94%BA2-1"
+  },
+  {
+    "source_id": "vi-test-location-15",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岩手県",
+      "romaji": "Iwate-ken"
+    },
+    "center": {
+      "ja": "自動車運転免許試験場",
+      "romaji": "Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "盛岡市玉山区下田字仲平183",
+      "romaji": "Morioka-shi Tamayama-ku Shimoda Nakahira 183"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%9B%9B%E5%B2%A1%E5%B8%82%E7%8E%89%E5%B1%B1%E5%8C%BA%E4%B8%8B%E7%94%B0%E5%AD%97%E4%BB%B2%E5%B9%B3183"
+  },
+  {
+    "source_id": "vi-test-location-16",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮城県",
+      "romaji": "Miyagi-ken"
+    },
+    "center": {
+      "ja": "宮城県運転免許センター",
+      "romaji": "Miyagi-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "仙台市泉区市名坂字高倉65",
+      "romaji": "Sendai-shi Izumi-ku Ichinazaka Takakura 65"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%BB%99%E5%8F%B0%E5%B8%82%E6%B3%89%E5%8C%BA%E5%B8%82%E5%90%8D%E5%9D%82%E5%AD%97%E9%AB%98%E5%80%8965"
+  },
+  {
+    "source_id": "vi-test-location-17",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮城県",
+      "romaji": "Miyagi-ken"
+    },
+    "center": {
+      "ja": "古川運転免許センター",
+      "romaji": "Furukawa Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "大崎市古川大宮3-4-30",
+      "romaji": "Osaki-shi Furukawa Omiya 3-4-30"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%B4%8E%E5%B8%82%E5%8F%A4%E5%B7%9D%E5%A4%A7%E5%AE%AE3-4-30"
+  },
+  {
+    "source_id": "vi-test-location-18",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮城県",
+      "romaji": "Miyagi-ken"
+    },
+    "center": {
+      "ja": "石巻運転免許センター",
+      "romaji": "Ishinomaki Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "東松島市赤井字南一134",
+      "romaji": "Higashimatsushima-shi Akai Minamiichi 134"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E6%9D%BE%E5%B3%B6%E5%B8%82%E8%B5%A4%E4%BA%95%E5%AD%97%E5%8D%97%E4%B8%80134"
+  },
+  {
+    "source_id": "vi-test-location-19",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮城県",
+      "romaji": "Miyagi-ken"
+    },
+    "center": {
+      "ja": "仙南運転免許センター",
+      "romaji": "Sennan Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "柴田郡大河原町字南平3-1",
+      "romaji": "Shibata-gun Ogawara-machi Minamihira 3-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9F%B4%E7%94%B0%E9%83%A1%E5%A4%A7%E6%B2%B3%E5%8E%9F%E7%94%BA%E5%AD%97%E5%8D%97%E5%B9%B33-1"
+  },
+  {
+    "source_id": "vi-test-location-20",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "秋田県",
+      "romaji": "Akita-ken"
+    },
+    "center": {
+      "ja": "秋田県運転免許センター",
+      "romaji": "Akita-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "秋田市新屋南浜町12-1",
+      "romaji": "Akita-shi Araya Minamihama-cho 12-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%A7%8B%E7%94%B0%E5%B8%82%E6%96%B0%E5%B1%8B%E5%8D%97%E6%B5%9C%E7%94%BA12-1"
+  },
+  {
+    "source_id": "vi-test-location-21",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "山形県",
+      "romaji": "Yamagata-ken"
+    },
+    "center": {
+      "ja": "山形県総合交通安全センター",
+      "romaji": "Yamagata-ken Sogo Kotsu Anzen Center"
+    },
+    "address": {
+      "ja": "天童市大字高擶1300",
+      "romaji": "Tendo-shi Oaza Takadama 1300"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%A9%E7%AB%A5%E5%B8%82%E5%A4%A7%E5%AD%97%E9%AB%98%E6%93%B61300"
+  },
+  {
+    "source_id": "vi-test-location-22",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福島県",
+      "romaji": "Fukushima-ken"
+    },
+    "center": {
+      "ja": "福島運転免許センター",
+      "romaji": "Fukushima Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "福島市町庭坂字大原1-1",
+      "romaji": "Fukushima-shi Machi Niwazaka Obara 1-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B3%B6%E5%B8%82%E7%94%BA%E5%BA%AD%E5%9D%82%E5%AD%97%E5%A4%A7%E5%8E%9F1-1"
+  },
+  {
+    "source_id": "vi-test-location-23",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福島県",
+      "romaji": "Fukushima-ken"
+    },
+    "center": {
+      "ja": "郡山運転免許センター",
+      "romaji": "Koriyama Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "郡山市大槻町字美女池上14-6",
+      "romaji": "Koriyama-shi Otsuki-machi Bijinike-ue 14-6"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%83%A1%E5%B1%B1%E5%B8%82%E5%A4%A7%E6%A7%BB%E7%94%BA%E5%AD%97%E7%BE%8E%E5%A5%B3%E6%B1%A0%E4%B8%8A14-6"
+  },
+  {
+    "source_id": "vi-test-location-24",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "茨城県",
+      "romaji": "Ibaraki-ken"
+    },
+    "center": {
+      "ja": "茨城県運転免許センター",
+      "romaji": "Ibaraki-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "東茨城郡茨城町長岡3783-3",
+      "romaji": "Higashiibaraki-gun Ibaraki-machi Nagaoka 3783-3"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E8%8C%A8%E5%9F%8E%E9%83%A1%E8%8C%A8%E5%9F%8E%E7%94%BA%E9%95%B7%E5%B2%A13783-3"
+  },
+  {
+    "source_id": "vi-test-location-25",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "栃木県",
+      "romaji": "Tochigi-ken"
+    },
+    "center": {
+      "ja": "栃木県運転免許センター",
+      "romaji": "Tochigi-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "鹿沼市下石川681",
+      "romaji": "Kanuma-shi Shimoishikawa 681"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%B9%BF%E6%B2%BC%E5%B8%82%E4%B8%8B%E7%9F%B3%E5%B7%9D681"
+  },
+  {
+    "source_id": "vi-test-location-26",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "群馬県",
+      "romaji": "Gunma-ken"
+    },
+    "center": {
+      "ja": "群馬総合交通センター",
+      "romaji": "Gunma Sogo Kotsu Center"
+    },
+    "address": {
+      "ja": "前橋市元総社町80-4",
+      "romaji": "Maebashi-shi Motosoja-machi 80-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%89%8D%E6%A9%8B%E5%B8%82%E5%85%83%E7%B7%8F%E7%A4%BE%E7%94%BA80-4"
+  },
+  {
+    "source_id": "vi-test-location-27",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "埼玉県",
+      "romaji": "Saitama-ken"
+    },
+    "center": {
+      "ja": "埼玉県警察運転免許センター",
+      "romaji": "Saitama-ken Keisatsu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "鴻巣市鴻巣405-4",
+      "romaji": "Konosu-shi Konosu 405-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%B4%BB%E5%B7%A3%E5%B8%82%E9%B4%BB%E5%B7%A3405-4"
+  },
+  {
+    "source_id": "vi-test-location-28",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "千葉県",
+      "romaji": "Chiba-ken"
+    },
+    "center": {
+      "ja": "千葉運転免許センター",
+      "romaji": "Chiba Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "千葉市美浜区浜田2-1",
+      "romaji": "Chiba-shi Mihama-ku Hamada 2-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%8D%83%E8%91%89%E5%B8%82%E7%BE%8E%E6%B5%9C%E5%8C%BA%E6%B5%9C%E7%94%B02-1"
+  },
+  {
+    "source_id": "vi-test-location-29",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "千葉県",
+      "romaji": "Chiba-ken"
+    },
+    "center": {
+      "ja": "流山運転免許センター",
+      "romaji": "Nagareyama Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "流山市前ケ崎217",
+      "romaji": "Nagareyama-shi Maegasaki 217"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B5%81%E5%B1%B1%E5%B8%82%E5%89%8D%E3%82%B1%E5%B4%8E217"
+  },
+  {
+    "source_id": "vi-test-location-30",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "東京都",
+      "romaji": "Tokyo-to"
+    },
+    "center": {
+      "ja": "府中運転免許試験場",
+      "romaji": "Fuchu Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "府中市多磨町3-1-1",
+      "romaji": "Fuchu-shi Tama-cho 3-1-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%BA%9C%E4%B8%AD%E5%B8%82%E5%A4%9A%E7%A3%A8%E7%94%BA3-1-1"
+  },
+  {
+    "source_id": "vi-test-location-31",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "東京都",
+      "romaji": "Tokyo-to"
+    },
+    "center": {
+      "ja": "鮫洲運転免許試験場",
+      "romaji": "Samezu Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "品川区東大井1-12-5",
+      "romaji": "Shinagawa-ku Higashioi 1-12-5"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%93%81%E5%B7%9D%E5%8C%BA%E6%9D%B1%E5%A4%A7%E4%BA%951-12-5"
+  },
+  {
+    "source_id": "vi-test-location-32",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "東京都",
+      "romaji": "Tokyo-to"
+    },
+    "center": {
+      "ja": "江東運転免許試験場",
+      "romaji": "Koto Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "江東区新砂1-7-24",
+      "romaji": "Koto-ku Shinsuna 1-7-24"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B1%9F%E6%9D%B1%E5%8C%BA%E6%96%B0%E7%A0%821-7-24"
+  },
+  {
+    "source_id": "vi-test-location-33",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "神奈川県",
+      "romaji": "Kanagawa-ken"
+    },
+    "center": {
+      "ja": "神奈川県運転免許試験場",
+      "romaji": "Kanagawa-ken Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "横浜市旭区中尾2-3-1",
+      "romaji": "Yokohama-shi Asahi-ku Nakao 2-3-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%A8%AA%E6%B5%9C%E5%B8%82%E6%97%AD%E5%8C%BA%E4%B8%AD%E5%B0%BE2-3-1"
+  },
+  {
+    "source_id": "vi-test-location-34",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "新潟県",
+      "romaji": "Niigata-ken"
+    },
+    "center": {
+      "ja": "新潟県運転免許センター",
+      "romaji": "Niigata-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "北蒲原郡聖籠町東港7-1-1",
+      "romaji": "Kitakanbara-gun Seiro-machi Higashi-ko 7-1-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%8C%97%E8%92%B2%E5%8E%9F%E9%83%A1%E8%81%96%E7%B1%A0%E7%94%BA%E6%9D%B1%E6%B8%AF7-1-1"
+  },
+  {
+    "source_id": "vi-test-location-35",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "新潟県",
+      "romaji": "Niigata-ken"
+    },
+    "center": {
+      "ja": "新潟県運転免許センター長岡支所",
+      "romaji": "Niigata-ken Unten Menkyo Center Nagaoka Shisho"
+    },
+    "address": {
+      "ja": "長岡市上前島町7-1",
+      "romaji": "Nagaoka-shi Uemaejima-machi 7-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%95%B7%E5%B2%A1%E5%B8%82%E4%B8%8A%E5%89%8D%E5%B3%B6%E7%94%BA7-1"
+  },
+  {
+    "source_id": "vi-test-location-36",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "新潟県",
+      "romaji": "Niigata-ken"
+    },
+    "center": {
+      "ja": "新潟県運転免許センター上越支所",
+      "romaji": "Niigata-ken Unten Menkyo Center Joetsu Shisho"
+    },
+    "address": {
+      "ja": "上越市柿崎区直海浜1174-3",
+      "romaji": "Joetsu-shi Kakizaki-ku Naoe Hama 1174-3"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%B8%8A%E8%B6%8A%E5%B8%82%E6%9F%BF%E5%B4%8E%E5%8C%BA%E7%9B%B4%E6%B5%B7%E6%B5%9C1174-3"
+  },
+  {
+    "source_id": "vi-test-location-37",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "富山県",
+      "romaji": "Toyama-ken"
+    },
+    "center": {
+      "ja": "富山県運転教育センター",
+      "romaji": "Toyama-ken Unten Kyoiku Center"
+    },
+    "address": {
+      "ja": "富山市高島62-1",
+      "romaji": "Toyama-shi Takashima 62-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%AF%8C%E5%B1%B1%E5%B8%82%E9%AB%98%E5%B3%B662-1"
+  },
+  {
+    "source_id": "vi-test-location-38",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "石川県",
+      "romaji": "Ishikawa-ken"
+    },
+    "center": {
+      "ja": "石川県運転免許センター",
+      "romaji": "Ishikawa-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "金沢市東蚊爪町2-1",
+      "romaji": "Kanazawa-shi Higashi Kagatsume-machi 2-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%87%91%E6%B2%A2%E5%B8%82%E6%9D%B1%E8%9A%8A%E7%88%AA%E7%94%BA2-1"
+  },
+  {
+    "source_id": "vi-test-location-39",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福井県",
+      "romaji": "Fukui-ken"
+    },
+    "center": {
+      "ja": "福井県運転者教育センター",
+      "romaji": "Fukui-ken Untensha Kyoiku Center"
+    },
+    "address": {
+      "ja": "坂井市春江町針原58-10",
+      "romaji": "Sakai-shi Harue-cho Harihara 58-10"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%9D%82%E4%BA%95%E5%B8%82%E6%98%A5%E6%B1%9F%E7%94%BA%E9%87%9D%E5%8E%9F58-10"
+  },
+  {
+    "source_id": "vi-test-location-40",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福井県",
+      "romaji": "Fukui-ken"
+    },
+    "center": {
+      "ja": "福井県奥越運転者教育センター",
+      "romaji": "Fukui-ken Okukoshi Untensha Kyoiku Center"
+    },
+    "address": {
+      "ja": "大野市南新在家32-1-4",
+      "romaji": "Ono-shi Minami Shinzaike 32-1-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E9%87%8E%E5%B8%82%E5%8D%97%E6%96%B0%E5%9C%A8%E5%AE%B632-1-4"
+  },
+  {
+    "source_id": "vi-test-location-41",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福井県",
+      "romaji": "Fukui-ken"
+    },
+    "center": {
+      "ja": "福井県丹南運転者教育センター",
+      "romaji": "Fukui-ken Tannami Untensha Kyoiku Center"
+    },
+    "address": {
+      "ja": "越前市余田町2-1-1",
+      "romaji": "Echizen-shi Yorita-machi 2-1-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E8%B6%8A%E5%89%8D%E5%B8%82%E4%BD%99%E7%94%B0%E7%94%BA2-1-1"
+  },
+  {
+    "source_id": "vi-test-location-42",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福井県",
+      "romaji": "Fukui-ken"
+    },
+    "center": {
+      "ja": "福井県嶺南運転者教育センター",
+      "romaji": "Fukui-ken Reinan Untensha Kyoiku Center"
+    },
+    "address": {
+      "ja": "三方上中郡若狭町倉見1-51",
+      "romaji": "Mikatakaminaka-gun Wakasa-cho Kurami 1-51"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E6%96%B9%E4%B8%8A%E4%B8%AD%E9%83%A1%E8%8B%A5%E7%8B%AD%E7%94%BA%E5%80%89%E8%A6%8B1-51"
+  },
+  {
+    "source_id": "vi-test-location-43",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "山梨県",
+      "romaji": "Yamanashi-ken"
+    },
+    "center": {
+      "ja": "山梨県総合交通センター",
+      "romaji": "Yamanashi-ken Sogo Kotsu Center"
+    },
+    "address": {
+      "ja": "南アルプス市下高砂825",
+      "romaji": "Minami Alps-shi Shimo Takasago 825"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%8D%97%E3%82%A2%E3%83%AB%E3%83%97%E3%82%B9%E5%B8%82%E4%B8%8B%E9%AB%98%E7%A0%82825"
+  },
+  {
+    "source_id": "vi-test-location-44",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "長野県",
+      "romaji": "Nagano-ken"
+    },
+    "center": {
+      "ja": "東北信運転免許センター",
+      "romaji": "Tohokushin Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "長野市川中島町原704-2",
+      "romaji": "Nagano-shi Kawanakajima-machi Hara 704-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%95%B7%E9%87%8E%E5%B8%82%E5%B7%9D%E4%B8%AD%E5%B3%B6%E7%94%BA%E5%8E%9F704-2"
+  },
+  {
+    "source_id": "vi-test-location-45",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "長野県",
+      "romaji": "Nagano-ken"
+    },
+    "center": {
+      "ja": "中南信運転免許センター",
+      "romaji": "Chunanshin Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "塩尻市大字宗賀字桔梗ヶ原73-116",
+      "romaji": "Shiojiri-shi Oaza Soga Kikyogahara 73-116"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A1%A9%E5%B0%BB%E5%B8%82%E5%A4%A7%E5%AD%97%E5%AE%97%E8%B3%80%E5%AD%97%E6%A1%94%E6%A2%97%E3%83%B6%E5%8E%9F73-116"
+  },
+  {
+    "source_id": "vi-test-location-46",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岐阜県",
+      "romaji": "Gifu-ken"
+    },
+    "center": {
+      "ja": "岐阜試験場",
+      "romaji": "Gifu Shikenjo"
+    },
+    "address": {
+      "ja": "岐阜市三田洞東1-22",
+      "romaji": "Gifu-shi Mitahora Higashi 1-22"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%B2%90%E9%98%9C%E5%B8%82%E4%B8%89%E7%94%B0%E6%B4%9E%E6%9D%B11-22"
+  },
+  {
+    "source_id": "vi-test-location-47",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岐阜県",
+      "romaji": "Gifu-ken"
+    },
+    "center": {
+      "ja": "多治見試験場",
+      "romaji": "Tajimi Shikenjo"
+    },
+    "address": {
+      "ja": "多治見市美坂町4-6",
+      "romaji": "Tajimi-shi Bisaka-cho 4-6"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%9A%E6%B2%BB%E8%A6%8B%E5%B8%82%E7%BE%8E%E5%9D%82%E7%94%BA4-6"
+  },
+  {
+    "source_id": "vi-test-location-48",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岐阜県",
+      "romaji": "Gifu-ken"
+    },
+    "center": {
+      "ja": "東濃試験場",
+      "romaji": "Tono Shikenjo"
+    },
+    "address": {
+      "ja": "中津川市茄子川1127-1",
+      "romaji": "Nakatsugawa-shi Nasugawa 1127-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%B8%AD%E6%B4%A5%E5%B7%9D%E5%B8%82%E8%8C%84%E5%AD%90%E5%B7%9D1127-1"
+  },
+  {
+    "source_id": "vi-test-location-49",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岐阜県",
+      "romaji": "Gifu-ken"
+    },
+    "center": {
+      "ja": "高山試験場",
+      "romaji": "Takayama Shikenjo"
+    },
+    "address": {
+      "ja": "高山市松の木町1257-4",
+      "romaji": "Takayama-shi Matsunoki-cho 1257-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E5%B1%B1%E5%B8%82%E6%9D%BE%E3%81%AE%E6%9C%A8%E7%94%BA1257-4"
+  },
+  {
+    "source_id": "vi-test-location-50",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岐阜県",
+      "romaji": "Gifu-ken"
+    },
+    "center": {
+      "ja": "西濃運転者講習センター",
+      "romaji": "Seino Untensha Koshu Center"
+    },
+    "address": {
+      "ja": "大垣市綾野1-2700-2",
+      "romaji": "Ogaki-shi Ayano 1-2700-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%9E%A3%E5%B8%82%E7%B6%BE%E9%87%8E1-2700-2"
+  },
+  {
+    "source_id": "vi-test-location-51",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岐阜県",
+      "romaji": "Gifu-ken"
+    },
+    "center": {
+      "ja": "中濃運転者講習センター",
+      "romaji": "Chuno Untensha Koshu Center"
+    },
+    "address": {
+      "ja": "関市稲口423-1",
+      "romaji": "Seki-shi Inaguchi 423-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%96%A2%E5%B8%82%E7%A8%B2%E5%8F%A3423-1"
+  },
+  {
+    "source_id": "vi-test-location-52",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "静岡県",
+      "romaji": "Shizuoka-ken"
+    },
+    "center": {
+      "ja": "中部運転免許センター",
+      "romaji": "Chubu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "静岡市葵区与一6-16-1",
+      "romaji": "Shizuoka-shi Aoi-ku Yoichi 6-16-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%9D%99%E5%B2%A1%E5%B8%82%E8%91%B5%E5%8C%BA%E4%B8%8E%E4%B8%806-16-1"
+  },
+  {
+    "source_id": "vi-test-location-53",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "静岡県",
+      "romaji": "Shizuoka-ken"
+    },
+    "center": {
+      "ja": "東部運転免許センター",
+      "romaji": "Tobu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "沼津市足高字尾上241-10",
+      "romaji": "Numazu-shi Ashitaka Onoue 241-10"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B2%BC%E6%B4%A5%E5%B8%82%E8%B6%B3%E9%AB%98%E5%AD%97%E5%B0%BE%E4%B8%8A241-10"
+  },
+  {
+    "source_id": "vi-test-location-54",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "静岡県",
+      "romaji": "Shizuoka-ken"
+    },
+    "center": {
+      "ja": "西部運転免許センター",
+      "romaji": "Seibu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "浜松市浜北区小松3220",
+      "romaji": "Hamamatsu-shi Hamakita-ku Komatsu 3220"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B5%9C%E6%9D%BE%E5%B8%82%E6%B5%9C%E5%8C%97%E5%8C%BA%E5%B0%8F%E6%9D%BE3220"
+  },
+  {
+    "source_id": "vi-test-location-55",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "愛知県",
+      "romaji": "Aichi-ken"
+    },
+    "center": {
+      "ja": "愛知県運転免許試験場",
+      "romaji": "Aichi-ken Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "名古屋市天白区平針南3-605",
+      "romaji": "Nagoya-shi Tempaku-ku Hirabari Minami 3-605"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%90%8D%E5%8F%A4%E5%B1%8B%E5%B8%82%E5%A4%A9%E7%99%BD%E5%8C%BA%E5%B9%B3%E9%87%9D%E5%8D%973-605"
+  },
+  {
+    "source_id": "vi-test-location-56",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "愛知県",
+      "romaji": "Aichi-ken"
+    },
+    "center": {
+      "ja": "東三河運転免許センター",
+      "romaji": "Higashi Mikawa Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "豊川市金屋西町2-7",
+      "romaji": "Toyokawa-shi Kanaya Nishi-machi 2-7"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E8%B1%8A%E5%B7%9D%E5%B8%82%E9%87%91%E5%B1%8B%E8%A5%BF%E7%94%BA2-7"
+  },
+  {
+    "source_id": "vi-test-location-57",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "三重県",
+      "romaji": "Mie-ken"
+    },
+    "center": {
+      "ja": "三重県運転免許センター",
+      "romaji": "Mie-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "津市大字垂水2566",
+      "romaji": "Tsu-shi Oaza Tarumi 2566"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B4%A5%E5%B8%82%E5%A4%A7%E5%AD%97%E5%9E%82%E6%B0%B42566"
+  },
+  {
+    "source_id": "vi-test-location-58",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "滋賀県",
+      "romaji": "Shiga-ken"
+    },
+    "center": {
+      "ja": "滋賀県運転免許センター",
+      "romaji": "Shiga-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "守山市木浜町2294",
+      "romaji": "Moriyama-shi Kihama-cho 2294"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%AE%88%E5%B1%B1%E5%B8%82%E6%9C%A8%E6%B5%9C%E7%94%BA2294"
+  },
+  {
+    "source_id": "vi-test-location-59",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "滋賀県",
+      "romaji": "Shiga-ken"
+    },
+    "center": {
+      "ja": "運転免許サブセンター（米原分室）",
+      "romaji": "Unten Menkyo Sub Center (Maibara Bunshitsu)"
+    },
+    "address": {
+      "ja": "米原市入江301",
+      "romaji": "Maibara-shi Irie 301"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%B1%B3%E5%8E%9F%E5%B8%82%E5%85%A5%E6%B1%9F301"
+  },
+  {
+    "source_id": "vi-test-location-60",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "京都府",
+      "romaji": "Kyoto-fu"
+    },
+    "center": {
+      "ja": "京都府運転免許試験場",
+      "romaji": "Kyoto-fu Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "京都市伏見区羽束師古川町647",
+      "romaji": "Kyoto-shi Fushimi-ku Hazukashi Furukawa-cho 647"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%BA%AC%E9%83%BD%E5%B8%82%E4%BC%8F%E8%A6%8B%E5%8C%BA%E7%BE%BD%E6%9D%9F%E5%B8%AB%E5%8F%A4%E5%B7%9D%E7%94%BA647"
+  },
+  {
+    "source_id": "vi-test-location-61",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "大阪府",
+      "romaji": "Osaka-fu"
+    },
+    "center": {
+      "ja": "門真運転免許試験場",
+      "romaji": "Kadoma Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "門真市一番町23-16",
+      "romaji": "Kadoma-shi Ichiban-cho 23-16"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%96%80%E7%9C%9F%E5%B8%82%E4%B8%80%E7%95%AA%E7%94%BA23-16"
+  },
+  {
+    "source_id": "vi-test-location-62",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "大阪府",
+      "romaji": "Osaka-fu"
+    },
+    "center": {
+      "ja": "光明池運転免許試験場",
+      "romaji": "Komyoike Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "和泉市伏屋町5-13-1",
+      "romaji": "Izumi-shi Fushiya-cho 5-13-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%92%8C%E6%B3%89%E5%B8%82%E4%BC%8F%E5%B1%8B%E7%94%BA5-13-1"
+  },
+  {
+    "source_id": "vi-test-location-63",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "兵庫県",
+      "romaji": "Hyogo-ken"
+    },
+    "center": {
+      "ja": "兵庫県自動車運転免許試験場",
+      "romaji": "Hyogo-ken Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "明石市荷山町1649-2",
+      "romaji": "Akashi-shi Niyamacho 1649-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%98%8E%E7%9F%B3%E5%B8%82%E8%8D%B7%E5%B1%B1%E7%94%BA1649-2"
+  },
+  {
+    "source_id": "vi-test-location-64",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "兵庫県",
+      "romaji": "Hyogo-ken"
+    },
+    "center": {
+      "ja": "但馬運転免許センター",
+      "romaji": "Tajima Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "養父市八鹿町朝倉48-5",
+      "romaji": "Yabu-shi Yoka-cho Asakura 48-5"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%A4%8A%E7%88%B6%E5%B8%82%E5%85%AB%E9%B9%BF%E7%94%BA%E6%9C%9D%E5%80%8948-5"
+  },
+  {
+    "source_id": "vi-test-location-65",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "奈良県",
+      "romaji": "Nara-ken"
+    },
+    "center": {
+      "ja": "奈良県運転免許センター",
+      "romaji": "Nara-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "橿原市葛本町120-3",
+      "romaji": "Kashihara-shi Kuzumoto-cho 120-3"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%A9%BF%E5%8E%9F%E5%B8%82%E8%91%9B%E6%9C%AC%E7%94%BA120-3"
+  },
+  {
+    "source_id": "vi-test-location-66",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "和歌山県",
+      "romaji": "Wakayama-ken"
+    },
+    "center": {
+      "ja": "和歌山県自動車運転免許第１試験場",
+      "romaji": "Wakayama-ken Jidosha Unten Menkyo Daiichi Shikenjo"
+    },
+    "address": {
+      "ja": "和歌山市西１",
+      "romaji": "Wakayama-shi Nishi 1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%92%8C%E6%AD%8C%E5%B1%B1%E5%B8%82%E8%A5%BF%EF%BC%91"
+  },
+  {
+    "source_id": "vi-test-location-67",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "和歌山県",
+      "romaji": "Wakayama-ken"
+    },
+    "center": {
+      "ja": "田辺運転免許センター",
+      "romaji": "Tanabe Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "田辺市上の山1-2-5",
+      "romaji": "Tanabe-shi Uenoyama 1-2-5"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%94%B0%E8%BE%BA%E5%B8%82%E4%B8%8A%E3%81%AE%E5%B1%B11-2-5"
+  },
+  {
+    "source_id": "vi-test-location-68",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "和歌山県",
+      "romaji": "Wakayama-ken"
+    },
+    "center": {
+      "ja": "新宮運転免許センター",
+      "romaji": "Shingu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "新宮市三輪崎1148-4",
+      "romaji": "Shingu-shi Miwazaki 1148-4"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%96%B0%E5%AE%AE%E5%B8%82%E4%B8%89%E8%BC%AA%E5%B4%8E1148-4"
+  },
+  {
+    "source_id": "vi-test-location-69",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "鳥取県",
+      "romaji": "Tottori-ken"
+    },
+    "center": {
+      "ja": "鳥取県自動車運転免許試験場",
+      "romaji": "Tottori-ken Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "東伯郡湯梨浜町大字上浅津216",
+      "romaji": "Tohaku-gun Yurihama-cho Oaza Kamiasazu 216"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BC%AF%E9%83%A1%E6%B9%AF%E6%A2%A8%E6%B5%9C%E7%94%BA%E5%A4%A7%E5%AD%97%E4%B8%8A%E6%B5%85%E6%B4%A5216"
+  },
+  {
+    "source_id": "vi-test-location-70",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "鳥取県",
+      "romaji": "Tottori-ken"
+    },
+    "center": {
+      "ja": "西部地区運転免許センター",
+      "romaji": "Seibu Chiku Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "米子市上福原1272-2",
+      "romaji": "Yonago-shi Kamifukubara 1272-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%B1%B3%E5%AD%90%E5%B8%82%E4%B8%8A%E7%A6%8F%E5%8E%9F1272-2"
+  },
+  {
+    "source_id": "vi-test-location-71",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "鳥取県",
+      "romaji": "Tottori-ken"
+    },
+    "center": {
+      "ja": "東部地区運転免許センター",
+      "romaji": "Tobu Chiku Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "鳥取市千代水2-8",
+      "romaji": "Tottori-shi Chiyomizu 2-8"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%B3%A5%E5%8F%96%E5%B8%82%E5%8D%83%E4%BB%A3%E6%B0%B42-8"
+  },
+  {
+    "source_id": "vi-test-location-72",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "島根県",
+      "romaji": "Shimane-ken"
+    },
+    "center": {
+      "ja": "島根県免許センター",
+      "romaji": "Shimane-ken Menkyo Center"
+    },
+    "address": {
+      "ja": "松江市打出町250-1",
+      "romaji": "Matsue-shi Utsume-cho 250-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%BE%E6%B1%9F%E5%B8%82%E6%89%93%E5%87%BA%E7%94%BA250-1"
+  },
+  {
+    "source_id": "vi-test-location-73",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "島根県",
+      "romaji": "Shimane-ken"
+    },
+    "center": {
+      "ja": "島根県西部免許センター",
+      "romaji": "Shimane-ken Seibu Menkyo Center"
+    },
+    "address": {
+      "ja": "浜田市竹迫町2385-3",
+      "romaji": "Hamada-shi Takesako-cho 2385-3"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B5%9C%E7%94%B0%E5%B8%82%E7%AB%B9%E8%BF%AB%E7%94%BA2385-3"
+  },
+  {
+    "source_id": "vi-test-location-74",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岡山県",
+      "romaji": "Okayama-ken"
+    },
+    "center": {
+      "ja": "岡山県運転免許センター",
+      "romaji": "Okayama-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "岡山市北区御津中山444-3",
+      "romaji": "Okayama-shi Kita-ku Mitsu Nakayama 444-3"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%B2%A1%E5%B1%B1%E5%B8%82%E5%8C%97%E5%8C%BA%E5%BE%A1%E6%B4%A5%E4%B8%AD%E5%B1%B1444-3"
+  },
+  {
+    "source_id": "vi-test-location-75",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岡山県",
+      "romaji": "Okayama-ken"
+    },
+    "center": {
+      "ja": "倉敷試験場",
+      "romaji": "Kurashiki Shikenjo"
+    },
+    "address": {
+      "ja": "倉敷市大島454-1",
+      "romaji": "Kurashiki-shi Ojima 454-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%80%89%E6%95%B7%E5%B8%82%E5%A4%A7%E5%B3%B6454-1"
+  },
+  {
+    "source_id": "vi-test-location-76",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "岡山県",
+      "romaji": "Okayama-ken"
+    },
+    "center": {
+      "ja": "津山試験場",
+      "romaji": "Tsuyama Shikenjo"
+    },
+    "address": {
+      "ja": "津山市林田77",
+      "romaji": "Tsuyama-shi Hayashi 77"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%B4%A5%E5%B1%B1%E5%B8%82%E6%9E%97%E7%94%B077"
+  },
+  {
+    "source_id": "vi-test-location-77",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "広島県",
+      "romaji": "Hiroshima-ken"
+    },
+    "center": {
+      "ja": "広島県運転免許センター",
+      "romaji": "Hiroshima-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "広島市佐伯区石内南3-1-1",
+      "romaji": "Hiroshima-shi Saeki-ku Ishiuchi Minami 3-1-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%BA%83%E5%B3%B6%E5%B8%82%E4%BD%90%E4%BC%AF%E5%8C%BA%E7%9F%B3%E5%86%85%E5%8D%973-1-1"
+  },
+  {
+    "source_id": "vi-test-location-78",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "広島県",
+      "romaji": "Hiroshima-ken"
+    },
+    "center": {
+      "ja": "広島県東部運転免許センター",
+      "romaji": "Hiroshima-ken Tobu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "福山市瀬戸町山北54-2",
+      "romaji": "Fukuyama-shi Seto-cho Yamakita 54-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B1%B1%E5%B8%82%E7%80%AC%E6%88%B8%E7%94%BA%E5%B1%B1%E5%8C%9754-2"
+  },
+  {
+    "source_id": "vi-test-location-79",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "広島県",
+      "romaji": "Hiroshima-ken"
+    },
+    "center": {
+      "ja": "三次試験場",
+      "romaji": "Miyoshi Shikenjo"
+    },
+    "address": {
+      "ja": "三次市畠敷町1880-11",
+      "romaji": "Miyoshi-shi Hatashiki-cho 1880-11"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%B8%89%E6%AC%A1%E5%B8%82%E7%95%A0%E6%95%B7%E7%94%BA1880-11"
+  },
+  {
+    "source_id": "vi-test-location-80",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "山口県",
+      "romaji": "Yamaguchi-ken"
+    },
+    "center": {
+      "ja": "山口県総合交通センター",
+      "romaji": "Yamaguchi-ken Sogo Kotsu Center"
+    },
+    "address": {
+      "ja": "山口市小郡下郷3560-2",
+      "romaji": "Yamaguchi-shi Ogori Shimo-go 3560-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%B1%B1%E5%8F%A3%E5%B8%82%E5%B0%8F%E9%83%A1%E4%B8%8B%E9%83%B73560-2"
+  },
+  {
+    "source_id": "vi-test-location-81",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "徳島県",
+      "romaji": "Tokushima-ken"
+    },
+    "center": {
+      "ja": "徳島県運転免許センター",
+      "romaji": "Tokushima-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "徳島市大原町余慶1",
+      "romaji": "Tokushima-shi Ohara-cho Yokei 1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%BE%B3%E5%B3%B6%E5%B8%82%E5%A4%A7%E5%8E%9F%E7%94%BA%E4%BD%99%E6%85%B61"
+  },
+  {
+    "source_id": "vi-test-location-82",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "香川県",
+      "romaji": "Kagawa-ken"
+    },
+    "center": {
+      "ja": "香川県運転免許センター",
+      "romaji": "Kagawa-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "高松市郷東町587-138",
+      "romaji": "Takamatsu-shi Go-to-cho 587-138"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%AB%98%E6%9D%BE%E5%B8%82%E9%83%B7%E6%9D%B1%E7%94%BA587-138"
+  },
+  {
+    "source_id": "vi-test-location-83",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "愛媛県",
+      "romaji": "Ehime-ken"
+    },
+    "center": {
+      "ja": "愛媛県運転免許センター",
+      "romaji": "Ehime-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "松山市勝岡町1163-7",
+      "romaji": "Matsuyama-shi Katsuoka-cho 1163-7"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E6%9D%BE%E5%B1%B1%E5%B8%82%E5%8B%9D%E5%B2%A1%E7%94%BA1163-7"
+  },
+  {
+    "source_id": "vi-test-location-84",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "高知県",
+      "romaji": "Kochi-ken"
+    },
+    "center": {
+      "ja": "高知県運転免許センター",
+      "romaji": "Kochi-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "吾川郡いの町枝川200",
+      "romaji": "Agawa-gun Ino-cho Edagawa 200"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%90%BE%E5%B7%9D%E9%83%A1%E3%81%84%E3%81%AE%E7%94%BA%E6%9E%9D%E5%B7%9D200"
+  },
+  {
+    "source_id": "vi-test-location-85",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福岡県",
+      "romaji": "Fukuoka-ken"
+    },
+    "center": {
+      "ja": "福岡自動車運転免許試験場",
+      "romaji": "Fukuoka Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "福岡市南区花畑4-7-1",
+      "romaji": "Fukuoka-shi Minami-ku Hanahata 4-7-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%A6%8F%E5%B2%A1%E5%B8%82%E5%8D%97%E5%8C%BA%E8%8A%B1%E7%95%914-7-1"
+  },
+  {
+    "source_id": "vi-test-location-86",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福岡県",
+      "romaji": "Fukuoka-ken"
+    },
+    "center": {
+      "ja": "北九州自動車運転免許試験場",
+      "romaji": "Kitakyushu Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "北九州市小倉南区日の出町2-4-1",
+      "romaji": "Kitakyushu-shi Kokuraminami-ku Hinode-cho 2-4-1"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%8C%97%E4%B9%9D%E5%B7%9E%E5%B8%82%E5%B0%8F%E5%80%89%E5%8D%97%E5%8C%BA%E6%97%A5%E3%81%AE%E5%87%BA%E7%94%BA2-4-1"
+  },
+  {
+    "source_id": "vi-test-location-87",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福岡県",
+      "romaji": "Fukuoka-ken"
+    },
+    "center": {
+      "ja": "筑後自動車運転免許試験場",
+      "romaji": "Chikugo Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "筑後市大字久富1135-2",
+      "romaji": "Chikugo-shi Oaza Hisatomi 1135-2"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E7%AD%91%E5%BE%8C%E5%B8%82%E5%A4%A7%E5%AD%97%E4%B9%85%E5%AF%8C1135-2"
+  },
+  {
+    "source_id": "vi-test-location-88",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "福岡県",
+      "romaji": "Fukuoka-ken"
+    },
+    "center": {
+      "ja": "筑豊自動車運転免許試験場",
+      "romaji": "Chikuho Jidosha Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "飯塚市仁保23-21",
+      "romaji": "Iizuka-shi Niho 23-21"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E9%A3%AF%E5%A1%9A%E5%B8%82%E4%BB%81%E4%BF%9D23-21"
+  },
+  {
+    "source_id": "vi-test-location-89",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "長崎県",
+      "romaji": "Nagasaki-ken"
+    },
+    "center": {
+      "ja": "長崎県運転免許試験場",
+      "romaji": "Nagasaki-ken Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "大村市古賀島町533-5",
+      "romaji": "Omura-shi Kogashima-machi 533-5"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E6%9D%91%E5%B8%82%E5%8F%A4%E8%B3%80%E5%B3%B6%E7%94%BA533-5"
+  },
+  {
+    "source_id": "vi-test-location-90",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "佐賀県",
+      "romaji": "Saga-ken"
+    },
+    "center": {
+      "ja": "佐賀県運転免許試験場",
+      "romaji": "Saga-ken Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "佐賀市久保泉町大字川久保2121-26",
+      "romaji": "Saga-shi Kuboizumi-machi Oaza Kawakubo 2121-26"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E4%BD%90%E8%B3%80%E5%B8%82%E4%B9%85%E4%BF%9D%E6%B3%89%E7%94%BA%E5%A4%A7%E5%AD%97%E5%B7%9D%E4%B9%85%E4%BF%9D2121-26"
+  },
+  {
+    "source_id": "vi-test-location-91",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "熊本県",
+      "romaji": "Kumamoto-ken"
+    },
+    "center": {
+      "ja": "熊本県運転免許センター",
+      "romaji": "Kumamoto-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "菊池郡菊陽町辛川2655",
+      "romaji": "Kikuchi-gun Kikuyo-machi Karakawa 2655"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E8%8F%8A%E6%B1%A0%E9%83%A1%E8%8F%8A%E9%99%BD%E7%94%BA%E8%BE%9B%E5%B7%9D2655"
+  },
+  {
+    "source_id": "vi-test-location-92",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮崎県",
+      "romaji": "Miyazaki-ken"
+    },
+    "center": {
+      "ja": "宮崎運転免許センター",
+      "romaji": "Miyazaki Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "宮崎市阿波岐原町前浜4276-5",
+      "romaji": "Miyazaki-shi Awagigahara-machi Maehama 4276-5"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%AE%AE%E5%B4%8E%E5%B8%82%E9%98%BF%E6%B3%A2%E5%B2%90%E5%8E%9F%E7%94%BA%E5%89%8D%E6%B5%9C4276-5"
+  },
+  {
+    "source_id": "vi-test-location-93",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮崎県",
+      "romaji": "Miyazaki-ken"
+    },
+    "center": {
+      "ja": "延岡運転免許センター",
+      "romaji": "Nobeoka Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "延岡市大貫町1-2834",
+      "romaji": "Nobeoka-shi Onuki-machi 1-2834"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%BB%B6%E5%B2%A1%E5%B8%82%E5%A4%A7%E8%B2%AB%E7%94%BA1-2834"
+  },
+  {
+    "source_id": "vi-test-location-94",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "宮崎県",
+      "romaji": "Miyazaki-ken"
+    },
+    "center": {
+      "ja": "都城運転免許センター",
+      "romaji": "Miyakonojo Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "北諸県郡三股町大字宮村2944-3",
+      "romaji": "Kitamorokata-gun Mimata-cho Oaza Miyamura 2944-3"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%8C%97%E8%AB%B8%E7%9C%8C%E9%83%A1%E4%B8%89%E8%82%A1%E7%94%BA%E5%A4%A7%E5%AD%97%E5%AE%AE%E6%9D%912944-3"
+  },
+  {
+    "source_id": "vi-test-location-95",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "大分県",
+      "romaji": "Oita-ken"
+    },
+    "center": {
+      "ja": "大分県運転免許センター",
+      "romaji": "Oita-ken Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "大分市大字松岡6687",
+      "romaji": "Oita-shi Oaza Matsuoka 6687"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E5%88%86%E5%B8%82%E5%A4%A7%E5%AD%97%E6%9D%BE%E5%B2%A16687"
+  },
+  {
+    "source_id": "vi-test-location-96",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "鹿児島県",
+      "romaji": "Kagoshima-ken"
+    },
+    "center": {
+      "ja": "鹿児島県総合運転免許試験場",
+      "romaji": "Kagoshima-ken Sogo Unten Menkyo Shikenjo"
+    },
+    "address": {
+      "ja": "姶良市東餅田3937",
+      "romaji": "Aira-shi Higashi Mochida 3937"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E5%A7%B6%E8%89%AF%E5%B8%82%E6%9D%B1%E9%A4%85%E7%94%B03937"
+  },
+  {
+    "source_id": "vi-test-location-97",
+    "locale": "vi",
+    "prefecture": {
+      "ja": "沖縄県",
+      "romaji": "Okinawa-ken"
+    },
+    "center": {
+      "ja": "沖縄県警察運転免許センター",
+      "romaji": "Okinawa-ken Keisatsu Unten Menkyo Center"
+    },
+    "address": {
+      "ja": "豊見城市字豊崎3-22",
+      "romaji": "Tomigusuku-shi Aza Toyosaki 3-22"
+    },
+    "google_maps_url": "https://www.google.com/maps/search/?api=1&query=%E8%B1%8A%E8%A6%8B%E5%9F%8E%E5%B8%82%E5%AD%97%E8%B1%8A%E5%B4%8E3-22"
+  }
+]

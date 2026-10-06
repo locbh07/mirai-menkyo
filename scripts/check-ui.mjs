@@ -4,6 +4,7 @@ import { readFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { languages, languageFlags } from "../src/i18n.js";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dist = path.join(root, "dist");
@@ -31,7 +32,7 @@ async function checkLayout(page, name) {
   const errors = await page.evaluate(() => {
     const problems = [];
     if (document.documentElement.scrollWidth > innerWidth + 1) problems.push("Page overflows horizontally");
-    const selectors = ".topbar-inner,.nav-tabs,.question-nav,.question-panel,.question-dots,.question-footer,.exam-card,.article-card,.answer-button,.article-view,.locations-list";
+    const selectors = ".topbar-inner,.nav-tabs,.language-options,.language-trigger,.exam-section-head,.exam-shortcuts,.question-nav,.question-panel,.question-dots,.question-footer,.exam-card,.article-card,.answer-button,.article-view,.locations-list";
     for (const element of document.querySelectorAll(selectors)) {
       if (!element.getClientRects().length) continue;
       if (element.scrollWidth > element.clientWidth + 1) problems.push(`${element.className} overflows internally`);
@@ -56,26 +57,67 @@ async function openQuestionList(page) {
   }
 }
 
+async function selectLanguage(page, locale) {
+  if (!(await page.locator(".language-menu").evaluate((el) => el.open))) {
+    await page.locator(".language-trigger").click();
+  }
+  await checkLayout(page, `Language menu/${locale}`);
+  await page.waitForFunction(() => [...document.querySelectorAll(".language-flag")].every((img) => img.complete && img.naturalWidth > 0));
+  assert.equal(await page.locator("[data-locale]").count(), manifest.locales.length);
+  await page.locator(`[data-locale="${locale}"]`).click();
+  assert.equal(await page.locator(".language-menu").evaluate((el) => el.open), false);
+  assert.equal(await page.locator(".language-trigger span").textContent(), languages[locale]);
+  assert.equal(await page.locator(".language-trigger img").getAttribute("src"), `assets/flags/${languageFlags[locale]}.png`);
+}
+
 try {
   browser = await chromium.launch();
   let checks = 0;
   for (const width of [320, 390, 768, 1024, 1440, 1920]) {
-    const context = await browser.newContext({ viewport: { width, height: 960 } });
+    const height = width === 320 ? 640 : width === 390 ? 844 : 960;
+    const context = await browser.newContext({ viewport: { width, height } });
     const page = await context.newPage();
     const pageErrors = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
     for (const locale of manifest.locales) {
       await page.goto(base);
       await page.waitForSelector(".exam-card");
-      await page.selectOption(".language-select", locale);
+      await selectLanguage(page, locale);
       assert.equal(await page.locator("html").getAttribute("lang"), locale);
-      assert.equal(await page.locator(".language-select option:disabled").count(), 0);
+      assert.equal(await page.locator(".exam-section").count(), 3);
+      assert.equal(await page.locator(".exam-card").count(), manifest.exams.length);
+      for (const type of ["karimen", "honmen", "gentsuki"]) {
+        const section = page.locator(`[data-exam-type="${type}"]`);
+        assert.equal(await section.locator(`.exam-card.${type}`).count(), manifest.exams.filter((exam) => exam.type === type).length);
+        assert.equal(await section.locator(`.exam-card:not(.${type})`).count(), 0);
+        await page.locator(`.exam-shortcut.${type}`).click();
+        assert.equal(new URL(page.url()).hash, `#exams-${type}`);
+      }
       await checkLayout(page, `${width}/${locale}/home`);
+      await page.locator(".language-trigger").focus();
+      await page.keyboard.press("ArrowDown");
+      assert.equal(await page.locator(".language-menu").evaluate((el) => el.open), true);
+      assert.equal(await page.evaluate(() => document.activeElement.dataset.locale), manifest.locales[0]);
+      await page.keyboard.press("End");
+      assert.equal(await page.evaluate(() => document.activeElement.dataset.locale), manifest.locales.at(-1));
+      await page.keyboard.press("Escape");
+      assert.equal(await page.locator(".language-menu").evaluate((el) => el.open), false);
+      await page.locator(".language-trigger").click();
+      await page.locator(".brand-mark").click();
+      assert.equal(await page.locator(".language-menu").evaluate((el) => el.open), false);
+      if ((width === 390 || width === 1440) && (locale === "vi" || locale === "pt")) {
+        await page.evaluate(() => window.scrollTo(0, 0));
+        await page.screenshot({ path: path.join(screenshots, `${width}-${locale}-home.png`), fullPage: true });
+        await page.locator(".language-trigger").click();
+        await page.screenshot({ path: path.join(screenshots, `${width}-${locale}-languages.png`) });
+        await page.keyboard.press("Escape");
+      }
       for (const type of ["karimen", "honmen", "gentsuki"]) {
         const item = manifest.exams.find((exam) => exam.type === type);
         const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
         await page.locator(`.exam-card.${type}`).first().click();
         await page.waitForSelector(".question-title");
+        assert.equal(await page.evaluate(() => window.scrollY), 0);
         assert.ok((await page.locator(".question-title").textContent()).includes(exam.questions[0].textAll[locale]));
         if (width <= 900) assert.equal(await page.locator(".question-list").evaluate((el) => el.open), false);
         if ((width === 390 || width === 1440) && locale === "vi" && type === "karimen") {
@@ -87,12 +129,12 @@ try {
         await page.locator('[data-answer="true"]').click();
         const alternative = locale === "en" ? "ja" : "en";
         const timerBefore = await page.locator(".timer").textContent();
-        await page.selectOption(".language-select", alternative);
+        await selectLanguage(page, alternative);
         assert.equal(await page.locator('[data-answer="true"]').getAttribute("class"), "answer-button selected");
         assert.ok((await page.locator(".question-title").textContent()).includes(exam.questions[0].textAll[alternative]));
         const seconds = (time) => time.split(":").reduce((m, n) => m * 60 + Number(n), 0);
         assert.ok(seconds(await page.locator(".timer").textContent()) <= seconds(timerBefore));
-        await page.selectOption(".language-select", locale);
+        await selectLanguage(page, locale);
         const imageIndex = exam.questions.findIndex((q) => q.imagePaths.length && (type !== "honmen" || q.choices.length));
         await page.locator(`[data-go-question="${imageIndex}"]`).click();
         const images = page.locator(".question-images img");
@@ -103,11 +145,11 @@ try {
           assert.equal(await page.locator(".choice-text").first().textContent(), question.choices[0].textAll[locale]);
           await page.locator('[data-choice-answer="1:true"]').click();
           const navScroll = await page.locator(".question-list").evaluate((el) => el.scrollTop);
-          await page.selectOption(".language-select", alternative);
+          await selectLanguage(page, alternative);
           assert.equal(await page.locator(".question-list").evaluate((el) => el.scrollTop), navScroll);
           assert.equal(await page.locator('[data-choice-answer="1:true"]').getAttribute("class"), "answer-button selected");
           assert.equal(await page.locator(".choice-text").first().textContent(), question.choices[0].textAll[alternative]);
-          await page.selectOption(".language-select", locale);
+          await selectLanguage(page, locale);
         }
         await checkLayout(page, `${width}/${locale}/${type}/image`);
         const explanationIndex = exam.questions.findIndex((q) => q.explanationAll[locale]);
@@ -144,7 +186,7 @@ try {
       await page.locator('[data-tab="exams"]').click();
       await page.reload();
       await page.waitForSelector(".exam-card");
-      assert.equal(await page.locator(".language-select").inputValue(), locale);
+      assert.equal(await page.locator(".language-trigger span").textContent(), languages[locale]);
     }
     assert.deepEqual(pageErrors, [], `Browser errors at width ${width}`);
     await context.close();

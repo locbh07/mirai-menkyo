@@ -27,6 +27,9 @@ data/karimen-honmen-vi
 
 It writes optimized static files to `dist/data`.
 
+The complete scraped snapshot, including all seven JSON/JSONL exports and assets,
+is stored in this repository. No sibling backend repository is required to build.
+
 Exam questions, choices and available explanations contain Vietnamese, Japanese,
 English, Simplified Chinese, Traditional Chinese and Portuguese translations.
 The build lists only languages with complete question and choice coverage in the
@@ -45,3 +48,8 @@ npm run test:ui
 Checks six viewport widths from 320px to 1920px, all available languages, question
 navigation bounds and 44px touch targets, images, grading, language persistence,
 knowledge tables and location search. Screenshots are saved under `dist/ui-check`.
+
+The home page separates Karimen, Honmen and Gentsuki into independent sections.
+UI checks also cover section shortcuts, flag images and keyboard navigation in
+the language picker. Flag PNGs are hosted locally under `src/assets/flags` and
+were downloaded from [Flagpedia/FlagCDN](https://flagpedia.net/download/api).
