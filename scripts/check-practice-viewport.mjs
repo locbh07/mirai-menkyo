@@ -4,14 +4,16 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
+import { dataConfig } from "../dist/data-config.js";
+import { encodeJsonData, readBuiltData } from "./data-files.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dist = path.join(root, "dist");
 const output = path.join(root, "output/pink-ui");
 await mkdir(output, { recursive: true });
-const manifest = JSON.parse(await readFile(path.join(dist, "data/manifest.json"), "utf8"));
+const manifest = await readBuiltData(path.join(dist, dataConfig.manifestPath), dataConfig);
 const exams = await Promise.all(manifest.exams.map(async (item) => ({
-  item, data: JSON.parse(await readFile(path.join(dist, item.path), "utf8")),
+  item, data: await readBuiltData(path.join(dist, item.path), dataConfig),
 })));
 const mime = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".png": "image/png", ".gif": "image/gif", ".jpg": "image/jpeg", ".svg": "image/svg+xml" };
 const server = http.createServer(async (request, response) => {
@@ -114,7 +116,7 @@ try {
         ].filter(Boolean).map((q) => [q.id, q])).values()];
         // Real unmodified questions from all sets, replayed together to exercise the longest translations.
         const routeUrl = `${base}/${original.item.path}`;
-        await page.route(routeUrl, (route) => route.fulfill({ json: { ...original.data, questions: candidates } }));
+        await page.route(routeUrl, async (route) => route.fulfill({ contentType: "application/octet-stream", body: await encodeJsonData({ ...original.data, questions: candidates }, dataConfig.keyBase64) }));
         await page.goto(base);
         await page.locator(`.exam-card.${type}`).first().click();
         await page.waitForSelector(".question-title");

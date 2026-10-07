@@ -6,14 +6,16 @@ import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { languages, languageFlags, translate } from "../src/i18n.js";
 import { iconNames } from "../src/icons.js";
+import { dataConfig } from "../dist/data-config.js";
+import { readBuiltData } from "./data-files.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dist = path.join(root, "dist");
 const screenshots = path.join(dist, "ui-check");
 await mkdir(screenshots, { recursive: true });
-const manifest = JSON.parse(await readFile(path.join(dist, "data/manifest.json"), "utf8"));
-const knowledge = JSON.parse(await readFile(path.join(dist, "data/knowledge.json"), "utf8"));
-const locations = JSON.parse(await readFile(path.join(dist, "data/locations.json"), "utf8"));
+const manifest = await readBuiltData(path.join(dist, dataConfig.manifestPath), dataConfig);
+const knowledge = await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig);
+const locations = await readBuiltData(path.join(dist, manifest.locationsPath), dataConfig);
 const knowledgeOnly = process.argv.includes("--knowledge");
 const autoAdvanceOnly = process.argv.includes("--auto-advance");
 const imagesOnly = process.argv.includes("--images");
@@ -172,7 +174,7 @@ async function checkQuestionImages(page, name) {
 async function checkImageWorkflow(page, width, locale) {
   for (const type of ["karimen", "honmen", "gentsuki"]) {
     const item = manifest.exams.find((exam) => exam.type === type);
-    const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+    const exam = await readBuiltData(path.join(dist, item.path), dataConfig);
     const index = exam.questions.findIndex((q, index) => index > 0 && q.imagePaths.length && !exam.questions[index - 1].choices.length);
     assert.ok(index > 0);
     await page.locator(`.exam-card.${type}`).first().click();
@@ -224,7 +226,7 @@ async function checkSlowImageWorkflow(width) {
       return image.getBoundingClientRect().top >= (header && getComputedStyle(header).position === "sticky" ? header.getBoundingClientRect().bottom : 0) - 1;
     }), true, "Image scrolled out of view after a delayed load");
     const item = manifest.exams.find((exam) => exam.type === "honmen");
-    const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+    const exam = await readBuiltData(path.join(dist, item.path), dataConfig);
     const otherIndex = exam.questions.findIndex((q, index) => index > 0 && index !== 90 && q.imagePaths.length && !exam.questions[index - 1].choices.length);
     await goQuestion(page, otherIndex - 1);
     await page.locator('[data-answer="true"]').click();
@@ -244,7 +246,7 @@ async function checkSlowImageWorkflow(width) {
 async function checkAutoAdvance(page, width, locale) {
   for (const type of ["karimen", "honmen", "gentsuki"]) {
     const item = manifest.exams.find((exam) => exam.type === type);
-    const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+    const exam = await readBuiltData(path.join(dist, item.path), dataConfig);
     await page.locator(`.exam-card.${type}`).first().click();
     await page.waitForSelector(".question-title");
     await page.locator('[data-answer="true"]').dblclick({ delay: 50 });
@@ -541,7 +543,7 @@ try {
       }
       for (const type of ["karimen", "honmen", "gentsuki"]) {
         const item = manifest.exams.find((exam) => exam.type === type);
-        const exam = JSON.parse(await readFile(path.join(dist, item.path), "utf8"));
+        const exam = await readBuiltData(path.join(dist, item.path), dataConfig);
         await page.locator(`.exam-card.${type}`).first().click();
         await page.waitForSelector(".question-title");
         assert.equal(await page.evaluate(() => window.scrollY), 0);

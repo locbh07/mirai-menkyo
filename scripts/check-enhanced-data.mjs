@@ -3,13 +3,17 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { existsSync } from "node:fs";
+import { dataConfig } from "../dist/data-config.js";
+import { readBuiltData } from "./data-files.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const sourceRoot = path.join(root, "data/karimen-honmen-vi");
 const originals = JSON.parse(await readFile(path.join(sourceRoot, "all.json"), "utf8"));
 const packBytes = await readFile(path.join(root, "data/enhanced-exam-images/manifest.json"));
 const pack = JSON.parse(packBytes.toString("utf8"));
-const manifest = JSON.parse(await readFile(path.join(root, "dist/data/manifest.json"), "utf8"));
+const manifest = await readBuiltData(path.join(root, "dist", dataConfig.manifestPath), dataConfig);
+assert.equal(manifest.dataFormat, "aes-gcm-v1");
 const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const originalMode = process.env.MENKYO_ORIGINAL_IMAGES === "1";
 assert.equal(manifest.imageVersion, originalMode ? null : sha256(JSON.stringify(pack)).slice(0, 12));
@@ -19,9 +23,8 @@ let questions = 0, upgraded = 0, fallback = 0;
 for (const exam of originals.exam_sets) {
   const entry = manifest.exams.find((item) => item.id === exam.source_id);
   assert.ok(entry);
-  const bytes = await readFile(path.join(root, "dist", entry.path));
-  const actual = JSON.parse(bytes.toString("utf8"));
-  assert.deepEqual(await readFile(path.join(root, "dist/data/exams", exam.exam_type, `exam-${exam.exam_number}.json`)), bytes);
+  const actual = await readBuiltData(path.join(root, "dist", entry.path), dataConfig);
+  assert.ok(!existsSync(path.join(root, "dist/data/exams", exam.exam_type, `exam-${exam.exam_number}.json`)), "Legacy plaintext exam must not be deployed");
   assert.equal(actual.questions.length, exam.questions.length);
   for (let index = 0; index < exam.questions.length; index++) {
     const before = exam.questions[index], after = actual.questions[index];

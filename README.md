@@ -11,10 +11,11 @@ npm run dev
 
 Open `http://localhost:8788`.
 
-## Cloudflare Pages
+## Cloudflare Workers (Static Assets)
 
 - Build command: `npm run build`
-- Build output directory: `dist`
+- Deploy command: `npx wrangler deploy`
+- Static assets directory: `dist`, configured in `wrangler.jsonc`
 - Suggested domain: `menkyo.miraivn.com`
 
 ## Data
@@ -25,7 +26,60 @@ The build script reads bundled scraped data from:
 data/karimen-honmen-vi
 ```
 
-It writes optimized static files to `dist/data`.
+It writes optimized encrypted data packets to `dist/data/content`, alongside the
+static image assets. Original JSON exports are not changed.
+
+### Data Pack And Shortcut Deterrent
+
+Runtime catalog, exam sets, knowledge and locations are AES-256-GCM packets with
+fresh 96-bit IVs and 128-bit authentication tags. Packet names are ciphertext
+SHA-256 hashes. No plaintext runtime JSON/JSONL or legacy exam JSON files are
+deployed. `dist/data-config.js` is generated at build time with the catalog path
+and the public browser decryption key; it is served without caching. The browser
+uses native Web Crypto, requiring HTTPS or localhost.
+
+This is a casual-download deterrent, **not access control, DRM or Premium data
+protection**. The browser must decrypt these packets, so a determined visitor can
+recover the data and answers. The key is public, not a credential. The bundled
+original JSON is still in this repository: make the repository private if it
+should not be publicly downloadable. Existing clones/downloads cannot be revoked.
+
+While the page has keyboard focus, cancelable F12, Ctrl+Shift+I/J/C, Ctrl+U and
+corresponding Mac shortcuts are intercepted. Normal copy/paste, find, print,
+context menus and IME composition are retained. Browser menus, extensions,
+disabled JavaScript and detached DevTools can bypass this. A page cannot close
+the browser's DevTools or prevent viewing its delivered source.
+
+A desktop-only geometry heuristic samples every 500ms and requires three
+consecutive dock-like readings before displaying a blocking, localized dialog.
+The dialog explains the pause and offers Try again; it does not pretend to load.
+It clears after two normal readings, or immediately after a successful retry.
+Initial data requests wait for the check; exam time pauses and answers remain
+in memory while blocked. Native touch/mobile devices, small desktop windows,
+fullscreen, changed zoom/scaling and ambiguous two-axis size gaps are excluded
+from the docked-panel geometry check.
+Device-mode checks separately flag mobile user agents with desktop platforms,
+or a screen-size change combined with newly enabled touch/mobile signals after
+a trusted desktop visit. A per-tab desktop baseline in sessionStorage survives
+reloads; unavailable storage falls back to memory. Touch alone and iPadOS
+desktop-site mode are not treated as emulation.
+Browser sidebars can still cause false positives, and detached tools may be missed.
+Device mode opened before any trusted desktop visit can bypass these checks if
+it keeps a desktop user agent or fully spoofs native mobile metrics.
+This is not a reliable DevTools detector or data-access boundary. There are no
+`debugger` loops, forced window closing, or destructive state resets.
+
+`npm run test:data-pack` verifies decoding, packet hashes, lack of deployed
+plaintext exports, tamper/wrong-key rejection, keyboard handling and browser
+workflows. For Premium, move access checks and grading to a server/API, with
+authentication, authorization and abuse limits; do not rely on this pack.
+See [OWASP authorization guidance](https://cheatsheetseries.owasp.org/cheatsheets/Authorization_Cheat_Sheet.html#verify-that-authorization-checks-are-performed-in-the-right-location).
+
+`npm run test:guard` verifies the geometry policy, six translated dialogs,
+startup fetch gating, retry/focus behavior, paused exam time, retained answers,
+native touch-device exclusions and narrow layouts. Tests include simulated
+geometry plus actual Chromium CDP mobile/touch/DPR emulation, reload and recovery.
+Passing these checks does not prove reliable DevTools detection.
 
 The complete scraped snapshot, including all seven JSON/JSONL exports and assets,
 is stored in this repository. No sibling backend repository is required to build.
@@ -146,9 +200,9 @@ outputs are promoted; rejected sources keep their original image references.
 
 The build matches originals by SHA-256, so duplicate files across exams reuse one
 enhanced PNG. Original exported JSON and images remain unchanged. PNG filenames
-use output-content hashes for immutable caching. Exam JSON paths in the manifest
-include the image-pack version to avoid stale image references; legacy exam JSON
-filenames remain available. The frontend, all six languages and grading data use
+use output-content hashes for immutable caching. Encrypted exam-packet paths in
+the catalog incorporate their contents, including the image references. Legacy
+plaintext exam JSON files are no longer deployed. The frontend, all six languages and grading data use
 the same image pack, without runtime upscaling or API calls.
 
 To build with original images instead, set `MENKYO_ORIGINAL_IMAGES=1` for the build.

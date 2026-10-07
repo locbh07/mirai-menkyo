@@ -1,5 +1,11 @@
 import { languages, languageFlags, translate } from "./i18n.js";
 import { icon } from "./icons.js";
+import { dataConfig } from "./data-config.js";
+import { decodeJsonData } from "./data-codec.js";
+import { installShortcutDeterrent } from "./shortcut-deterrent.js";
+import { createDevtoolsGuard } from "./devtools-guard.js";
+
+installShortcutDeterrent();
 
 const storedLocale = localStorage.getItem("mirai-menkyo-locale");
 const state = {
@@ -70,13 +76,20 @@ function renderLanguageMenu() {
 
 const app = document.querySelector("#app");
 let questionObserver;
+const accessGuard = createDevtoolsGuard({
+  getLocale: () => state.locale,
+  onBlockChange: () => {
+    clearAutoAdvance();
+    if (state.manifest) render();
+  },
+});
 
 init();
 
 async function init() {
   app.innerHTML = renderShell(`<div class="loading">${t("loading")}</div>`);
   try {
-    state.manifest = await fetchJson("data/manifest.json", { cache: "no-cache" });
+    state.manifest = await fetchJson(dataConfig.manifestPath);
     if (!state.manifest.locales?.includes(state.locale)) state.locale = state.manifest.locale;
     render();
   } catch (error) {
@@ -503,7 +516,7 @@ async function revealQuestion(examId, questionId) {
   if (images) {
     await Promise.allSettled([...images.querySelectorAll("img")].map((image) => image.decode()));
   }
-  if (!heading?.isConnected || state.tab !== "practice" || state.submitted || state.advanceTimer !== null || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== questionId) return;
+  if (!heading?.isConnected || accessGuard.blocked || state.tab !== "practice" || state.submitted || state.advanceTimer !== null || state.currentExam?.id !== examId || state.currentExam.questions[state.currentQuestionIndex]?.id !== questionId) return;
   heading.focus({ preventScroll: true });
   questionScrollArea(document.querySelector(".question-body")).scrollTop = 0;
 }
@@ -555,6 +568,7 @@ function savedScore(id) {
 function startTimer() {
   clearInterval(state.timerId);
   state.timerId = setInterval(() => {
+    if (accessGuard.blocked) return;
     if (state.secondsLeft <= 1) {
       state.secondsLeft = 0;
       scoreExam();
@@ -567,7 +581,7 @@ function startTimer() {
 }
 
 async function renderKnowledgeAsync() {
-  if (!state.knowledge) state.knowledge = await fetchJson("data/knowledge.json");
+  if (!state.knowledge) state.knowledge = await fetchJson(state.manifest.knowledgePath);
   render();
 }
 
@@ -735,7 +749,7 @@ function renderTrafficSignTable(table, tableIndex) {
 }
 
 async function renderLocationsAsync() {
-  if (!state.locations) state.locations = await fetchJson("data/locations.json");
+  if (!state.locations) state.locations = await fetchJson(state.manifest.locationsPath);
   render();
 }
 
@@ -940,9 +954,14 @@ function toggleQuestionNav(open, restoreFocus = true) {
 }
 
 async function fetchJson(url, options) {
+  await accessGuard.waitUntilAllowed();
   const response = await fetch(url, options);
   if (!response.ok) throw new Error(`${response.status} ${response.statusText}`);
-  return response.json();
+  try {
+    return await decodeJsonData(await response.arrayBuffer(), dataConfig.keyBase64);
+  } catch {
+    throw new Error(t("dataReload"));
+  }
 }
 
 function showError(error) {

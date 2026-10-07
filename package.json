@@ -14,6 +14,8 @@
     "test:controls": "npm run build && node scripts/check-ui.mjs --controls",
     "test:locations": "npm run build && node scripts/check-ui.mjs --locations",
     "test:viewport": "npm run build && node scripts/check-practice-viewport.mjs",
+    "test:data-pack": "npm run build && node scripts/check-data-pack.mjs",
+    "test:guard": "npm run build && node scripts/check-devtools-guard.mjs",
     "test:upscale-preview": "node scripts/check-upscale-preview.mjs",
     "backup:images": "node scripts/backup-image-data.mjs",
     "promote:images": "node scripts/promote-upscaled-images.mjs",

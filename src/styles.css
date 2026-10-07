@@ -85,6 +85,73 @@ a:hover {
   pointer-events: none;
 }
 
+.devtools-notice {
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 28px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 16px 64px rgba(0, 0, 0, 0.14);
+}
+
+.devtools-notice::backdrop {
+  background: rgba(28, 28, 30, 0.48);
+  backdrop-filter: blur(4px);
+}
+
+.devtools-notice-symbol {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  background: var(--navy-soft);
+  color: var(--navy);
+}
+
+.devtools-notice-symbol .ui-icon {
+  width: 26px;
+  height: 26px;
+}
+
+.devtools-notice h2 {
+  margin: 0 0 10px;
+  font-size: 22px;
+  line-height: 1.4;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.devtools-notice p {
+  margin: 0 0 20px;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.devtools-notice .devtools-notice-status {
+  margin-bottom: 16px;
+  color: var(--muted);
+}
+
+.devtools-notice-retry {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+
+@media (max-width: 620px) {
+  .devtools-notice {
+    padding: 22px;
+  }
+}
+
 .icon-button {
   position: relative;
   display: inline-flex;

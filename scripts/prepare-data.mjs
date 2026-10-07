@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { createDataWriter } from "./data-files.mjs";
 
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const sourceRoot = path.join(root, "data", "karimen-honmen-vi");
@@ -65,7 +66,7 @@ export async function prepareData() {
   }
 
   await rm(distData, { recursive: true, force: true });
-  await mkdir(path.join(distData, "exams"), { recursive: true });
+  const writer = await createDataWriter(distData);
 
   const all = JSON.parse(await readFile(path.join(sourceRoot, "all.json"), "utf8"));
   const questions = all.exam_sets.flatMap((exam) => exam.questions || []);
@@ -81,6 +82,7 @@ export async function prepareData() {
     knowledgeLocale: all.metadata?.locale || "vi",
     generatedAt: all.metadata?.scraped_at,
     imageVersion,
+    dataFormat: "aes-gcm-v1",
     exams: [],
     stats: {
       examSets: all.exam_sets.length,
@@ -91,8 +93,6 @@ export async function prepareData() {
   };
 
   for (const examSet of all.exam_sets) {
-    const examDir = path.join(distData, "exams", examSet.exam_type);
-    await mkdir(examDir, { recursive: true });
     const questions = (examSet.questions || []).map((question) => slimQuestion(question, imageOverrides));
     const examPayload = {
       id: examSet.source_id,
@@ -103,41 +103,32 @@ export async function prepareData() {
       passingScore: 90,
       questions,
     };
-    const legacyFile = `exam-${examSet.exam_number}.json`;
-    const file = imageVersion ? `exam-${examSet.exam_number}-${imageVersion}.json` : legacyFile;
-    const examJson = JSON.stringify(examPayload, null, 2);
-    await writeFile(path.join(examDir, file), examJson, "utf8");
-    if (file !== legacyFile) await writeFile(path.join(examDir, legacyFile), examJson, "utf8");
+    const examPath = await writer.write(examPayload);
     manifest.exams.push({
       id: examSet.source_id,
       type: examSet.exam_type,
       number: examSet.exam_number,
       title: examPayload.title,
       questionCount: questions.length,
-      path: `data/exams/${examSet.exam_type}/${file}`,
+      path: examPath,
     });
   }
 
-  await writeFile(path.join(distData, "manifest.json"), JSON.stringify(manifest, null, 2), "utf8");
-  await writeFile(
-    path.join(distData, "knowledge.json"),
-    JSON.stringify(
-      all.knowledge_articles.map((article) => ({
-        id: article.source_id,
-        locale: article.locale || all.metadata?.locale || "vi",
-        slug: article.slug,
-        title: article.title,
-        text: article.content_text,
-        blocks: article.blocks || [],
-        tables: article.tables || [],
-        images: article.images || [],
-      })),
-      null,
-      2,
-    ),
-    "utf8",
+  manifest.knowledgePath = await writer.write(
+    all.knowledge_articles.map((article) => ({
+      id: article.source_id,
+      locale: article.locale || all.metadata?.locale || "vi",
+      slug: article.slug,
+      title: article.title,
+      text: article.content_text,
+      blocks: article.blocks || [],
+      tables: article.tables || [],
+      images: article.images || [],
+    })),
   );
-  await writeFile(path.join(distData, "locations.json"), JSON.stringify(all.test_locations, null, 2), "utf8");
+  manifest.locationsPath = await writer.write(all.test_locations);
+  const manifestPath = await writer.write(manifest);
+  await writeFile(path.join(root, "dist/data-config.js"), `export const dataConfig = Object.freeze(${JSON.stringify({ version: 1, keyBase64: writer.keyBase64, manifestPath })});\n`, "utf8");
 
   const assetSource = path.join(sourceRoot, "assets");
   if (existsSync(assetSource)) {
@@ -154,6 +145,6 @@ function examTitle(type, number) {
   return `${names[type] || type} ${number}`;
 }
 
-if (import.meta.url === `file://${process.argv[1]?.replaceAll("\\", "/")}`) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
   await prepareData();
 }
