@@ -1,6 +1,6 @@
 export const iconNames = [
-  "book-open", "car", "check", "chevron-left", "chevron-right",
-  "clipboard-check", "clock-3", "layout-grid", "list", "map-pin", "menu", "rotate-ccw", "shield-alert", "x",
+  "arrow-up-right", "book-open", "car", "check", "chevron-down", "chevron-left", "chevron-right",
+  "clipboard-check", "clock-3", "external-link", "layout-grid", "list", "map-pin", "menu", "rotate-ccw", "shield-alert", "x", "zoom-in",
 ];
 
 export function icon(name) {

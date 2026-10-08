@@ -14,7 +14,8 @@ const dist = path.join(root, "dist");
 const screenshots = path.join(dist, "ui-check");
 await mkdir(screenshots, { recursive: true });
 const manifest = await readBuiltData(path.join(dist, dataConfig.manifestPath), dataConfig);
-const knowledge = await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig);
+const knowledgeCatalog = (await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig)).filter((article) => article.locale === "vi");
+const knowledge = knowledgeCatalog.filter((article) => article.format !== "pdf-lessons-v1");
 const locations = await readBuiltData(path.join(dist, manifest.locationsPath), dataConfig);
 const knowledgeOnly = process.argv.includes("--knowledge");
 const autoAdvanceOnly = process.argv.includes("--auto-advance");
@@ -62,6 +63,8 @@ async function checkLayout(page, name) {
 }
 
 async function checkPracticeControls(page, locale, submitted = false) {
+  assert.equal(await page.locator(".answer-button .ui-icon").count(), 0, "True/false answers are text-only");
+  if (submitted) assert.ok(await page.locator(".answer-button.correct").evaluateAll((buttons) => buttons.every((button) => getComputedStyle(button).backgroundColor === "rgb(167, 243, 208)")), "Correct answers use the stronger green");
   assert.equal(await page.locator(".question-topline [data-back-exams]").count(), 1);
   assert.equal(await page.locator(".question-footer button").count(), 3);
   assert.equal(await page.locator(".question-footer [data-back-exams]").count(), 0);
@@ -348,7 +351,8 @@ async function checkAutoAdvance(page, width, locale) {
 async function checkKnowledge(page, width, locale) {
   await page.locator('[data-tab="knowledge"]').click();
   await page.waitForSelector(".article-row");
-  assert.equal(await page.locator(".article-row").count(), knowledge.length);
+  await page.locator("[data-knowledge-language]").selectOption("vi");
+  assert.equal(await page.locator(".article-row").count(), knowledgeCatalog.length);
   if (locale !== "vi") assert.equal(await page.locator(".content-language").count(), 1);
   const dimensions = await page.locator(".article-row").evaluateAll((rows) => rows.map((row) => ({ row: row.getBoundingClientRect().width, list: row.parentElement.clientWidth })));
   assert.ok(dimensions.every(({ row, list }) => Math.abs(row - list) < 1), "Article rows must occupy the entire list width");
@@ -356,11 +360,11 @@ async function checkKnowledge(page, width, locale) {
   const search = page.locator("[data-knowledge-search]");
   await search.fill("bien bao");
   assert.equal(await page.locator('[data-open-article="vi-knowledge-traffic-signs"]').count(), 1);
-  assert.ok(await page.locator(".article-row").count() < knowledge.length);
+  assert.ok(await page.locator(".article-row").count() < knowledgeCatalog.length);
   await search.fill("zzzz-no-match");
   assert.equal(await page.locator(".empty-state").count(), 1);
   await search.fill("");
-  assert.equal(await page.locator(".article-row").count(), knowledge.length);
+  assert.equal(await page.locator(".article-row").count(), knowledgeCatalog.length);
   assert.equal(await page.locator(".article-row:disabled").count(), knowledge.filter((article) => !article.blocks.length && !article.tables.length && !article.images.length).length);
   if ((width === 390 || width === 1440) && locale === "vi") {
     await page.screenshot({ path: path.join(screenshots, `${width}-knowledge-list.png`) });

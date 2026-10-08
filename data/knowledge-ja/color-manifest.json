@@ -1,0 +1,1084 @@
+{
+  "version": 1,
+  "source": {
+    "url": "https://www.mlit.go.jp/road/sign/sign/douro/ichiran.pdf",
+    "sha256": "ea44489d2449ec7577efe8d31f8f939db79184602078695936d4664408d81853",
+    "publisher": "MLIT",
+    "rightsUrl": "https://www.mlit.go.jp/road/soudan/soudan_04a_04.html",
+    "method": "Official reference illustrations of the reviewed same sign type/direction; not recolored PDF originals. Unmatched numeric/combined/unreviewed variants remain original."
+  },
+  "images": [
+    {
+      "imageId": "p097-image00",
+      "originalSha256": "17122aad5d8625853da1c7b4fe30ae63ae599de00be81565643a4849674a6384",
+      "name": "通行止め",
+      "code": "301",
+      "crop": [
+        265.91499999999996,
+        475.15,
+        303.115,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/32d2f32e35f6a77af19256939f8ba16b8998f153c25f726cdef63d1e58a2f7e6.png",
+      "sha256": "32d2f32e35f6a77af19256939f8ba16b8998f153c25f726cdef63d1e58a2f7e6",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p097-image01",
+      "originalSha256": "3454d5d9fa14d2cfac2f9627489cae13c2012deae366e266871cbee373db6954",
+      "name": "車両通行止め",
+      "code": "302",
+      "crop": [
+        314.745,
+        475.15,
+        351.94500000000005,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/654c8e8decb6a33b9e4457b9057951d7e94779857425921df7a2e0d40e0d9f13.png",
+      "sha256": "654c8e8decb6a33b9e4457b9057951d7e94779857425921df7a2e0d40e0d9f13",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p097-image02",
+      "originalSha256": "479f777d980c080e6d25e674a989cac38bc928b7a32f08af36989f7ef80b7a0a",
+      "name": "車両進入禁止",
+      "code": "303",
+      "crop": [
+        363.645,
+        475.15,
+        400.845,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/8499c2d967a6143f07c8ab12a83b8bf0ddb4b10c8298dc487544a89fa58ae8ed.png",
+      "sha256": "8499c2d967a6143f07c8ab12a83b8bf0ddb4b10c8298dc487544a89fa58ae8ed",
+      "width": 521,
+      "height": 521
+    },
+    {
+      "imageId": "p097-image03",
+      "originalSha256": "7e3a4f84e7b08c74520f74845cf19d847a02a52fd838bafb3296edf83f8c52bf",
+      "name": "二輪の自動車以外の自動車通行止め",
+      "code": "304",
+      "crop": [
+        412.85499999999996,
+        475.15,
+        450.055,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/3623fb3a93018e7eaedf7c5c8f8d584a48b6e6abb5742bcb513012f8fd2776ee.png",
+      "sha256": "3623fb3a93018e7eaedf7c5c8f8d584a48b6e6abb5742bcb513012f8fd2776ee",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p097-image04",
+      "originalSha256": "ca7c36b8694b0110d51c285a09c01b2c0b0897012a01b77d108dfcd2f98dcc34",
+      "name": "大型貨物自動車等通行止め",
+      "code": "305",
+      "crop": [
+        461.445,
+        475.15,
+        498.64500000000004,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/5ccb08163bad65a1604449daf51d2c9ba804398da976950a6179b67c6b55c254.png",
+      "sha256": "5ccb08163bad65a1604449daf51d2c9ba804398da976950a6179b67c6b55c254",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p097-image06",
+      "originalSha256": "ced10372229131f80ac0f09fba0b81412cc167af7da56ef9df5545fba2feff4e",
+      "name": "大型乗用自動車等通行止め",
+      "code": "306",
+      "crop": [
+        510.345,
+        475.15,
+        547.5450000000001,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/7c02c96966b00de0f81dc52f6d8a4f6c3ee5af2de644c2b5f0f50a74b57a8b20.png",
+      "sha256": "7c02c96966b00de0f81dc52f6d8a4f6c3ee5af2de644c2b5f0f50a74b57a8b20",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p098-image00",
+      "originalSha256": "035b9c7cad86c3e93916b42d162d6172f1c4088d551066183b619861c7d3b898",
+      "name": "二輪の自動車・一般原動機付自転車通行止め",
+      "code": "307",
+      "crop": [
+        559.24,
+        475.15,
+        596.44,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/f8846a9ee17c25a42fd54183f52e4c07a293adb53da16304af662f6b798558e1.png",
+      "sha256": "f8846a9ee17c25a42fd54183f52e4c07a293adb53da16304af662f6b798558e1",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p098-image01",
+      "originalSha256": "7c92e9eadf830ae8f675fd28ba6f47cbf3fab85d506410cc85678af29d551dea",
+      "name": "自転車以外の軽車両通行止め",
+      "code": "308",
+      "crop": [
+        608.115,
+        475.15,
+        645.315,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/e57fbc6a443671d0412c24fff74e8f8d170256c680ac6e0c8dc0db62067bc25a.png",
+      "sha256": "e57fbc6a443671d0412c24fff74e8f8d170256c680ac6e0c8dc0db62067bc25a",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p098-image02",
+      "originalSha256": "81f3897d31d5c01c33824990b1ecfe54fd5c8cc15611a8c4f259243897e5ec5a",
+      "name": "特定小型原動機付自転車・自転車通行止め",
+      "code": "309",
+      "crop": [
+        657.035,
+        475.15,
+        694.235,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/770e2dcee3d412931fb585c4f3f13656df0ca005f40cd50fda83fe9743e05d27.png",
+      "sha256": "770e2dcee3d412931fb585c4f3f13656df0ca005f40cd50fda83fe9743e05d27",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p098-image03",
+      "originalSha256": "7b2594172780555fe23cd729eb3fc1cda7321438e730a5e0b9fcdb845b166711",
+      "name": "車両（組合せ）通行止め",
+      "code": "310",
+      "crop": [
+        705.975,
+        475.15,
+        743.1750000000001,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/6e0464e373102b2e2b754c45e0ad22f81dca061460c2a87ee1ea5c98f4336d78.png",
+      "sha256": "6e0464e373102b2e2b754c45e0ad22f81dca061460c2a87ee1ea5c98f4336d78",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p098-image04",
+      "originalSha256": "e1f45e0ade0ec81aa58b9e65f9c65d386da3c130ffd06f27505fa152eaefe3ed",
+      "name": "大型自動二輪車及び普通自動二輪車二人乗り通行禁止",
+      "code": "310の2",
+      "crop": [
+        754.875,
+        475.15,
+        792.075,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/ade00fe2eb3db4fc71cba483bb3646a6480e807342aff9fad94a02a3d232b55b.png",
+      "sha256": "ade00fe2eb3db4fc71cba483bb3646a6480e807342aff9fad94a02a3d232b55b",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p098-image05",
+      "originalSha256": "7ab6b2d9a72dca5a1e74594a1aca33c1eb00c96d3e3cf123cece11688a228d95",
+      "name": "タイヤチェーンを取り付けていない車両通行止め",
+      "code": "310の3",
+      "crop": [
+        804.03,
+        475.15,
+        841.23,
+        512.35
+      ],
+      "path": "knowledge-ja/colors/4494ecf0b6d9c96076afcff28c0184e56719c5f1ffdeb2e2b8a5b52d8186dbc1.png",
+      "sha256": "4494ecf0b6d9c96076afcff28c0184e56719c5f1ffdeb2e2b8a5b52d8186dbc1",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p099-image00",
+      "originalSha256": "5b31056a33aee77607a526ca72def1e07187bed8266e802e0cf58e3507066f69",
+      "name": "車両横断禁止",
+      "code": "312",
+      "crop": [
+        559.24,
+        533.27,
+        596.44,
+        570.47
+      ],
+      "path": "knowledge-ja/colors/d8494ba18d1cf459c8f1bf7e1c3c6efc1b6a9b89d2c8aa2b4acac45df1ffbd3e.png",
+      "sha256": "d8494ba18d1cf459c8f1bf7e1c3c6efc1b6a9b89d2c8aa2b4acac45df1ffbd3e",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p099-image01",
+      "originalSha256": "3274937162fa7e304276dbab50786c5666fc3817eb42a5fac8b1af3699e3e3ee",
+      "name": "転回禁止",
+      "code": "313",
+      "crop": [
+        608.115,
+        533.27,
+        645.315,
+        570.47
+      ],
+      "path": "knowledge-ja/colors/8ce8b9cacba95453a07012ac3c76d9217bf566f35b6cead3625672589134c66b.png",
+      "sha256": "8ce8b9cacba95453a07012ac3c76d9217bf566f35b6cead3625672589134c66b",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p099-image02",
+      "originalSha256": "4115b3f84a543b985ecc56281621c49ce5846dc39c398a71a45ad563805f5bf4",
+      "name": "追越しのための右側部分はみ出し通行禁止",
+      "code": "314",
+      "crop": [
+        657.035,
+        533.27,
+        694.235,
+        570.47
+      ],
+      "path": "knowledge-ja/colors/b493b730a275c30803837984d86e574983452e5d9a03773b5fdbee97d96eb78f.png",
+      "sha256": "b493b730a275c30803837984d86e574983452e5d9a03773b5fdbee97d96eb78f",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p099-image04",
+      "originalSha256": "463c1769768b95a760848f29ec9e9f52550ab47bf2c32f4a622b91f84561c748",
+      "name": "駐停車禁止",
+      "code": "315",
+      "crop": [
+        705.975,
+        533.27,
+        743.1750000000001,
+        570.47
+      ],
+      "path": "knowledge-ja/colors/b0fe0fb152b054f6e27d14fd4a5597376110b84d60d32a247b0deb3d17cc05ff.png",
+      "sha256": "b0fe0fb152b054f6e27d14fd4a5597376110b84d60d32a247b0deb3d17cc05ff",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p099-image05",
+      "originalSha256": "7dff133a06da395ec74b9e95b76d065de26f10a54bca4028bf60287656b28c5f",
+      "name": "駐車禁止",
+      "code": "316",
+      "crop": [
+        754.875,
+        533.27,
+        792.075,
+        570.47
+      ],
+      "path": "knowledge-ja/colors/ee61b3c14d7776c330760e1a08f5a9945632c4b5f6e497d83739a35b8934be6e.png",
+      "sha256": "ee61b3c14d7776c330760e1a08f5a9945632c4b5f6e497d83739a35b8934be6e",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p100-image01",
+      "originalSha256": "063729bce34cc5db6c59eaa9d428ce85a95f732d8ca1b58a21205b6e2ab95e46",
+      "name": "危険物積載車両通行止め",
+      "code": "319",
+      "crop": [
+        265.91499999999996,
+        591.67,
+        303.115,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/55a552f9c2d5b047749dadd527a93360e4dbdb1ca414ddb1c915e6965b90d34c.png",
+      "sha256": "55a552f9c2d5b047749dadd527a93360e4dbdb1ca414ddb1c915e6965b90d34c",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p101-image01",
+      "originalSha256": "f006ccf00868fedf18c264b28de24b195239f43b7e44b5982028bad10b25ff0a",
+      "name": "自動車専用",
+      "code": "325",
+      "crop": [
+        559.24,
+        591.67,
+        596.44,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/99c49c37fd3a900d128b8281ca46b4383a819d8e0034ae2b1df46ad6acd11b97.png",
+      "sha256": "99c49c37fd3a900d128b8281ca46b4383a819d8e0034ae2b1df46ad6acd11b97",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p101-image02",
+      "originalSha256": "a424e858fe3fe3d441f82453f96b524912234189fc88eee4847b9f141dbad56c",
+      "name": "特定小型原動機付自転車・自転車専用",
+      "code": "325の2",
+      "crop": [
+        608.115,
+        591.67,
+        645.315,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/b04a72ba8658c7b42839eb3b409255a1d353fbcaaa70fd9a6a1843fe03cf5d47.png",
+      "sha256": "b04a72ba8658c7b42839eb3b409255a1d353fbcaaa70fd9a6a1843fe03cf5d47",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p101-image03",
+      "originalSha256": "2f0d812458af44b64a287e5956d52e63be2826613c5c7deb5c460d3b01b096f4",
+      "name": "普通自転車等及び歩行者等専用",
+      "code": "325の3",
+      "crop": [
+        657.035,
+        591.67,
+        694.235,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/b825249eacdb1aa768e4d81891464ae8d823e4d2fd05afc7cfff895f1711a7ce.png",
+      "sha256": "b825249eacdb1aa768e4d81891464ae8d823e4d2fd05afc7cfff895f1711a7ce",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p102-image00",
+      "originalSha256": "dbd8fade2057cc04d957e5bdfd01e4b428c39d521447385cce5f37641d1b7911",
+      "name": "歩行者等専用",
+      "code": "325の4",
+      "crop": [
+        705.975,
+        591.67,
+        743.1750000000001,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/1c61a3e166f5109a1e3189e39ca97dd5f67e5dfc39be2df9cbaf59f6a659797c.png",
+      "sha256": "1c61a3e166f5109a1e3189e39ca97dd5f67e5dfc39be2df9cbaf59f6a659797c",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p102-image01",
+      "originalSha256": "1e0bef9bd44758fd0054f33bd0c3182a168bfa53339c47771e71ad965d763f98",
+      "name": "許可車両専用",
+      "code": "325の5-A",
+      "crop": [
+        754.875,
+        591.67,
+        792.075,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/a08874d9f8d0ac19236ebfd4ab554699d697517294b076bce607983bfea6af44.png",
+      "sha256": "a08874d9f8d0ac19236ebfd4ab554699d697517294b076bce607983bfea6af44",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p102-image02",
+      "originalSha256": "102cc9ff3c4e1cb1fc09b9a7b4f22a6c31e367e0ea0fdcd7e361b1ec720eed8d",
+      "name": "許可車両専用",
+      "code": "325の5-B",
+      "crop": [
+        804.03,
+        591.67,
+        841.23,
+        628.87
+      ],
+      "path": "knowledge-ja/colors/d10b294ad48d83dc4ab6310f2365cf525974365e2b6dc55eff28375949e4653a.png",
+      "sha256": "d10b294ad48d83dc4ab6310f2365cf525974365e2b6dc55eff28375949e4653a",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p102-image03",
+      "originalSha256": "fbf14afefc73e4eb81786ec2b5f526424caf3dd405c9784309a352cb374b6195",
+      "name": "許可車両専用",
+      "code": "325の5-C",
+      "crop": [
+        265.91499999999996,
+        650.05,
+        303.115,
+        687.25
+      ],
+      "path": "knowledge-ja/colors/fe829670ee2cebc14643a193e29b53cc9f0970672494527933445b199d977d4f.png",
+      "sha256": "fe829670ee2cebc14643a193e29b53cc9f0970672494527933445b199d977d4f",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p102-image04",
+      "originalSha256": "f571394b36616d895ca71adce9d19202d97f125ae567235061aef447787f2c71",
+      "name": "許可車両（組合せ）専用",
+      "code": "325の6",
+      "crop": [
+        314.745,
+        650.05,
+        351.94500000000005,
+        687.25
+      ],
+      "path": "knowledge-ja/colors/27a6cf94a4281e06a7115455aea535c8768a789d373dbbd0177515e6ad70666b.png",
+      "sha256": "27a6cf94a4281e06a7115455aea535c8768a789d373dbbd0177515e6ad70666b",
+      "width": 522,
+      "height": 522
+    },
+    {
+      "imageId": "p102-image05",
+      "originalSha256": "7ff47c98e4d47408d5feb460cfc6eecb6dba3830dbbcf1bd3e350d580edb40c3",
+      "name": "広域災害応急対策車両専用",
+      "code": "325の7",
+      "crop": [
+        363.645,
+        650.05,
+        400.845,
+        687.25
+      ],
+      "path": "knowledge-ja/colors/ca42084ef7283d07ed6e4e9ceba6ac152030bf7be5b1b2a0d53d2eeb018d24b0.png",
+      "sha256": "ca42084ef7283d07ed6e4e9ceba6ac152030bf7be5b1b2a0d53d2eeb018d24b0",
+      "width": 521,
+      "height": 522
+    },
+    {
+      "imageId": "p104-image02",
+      "originalSha256": "8fd6bd46c913d247187a0c8df72b030159b983325d05b1633802838971e4d093",
+      "name": "一般原動機付自転車の右折方法（二段階）",
+      "code": "327の8",
+      "crop": [
+        559.44,
+        708.5,
+        596.24,
+        744.8
+      ],
+      "path": "knowledge-ja/colors/6df7ffc93599a207bfe315ed0f8a74c75cbf5fac27edf959971934f764f085f1.png",
+      "sha256": "6df7ffc93599a207bfe315ed0f8a74c75cbf5fac27edf959971934f764f085f1",
+      "width": 516,
+      "height": 509
+    },
+    {
+      "imageId": "p104-image03",
+      "originalSha256": "f55623136a1ac6542a68b6de3ec6470397f0825f68ca042f338d6dc4576707d6",
+      "name": "一般原動機付自転車の右折方法（小回り）",
+      "code": "327の9",
+      "crop": [
+        608.315,
+        708.5,
+        645.115,
+        744.8
+      ],
+      "path": "knowledge-ja/colors/bb77b029467cde14697a99a50cce054984ad4aa007b2bc3542e79f244bdb023f.png",
+      "sha256": "bb77b029467cde14697a99a50cce054984ad4aa007b2bc3542e79f244bdb023f",
+      "width": 516,
+      "height": 509
+    },
+    {
+      "imageId": "p104-image04",
+      "originalSha256": "40043760b2d42a319fe6c5a573b34dbd6b0b355305d1cec2d19fa16cb5837941",
+      "name": "環状の交差点における右回り通行",
+      "code": "327の10",
+      "crop": [
+        657.035,
+        707.0,
+        694.235,
+        744.2
+      ],
+      "path": "knowledge-ja/colors/8d7a1e6cff53c92a7862dc8ef8a537cf20474fe4769e62928061128cc49870bf.png",
+      "sha256": "8d7a1e6cff53c92a7862dc8ef8a537cf20474fe4769e62928061128cc49870bf",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p104-image05",
+      "originalSha256": "005883b4a64658c126f8d519efb300ffee2c41eeee8d968583c5bfed5d0b1dc1",
+      "name": "平行駐車",
+      "code": "327の11",
+      "crop": [
+        705.975,
+        707.0,
+        743.1750000000001,
+        744.2
+      ],
+      "path": "knowledge-ja/colors/14453096cad8147ab6d7b9edadabd7d7b3ef4d5158e95dda240930f537cf8194.png",
+      "sha256": "14453096cad8147ab6d7b9edadabd7d7b3ef4d5158e95dda240930f537cf8194",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p105-image00",
+      "originalSha256": "4af894a8fd963971ab260ad17a9d3e716ec6d0c0fbc1778f527b055a3fd417ad",
+      "name": "直角駐車",
+      "code": "327の12",
+      "crop": [
+        754.875,
+        707.0,
+        792.075,
+        744.2
+      ],
+      "path": "knowledge-ja/colors/5ffd88a8c5aa6e43b6932cd2b068344ba7c4eff48768d296cc37778bcf23b057.png",
+      "sha256": "5ffd88a8c5aa6e43b6932cd2b068344ba7c4eff48768d296cc37778bcf23b057",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p105-image01",
+      "originalSha256": "dbc8a5b78e405b3603b48528788cebd3c166db9c0d655df11045da969f1f8f79",
+      "name": "斜め駐車",
+      "code": "327の13",
+      "crop": [
+        804.03,
+        707.0,
+        841.23,
+        744.2
+      ],
+      "path": "knowledge-ja/colors/adf0d9a25aa2cb9e14a28d329a36385a23bb401eb41a79dd2751ca1b97b086af.png",
+      "sha256": "adf0d9a25aa2cb9e14a28d329a36385a23bb401eb41a79dd2751ca1b97b086af",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p105-image02",
+      "originalSha256": "107b4074afdaf991cfa1ac5b1c1408168708ffa19a32dc8833dcc0907877eaa2",
+      "name": "警笛鳴らせ",
+      "code": "328",
+      "crop": [
+        265.91499999999996,
+        766.5849999999999,
+        303.115,
+        803.785
+      ],
+      "path": "knowledge-ja/colors/616a9c9954012cf5066e45f436d1fbe4c6079f4e173ac797c13c8a214249e247.png",
+      "sha256": "616a9c9954012cf5066e45f436d1fbe4c6079f4e173ac797c13c8a214249e247",
+      "width": 522,
+      "height": 521
+    },
+    {
+      "imageId": "p107-image01",
+      "originalSha256": "c9431090d4edc5f135cf2518b5a4b676e28e8c903dc900afca486d6cdd86a04b",
+      "name": "並進可",
+      "code": "401",
+      "crop": [
+        851.6,
+        475.79,
+        888.4,
+        512.59
+      ],
+      "path": "knowledge-ja/colors/6c7c44aa7210191322201d15c7bdc1c9d6c800d1dce34d5b4c8a6bf6132b0f21.png",
+      "sha256": "6c7c44aa7210191322201d15c7bdc1c9d6c800d1dce34d5b4c8a6bf6132b0f21",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p107-image02",
+      "originalSha256": "d7b96f48f9565684c57ef7dd9e75c1c35ac5c237f834d577630667ac76c52bf3",
+      "name": "軌道敷内通行可",
+      "code": "402",
+      "crop": [
+        894.59,
+        475.79,
+        931.39,
+        512.59
+      ],
+      "path": "knowledge-ja/colors/5063d685241a48b89a08f330923dbdb10f3a38181b1ac193763b2659884e11e9.png",
+      "sha256": "5063d685241a48b89a08f330923dbdb10f3a38181b1ac193763b2659884e11e9",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p107-image04",
+      "originalSha256": "724f0678de573a9586915d74d084482ef3bd1c3c9f5f28cb77c6978018eb2d58",
+      "name": "駐車可",
+      "code": "403",
+      "crop": [
+        937.58,
+        475.79,
+        974.38,
+        512.59
+      ],
+      "path": "knowledge-ja/colors/b240333e99fb823a565fa8cdff46c8241327c78f5ee5e45be954ca0567cf9eca.png",
+      "sha256": "b240333e99fb823a565fa8cdff46c8241327c78f5ee5e45be954ca0567cf9eca",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p108-image01",
+      "originalSha256": "e6d68cee9757008e0861521d8705df9bedc5038ed2ebe1f9772438cfafbee019",
+      "name": "停車可",
+      "code": "404",
+      "crop": [
+        851.6,
+        534.01,
+        888.4,
+        570.81
+      ],
+      "path": "knowledge-ja/colors/ab4e10b8e0105f0a0669500cde3ac7e9d5d85d86175c5cc5f3cc591f15ac2900.png",
+      "sha256": "ab4e10b8e0105f0a0669500cde3ac7e9d5d85d86175c5cc5f3cc591f15ac2900",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p108-image02",
+      "originalSha256": "18b6e6cc849eb470ab0f641ea5228a54567513e3983d8b26c323f066b00b5871",
+      "name": "優先道路",
+      "code": "405",
+      "crop": [
+        894.59,
+        534.01,
+        931.39,
+        570.81
+      ],
+      "path": "knowledge-ja/colors/a6c37152a11f86c07fb1657e5354406f2645fb05508f8700cf5505172f0cc899.png",
+      "sha256": "a6c37152a11f86c07fb1657e5354406f2645fb05508f8700cf5505172f0cc899",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p108-image03",
+      "originalSha256": "9d231b00c8f492a76da86e7c01a72c2e2410346053a54a9b8578c6396f5559aa",
+      "name": "中央線",
+      "code": "406",
+      "crop": [
+        937.58,
+        534.01,
+        974.38,
+        570.81
+      ],
+      "path": "knowledge-ja/colors/90cfb95622813e90db5b23cd4a8dd671596f1ff600475d844ba123a4a267dbc5.png",
+      "sha256": "90cfb95622813e90db5b23cd4a8dd671596f1ff600475d844ba123a4a267dbc5",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p108-image04",
+      "originalSha256": "f9daf9652744d397d03b339fdf86b6ea37dfde83a788085ebf02b37e88f9e86d",
+      "name": "停止線",
+      "code": "406の2",
+      "crop": [
+        851.6,
+        592.23,
+        888.4,
+        629.03
+      ],
+      "path": "knowledge-ja/colors/fa6b394f1638d21033cac1c231e1fd1391c61a20192f73d70cf92924d6c54c61.png",
+      "sha256": "fa6b394f1638d21033cac1c231e1fd1391c61a20192f73d70cf92924d6c54c61",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p108-image06",
+      "originalSha256": "f5e757591bc650ea116e1b311c7fa6b2cf7f1ded6d927c7df4071ac8dd995ca9",
+      "name": "自転車横断帯",
+      "code": "407の2",
+      "crop": [
+        851.6,
+        650.45,
+        888.4,
+        687.25
+      ],
+      "path": "knowledge-ja/colors/579aba579d48376bb49d9fe40cc83f82784c57049781880537e68a9ff0c28114.png",
+      "sha256": "579aba579d48376bb49d9fe40cc83f82784c57049781880537e68a9ff0c28114",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p108-image07",
+      "originalSha256": "5bef2aa25bd6d35edaa8da673de1a8490a9540f8e5482673643d2e857f549e1c",
+      "name": "横断歩道・自転車横断帯",
+      "code": "407の3",
+      "crop": [
+        894.59,
+        650.45,
+        931.39,
+        687.25
+      ],
+      "path": "knowledge-ja/colors/13fb15215833bb235109ee27082efa854fddecbd6020b43925142100edb9b54d.png",
+      "sha256": "13fb15215833bb235109ee27082efa854fddecbd6020b43925142100edb9b54d",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p109-image00",
+      "originalSha256": "afac803f83520b413e33e03e3339c8029dffe2c7d5568a12009973f2691ebd61",
+      "name": "安全地帯",
+      "code": "408",
+      "crop": [
+        937.58,
+        650.45,
+        974.38,
+        687.25
+      ],
+      "path": "knowledge-ja/colors/765a110747ab5a259ea9c6aa4590993cbcc1f6f793a1a3d9434161452d22df29.png",
+      "sha256": "765a110747ab5a259ea9c6aa4590993cbcc1f6f793a1a3d9434161452d22df29",
+      "width": 516,
+      "height": 516
+    },
+    {
+      "imageId": "p123-image04",
+      "originalSha256": "1e0e1442fc0f666a43f3a0638d758aeac9992dab2f40dcd6746697bcd5ab7214",
+      "name": "＋形道路交差点あり",
+      "code": "201-A",
+      "crop": [
+        47.239999999999995,
+        476.18,
+        84.24,
+        513.1800000000001
+      ],
+      "path": "knowledge-ja/colors/1c6fd9969ea0d4a952bef64d5bdf3451d8b4b67d7049e3b3ac763c3bb0c3ea54.png",
+      "sha256": "1c6fd9969ea0d4a952bef64d5bdf3451d8b4b67d7049e3b3ac763c3bb0c3ea54",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p123-image05",
+      "originalSha256": "a627c113eef202b385ec03193c946ec79d3c62dac0bc981198d5ce0fbbe3e75f",
+      "name": "├形（┤形）道路交差点あり",
+      "code": "201-B",
+      "crop": [
+        89.45599999999999,
+        476.18,
+        126.45599999999999,
+        513.1800000000001
+      ],
+      "path": "knowledge-ja/colors/935b01f4afbe147f0e95888b73320aa1f63e4e6f87c542eaddb97b16421bbfcc.png",
+      "sha256": "935b01f4afbe147f0e95888b73320aa1f63e4e6f87c542eaddb97b16421bbfcc",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p123-image06",
+      "originalSha256": "b2ec6f9028bf693ee5002e2ab9ab8af47315e0c7df2012881a3b29b5aed4fce0",
+      "name": "┬形道路交差点あり",
+      "code": "201-C",
+      "crop": [
+        131.672,
+        476.18,
+        168.672,
+        513.1800000000001
+      ],
+      "path": "knowledge-ja/colors/03edc2f55bc4205b9384cf230f8702151af341f271ed13ee10dd390b9e14f1b2.png",
+      "sha256": "03edc2f55bc4205b9384cf230f8702151af341f271ed13ee10dd390b9e14f1b2",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image00",
+      "originalSha256": "301c7238f498934454b63ffa8e4c04580d037c04932fb6565aa4b7fcebc057d0",
+      "name": "Y形道路交差点あり",
+      "code": "201-D",
+      "crop": [
+        173.88799999999998,
+        476.18,
+        210.88799999999998,
+        513.1800000000001
+      ],
+      "path": "knowledge-ja/colors/7d93a2e5a18d6c863e70dd79ac790c9153875b843221590bab8dec8e54d6f1e8.png",
+      "sha256": "7d93a2e5a18d6c863e70dd79ac790c9153875b843221590bab8dec8e54d6f1e8",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image01",
+      "originalSha256": "5477f159307969ec9ecf97fa589d303076ef94a60d233699b655d67a90303783",
+      "name": "ロータリーあり",
+      "code": "201の2",
+      "crop": [
+        216.10399999999998,
+        476.18,
+        253.10399999999998,
+        513.1800000000001
+      ],
+      "path": "knowledge-ja/colors/284da936444e1d988b9ccba023743478b488c0e4422c669ff458b17670804b99.png",
+      "sha256": "284da936444e1d988b9ccba023743478b488c0e4422c669ff458b17670804b99",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image02",
+      "originalSha256": "3a2b0f7f2594a9ff0c5ed50f5c766430305e8ad9061205717df6558530314a7f",
+      "name": "右（左）方屈曲あり",
+      "code": "202",
+      "crop": [
+        47.239999999999995,
+        533.84,
+        84.24,
+        570.84
+      ],
+      "path": "knowledge-ja/colors/84d36eec27018269384da475275ae13b678d8e82fe693f9847d624d938b11852.png",
+      "sha256": "84d36eec27018269384da475275ae13b678d8e82fe693f9847d624d938b11852",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image03",
+      "originalSha256": "86af6d418367764163b85aecc6fedac58d3d1ddd0daa3bf1b4eff0a990f0f522",
+      "name": "右（左）方屈折あり",
+      "code": "203",
+      "crop": [
+        89.45599999999999,
+        533.84,
+        126.45599999999999,
+        570.84
+      ],
+      "path": "knowledge-ja/colors/895caff18bd99f346d97c34748afe468c7ec901c7a94a8b5687a75512c7a5a51.png",
+      "sha256": "895caff18bd99f346d97c34748afe468c7ec901c7a94a8b5687a75512c7a5a51",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image04",
+      "originalSha256": "7f3c58f2a3f48d7f579304c742e627698d69173e3bab57ac48c981b804d2f563",
+      "name": "右（左）背向屈曲あり",
+      "code": "204",
+      "crop": [
+        131.672,
+        533.84,
+        168.672,
+        570.84
+      ],
+      "path": "knowledge-ja/colors/1e35329a767f04964063ebac84dfb6d277b9509019df4d5f9aa7e7a4d745b967.png",
+      "sha256": "1e35329a767f04964063ebac84dfb6d277b9509019df4d5f9aa7e7a4d745b967",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image05",
+      "originalSha256": "5984a785beb5a01b5f6cfc9a7840f8235cb852f0740adb53c25a66a54de3c650",
+      "name": "右（左）背向屈折あり",
+      "code": "205",
+      "crop": [
+        173.88799999999998,
+        533.84,
+        210.88799999999998,
+        570.84
+      ],
+      "path": "knowledge-ja/colors/9b8ad53d6639d1af99b7a6ee768f10dea07d29fd89f656ed046f72ebe883be76.png",
+      "sha256": "9b8ad53d6639d1af99b7a6ee768f10dea07d29fd89f656ed046f72ebe883be76",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p124-image06",
+      "originalSha256": "e60305763c4f675da71818dd11a2c35ab7ecd009fc136ac35ebb1fd4d12a978a",
+      "name": "右（左）つづら折あり",
+      "code": "206",
+      "crop": [
+        216.10399999999998,
+        533.84,
+        253.10399999999998,
+        570.84
+      ],
+      "path": "knowledge-ja/colors/3ca85d67e63805c0063ac69b9fdeaa4fb9d16ed74ea8ed34d707abc54a26862b.png",
+      "sha256": "3ca85d67e63805c0063ac69b9fdeaa4fb9d16ed74ea8ed34d707abc54a26862b",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p125-image01",
+      "originalSha256": "214a08af0e7c86fd602602a52f0531c88e06bb1c060826817a13ba2b617bf90e",
+      "name": "学校、幼稚園、保育所などあり",
+      "code": "208",
+      "crop": [
+        131.672,
+        591.5,
+        168.672,
+        628.5
+      ],
+      "path": "knowledge-ja/colors/9f63239b576c8da6d0b133c8de5dcaacdff7d8ce0482878cf2e6ac7ac079e9f9.png",
+      "sha256": "9f63239b576c8da6d0b133c8de5dcaacdff7d8ce0482878cf2e6ac7ac079e9f9",
+      "width": 519,
+      "height": 518
+    },
+    {
+      "imageId": "p125-image02",
+      "originalSha256": "7c294e5d6ab3bbaa0130122beb4fa861d6806e4f9501bacc6e57570211e571f3",
+      "name": "信号機あり",
+      "code": "208の2",
+      "crop": [
+        173.88799999999998,
+        591.5,
+        210.88799999999998,
+        628.5
+      ],
+      "path": "knowledge-ja/colors/81e09cdfd2425e9f148d132147ad3ffd003aa36bcbfa97e1d7c943a9ccfd314d.png",
+      "sha256": "81e09cdfd2425e9f148d132147ad3ffd003aa36bcbfa97e1d7c943a9ccfd314d",
+      "width": 519,
+      "height": 518
+    },
+    {
+      "imageId": "p125-image03",
+      "originalSha256": "05e131fbf0f93fb00c789fff08fcb7178a00017ceaaccbc3e35da5fee62809ea",
+      "name": "滑りやすい",
+      "code": "209",
+      "crop": [
+        216.10399999999998,
+        591.5,
+        253.10399999999998,
+        628.5
+      ],
+      "path": "knowledge-ja/colors/cd3a43ea7b09c63dafde15994999ebc2b8c1fe3a9e5a25a59c5251dce9dbfc1d.png",
+      "sha256": "cd3a43ea7b09c63dafde15994999ebc2b8c1fe3a9e5a25a59c5251dce9dbfc1d",
+      "width": 519,
+      "height": 518
+    },
+    {
+      "imageId": "p125-image04",
+      "originalSha256": "e6d2e9372a56e05e480fc78f353726260c00b3bd7f4043d40d8c21b3da6eb2fa",
+      "name": "落石のおそれあり",
+      "code": "209の2",
+      "crop": [
+        47.239999999999995,
+        649.16,
+        84.24,
+        686.16
+      ],
+      "path": "knowledge-ja/colors/a6fd4483e170e1672b76a54f72c2ff68aa1659239455354339b628f2b690493d.png",
+      "sha256": "a6fd4483e170e1672b76a54f72c2ff68aa1659239455354339b628f2b690493d",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p125-image05",
+      "originalSha256": "803e3e3151e920b7bdaae169348e6b1833d57cced7e242eb23434f2633ef6f29",
+      "name": "路面の凹凸あり",
+      "code": "209の3",
+      "crop": [
+        89.45599999999999,
+        649.16,
+        126.45599999999999,
+        686.16
+      ],
+      "path": "knowledge-ja/colors/b5396b7d28389ffac8433fca72a4f5e43634ff1ba2df0c7b0b0f8ad2e293fe23.png",
+      "sha256": "b5396b7d28389ffac8433fca72a4f5e43634ff1ba2df0c7b0b0f8ad2e293fe23",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p125-image06",
+      "originalSha256": "d42ea315734df831f30e82b9af069505638e6c48726ffc519bdacadda9abe589",
+      "name": "合流交通あり",
+      "code": "210",
+      "crop": [
+        131.672,
+        649.16,
+        168.672,
+        686.16
+      ],
+      "path": "knowledge-ja/colors/25c345247cf8b362941998bc7c96df855f0b0146dc5351efbf9359983ba5f026.png",
+      "sha256": "25c345247cf8b362941998bc7c96df855f0b0146dc5351efbf9359983ba5f026",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p125-image07",
+      "originalSha256": "b9470fb93b470cfcd4952f50d9ac9add05ed98f7483c281deb1b75739ac0a38e",
+      "name": "車線数減少",
+      "code": "211",
+      "crop": [
+        173.88799999999998,
+        649.16,
+        210.88799999999998,
+        686.16
+      ],
+      "path": "knowledge-ja/colors/099a9c80ecfa3bb9b8a985f784f4ff00268930a57934e421dc28dc13136eac61.png",
+      "sha256": "099a9c80ecfa3bb9b8a985f784f4ff00268930a57934e421dc28dc13136eac61",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p126-image00",
+      "originalSha256": "af8e4f24f89a341d827542d2a81c32b379684fac6bf497a8e1016ec953d4f693",
+      "name": "幅員減少",
+      "code": "212",
+      "crop": [
+        216.10399999999998,
+        649.16,
+        253.10399999999998,
+        686.16
+      ],
+      "path": "knowledge-ja/colors/c7b931e9625acb699873c0d747b817fa299538aa3198bb6c694551f1ced45c65.png",
+      "sha256": "c7b931e9625acb699873c0d747b817fa299538aa3198bb6c694551f1ced45c65",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p126-image01",
+      "originalSha256": "9e9f91d4c87ecdfcadf093bc28f9250c9ffcda9d3b41c62e869a3d67c1786dc1",
+      "name": "二方向交通",
+      "code": "212の2",
+      "crop": [
+        47.239999999999995,
+        706.8199999999999,
+        84.24,
+        743.8199999999999
+      ],
+      "path": "knowledge-ja/colors/4be7a84cb073c62507d7ad77406f4d6e15bcd456e5a5d2d6d0f4085c9d77dea4.png",
+      "sha256": "4be7a84cb073c62507d7ad77406f4d6e15bcd456e5a5d2d6d0f4085c9d77dea4",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p126-image04",
+      "originalSha256": "54fdf89cc27e05fa7107dcf7db702a230dac0df808f63913b1e2f7552da603e5",
+      "name": "道路工事中",
+      "code": "213",
+      "crop": [
+        173.88799999999998,
+        706.8199999999999,
+        210.88799999999998,
+        743.8199999999999
+      ],
+      "path": "knowledge-ja/colors/f92842682335ce2273a33cc8c6ef0335ba7935f8dbfaeebdc00fa28ef13930a3.png",
+      "sha256": "f92842682335ce2273a33cc8c6ef0335ba7935f8dbfaeebdc00fa28ef13930a3",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p126-image05",
+      "originalSha256": "df1f80349c56ce3421cdd6b654d00c4e425ec9629bc0bc8b8e398c95cbd1e5dd",
+      "name": "横風注意",
+      "code": "214",
+      "crop": [
+        216.10399999999998,
+        706.8199999999999,
+        253.10399999999998,
+        743.8199999999999
+      ],
+      "path": "knowledge-ja/colors/98167853d599f9bbb68de342e4f5a3b0d837ab8dbbdaf39d3e0c2aca0aaa42d1.png",
+      "sha256": "98167853d599f9bbb68de342e4f5a3b0d837ab8dbbdaf39d3e0c2aca0aaa42d1",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p126-image06",
+      "originalSha256": "23aa41c699416718219f492cbf109a7f5d98c923091303927c45a9679975f59a",
+      "name": "動物が飛び出すおそれあり",
+      "code": "214の2",
+      "crop": [
+        47.239999999999995,
+        764.48,
+        84.24,
+        801.48
+      ],
+      "path": "knowledge-ja/colors/6de722c8e1ff3e2daae7b26bc58da9ccd8b2a0d5dcac18fcbd669cbf540bd2cf.png",
+      "sha256": "6de722c8e1ff3e2daae7b26bc58da9ccd8b2a0d5dcac18fcbd669cbf540bd2cf",
+      "width": 519,
+      "height": 519
+    },
+    {
+      "imageId": "p126-image07",
+      "originalSha256": "36f0b8e9f0679e717d71afd11b7847734639dda0101eaab8795da6f9494031b9",
+      "name": "その他の危険",
+      "code": "215",
+      "crop": [
+        89.45599999999999,
+        764.48,
+        126.45599999999999,
+        801.48
+      ],
+      "path": "knowledge-ja/colors/7189bc246f308a830e71c7b1a2f1203433b5ae2be0f81619842bd82235fe0c3f.png",
+      "sha256": "7189bc246f308a830e71c7b1a2f1203433b5ae2be0f81619842bd82235fe0c3f",
+      "width": 519,
+      "height": 519
+    }
+  ]
+}

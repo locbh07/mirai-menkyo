@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mirai Menkyo - Duyệt bản dịch</title>
+  <link rel="stylesheet" href="review.css" />
+  <script defer src="bundle.js"></script>
+  <script defer src="review.js"></script>
+</head>
+<body>
+  <header class="topbar"><strong>Mirai Menkyo</strong><span>Duyệt bản dịch</span><span id="locale"></span></header>
+  <main>
+    <section class="toolbar" aria-label="Chọn bài học">
+      <label class="search"><img src="assets/icons/search.svg" alt="" /><input id="search" type="search" placeholder="Tìm bài" aria-label="Tìm bài học" /></label>
+      <select id="lesson" aria-label="Bài học"></select>
+      <button id="import" title="Mở bản dịch JSON"><img src="assets/icons/upload.svg" alt="" /><span>Mở bản dịch</span></button>
+      <button id="reset" title="Xóa bản dịch khỏi màn hình xem trước"><img src="assets/icons/rotate-ccw.svg" alt="" /><span>Xóa bản dịch</span></button>
+      <label class="toggle"><input id="colors" type="checkbox" checked /><span>Hình màu</span></label>
+      <input id="files" type="file" accept=".json,application/json" multiple hidden />
+    </section>
+    <div class="status"><p id="progress" role="status"></p><p>PDF 2024 · Chưa bổ sung sửa đổi mới · Bản nháp, chưa xuất bản</p></div>
+    <p id="error" role="alert" hidden></p>
+    <div class="comparison"><section id="source" class="pane" aria-label="Nguyên văn tiếng Nhật"></section><section id="target" class="pane" aria-label="Bản dịch nháp"></section></div>
+  </main>
+  <dialog id="viewer"><header><p id="caption"></p><button id="close" aria-label="Đóng hình" title="Đóng hình"><img src="assets/icons/x.svg" alt="" /></button></header><img id="large-image" alt="" /></dialog>
+</body>
+</html>

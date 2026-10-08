@@ -1,0 +1,59 @@
+{
+  "textReplacements": {
+    "ja-kyousoku-chapter-03-section-03-b0027": {
+      "from": "xe途切れ (khi dòng xe ngắt quãng)",
+      "to": "dòng xe ngắt quãng"
+    }
+  },
+  "cellParagraphs": {
+    "p127-table00-r2-c0": {
+      "0": "Cấm lấn sang phần đường bên phải để vượt",
+      "1": "(1)",
+      "3": "(2)",
+      "4": "(3)"
+    },
+    "p127-table00-r5-c0": {
+      "0": "Cấm thay đổi hướng đi",
+      "1": "(1)",
+      "2": "(2)"
+    },
+    "p129-table00-r5-c0": {
+      "0": "Làn xe",
+      "1": "1 Làn xe được bố trí trên đoạn đường ngoài phần đường chính của đường cao tốc quốc gia dành cho ô tô",
+      "2": "(1) Khi bằng sơn hoặc vật liệu tương tự",
+      "3": "hoặc",
+      "5": "(2) Khi bằng đinh đường, đá hoặc vật liệu tương tự",
+      "7": "2 Làn xe được bố trí trên phần đường chính của đường cao tốc quốc gia dành cho ô tô"
+    },
+    "p133-table00-r1-c0": {
+      "0": "Đỗ xe song song",
+      "1": "1 Trường hợp cho biết là phần đường nơi 1 xe đỗ xe",
+      "3": "2 Trường hợp cho biết là phần đường nơi từ 2 xe trở lên đỗ xe"
+    },
+    "p135-table01-r2-c0": {
+      "0": "Được băng qua chéo",
+      "1": "1 Trường hợp thực hiện giới hạn theo thời gian",
+      "3": "2 Trường hợp thực hiện cả ngày",
+      "4": "(1)",
+      "6": "(2)"
+    },
+    "p136-table00-r6-c0": {
+      "0": "Vạch tim đường",
+      "1": "1 Trường hợp bố trí trên đường cần đặc biệt cho biết không được lấn sang phía bên phải đường để đi",
+      "3": "2 Trường hợp bố trí tại nơi khác ngoài trường hợp 1",
+      "5": "3 Trường hợp chỉ định phần đường ngoài phần giữa đường làm phần giữa đường",
+      "7": "4 Trường hợp (1) của 1 và 3 khi đặc biệt cần thiết"
+    },
+    "p137-table00-r1-c0": {
+      "0": "Vạch phân làn",
+      "1": "1 Khi bằng sơn hoặc vật liệu tương tự",
+      "2": "hoặc",
+      "4": "2 Khi bằng đinh đường, đá hoặc vật liệu tương tự"
+    },
+    "p138-table00-r2-c0": {
+      "0": "Đến gần đảo an toàn hoặc chướng ngại vật trên đường",
+      "1": "1 Trường hợp tránh sang một phía",
+      "2": "2 Trường hợp tránh sang hai phía"
+    }
+  }
+}

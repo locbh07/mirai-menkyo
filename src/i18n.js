@@ -13,6 +13,8 @@ export const languageFlags = {
 
 const messages = {
   vi: {
+    additionalKnowledge: "Tài liệu tham khảo bổ sung",
+    contentLanguage: "Ngôn ngữ bài học: {language}",
     devtoolsTitle: "Tạm dừng truy cập", devtoolsMessage: "Vui lòng đóng công cụ phát triển để tiếp tục.",
     devtoolsRetryFailed: "Chưa thể tiếp tục. Hãy đóng công cụ phát triển hoặc bảng bên của trình duyệt rồi thử lại.", retry: "Thử lại",
     dataReload: "Không đọc được dữ liệu. Vui lòng tải lại trang qua HTTPS hoặc localhost.",
@@ -34,6 +36,8 @@ const messages = {
     search: "Tìm tỉnh, trung tâm, địa chỉ...", empty: "Không có kết quả phù hợp.", maps: "Mở Google Maps",
   },
   ja: {
+    additionalKnowledge: "補足資料",
+    contentLanguage: "学習の言語：{language}",
     devtoolsTitle: "アクセスを一時停止", devtoolsMessage: "続行するには開発者ツールを閉じてください。",
     devtoolsRetryFailed: "まだ続行できません。開発者ツールまたはブラウザーのサイドバーを閉じて再試行してください。", retry: "再試行",
     dataReload: "データを読み込めません。HTTPS または localhost でページを再読み込みしてください。",
@@ -52,6 +56,8 @@ const messages = {
     locationsKicker: "運転免許試験場", locationsCopy: "都道府県、試験場名、住所で検索。", search: "都道府県、試験場、住所を検索...", empty: "該当する結果がありません。", maps: "Google Mapsで開く",
   },
   en: {
+    additionalKnowledge: "Additional Reference",
+    contentLanguage: "Lesson language: {language}",
     devtoolsTitle: "Access paused", devtoolsMessage: "Please close developer tools to continue.",
     devtoolsRetryFailed: "Unable to continue yet. Close developer tools or the browser sidebar, then try again.", retry: "Try again",
     dataReload: "Unable to read data. Reload the page over HTTPS or localhost.",
@@ -70,6 +76,8 @@ const messages = {
     locationsKicker: "Driving test centers", locationsCopy: "Search by prefecture, center name or address.", search: "Search prefecture, center, address...", empty: "No matching results.", maps: "Open Google Maps",
   },
   "zh-Hans": {
+    additionalKnowledge: "补充参考资料",
+    contentLanguage: "学习内容语言：{language}",
     devtoolsTitle: "访问已暂停", devtoolsMessage: "请关闭开发者工具后继续。",
     devtoolsRetryFailed: "暂时无法继续。请关闭开发者工具或浏览器侧边栏后重试。", retry: "重试",
     dataReload: "无法读取数据。请通过 HTTPS 或 localhost 重新加载页面。",
@@ -88,6 +96,8 @@ const messages = {
     locationsKicker: "驾驶考试中心", locationsCopy: "按都道府县、考试中心名称或地址搜索。", search: "搜索都道府县、考试中心、地址...", empty: "没有匹配的结果。", maps: "打开 Google Maps",
   },
   "zh-Hant": {
+    additionalKnowledge: "補充參考資料",
+    contentLanguage: "學習內容語言：{language}",
     devtoolsTitle: "存取已暫停", devtoolsMessage: "請關閉開發者工具後繼續。",
     devtoolsRetryFailed: "暫時無法繼續。請關閉開發者工具或瀏覽器側邊欄後重試。", retry: "重試",
     dataReload: "無法讀取資料。請透過 HTTPS 或 localhost 重新載入頁面。",
@@ -106,6 +116,8 @@ const messages = {
     locationsKicker: "駕駛考試中心", locationsCopy: "按都道府縣、考試中心名稱或地址搜尋。", search: "搜尋都道府縣、考試中心、地址...", empty: "沒有符合的結果。", maps: "開啟 Google Maps",
   },
   pt: {
+    additionalKnowledge: "Material Complementar",
+    contentLanguage: "Idioma dos artigos: {language}",
     devtoolsTitle: "Acesso pausado", devtoolsMessage: "Feche as ferramentas de desenvolvedor para continuar.",
     devtoolsRetryFailed: "Ainda não é possível continuar. Feche as ferramentas de desenvolvedor ou a barra lateral do navegador e tente novamente.", retry: "Tentar novamente",
     dataReload: "Não foi possível ler os dados. Recarregue a página via HTTPS ou localhost.",

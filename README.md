@@ -87,11 +87,147 @@ is stored in this repository. No sibling backend repository is required to build
 Exam questions, choices and available explanations contain Vietnamese, Japanese,
 English, Simplified Chinese, Traditional Chinese and Portuguese translations.
 The build lists only languages with complete question and choice coverage in the
-manifest. Knowledge articles currently contain Vietnamese text; their language
-is displayed when another interface language is selected. Location names and
-addresses are available in Japanese and romaji.
+manifest. Knowledge has Japanese PDF-derived lessons, their Vietnamese edition
+and the original scraped Vietnamese references, selectable independently of the
+interface language.
+Location names and addresses are available in Japanese and romaji.
+
+### Japanese PDF Lessons
+
+`data/knowledge-ja/source.pdf` is the untouched, 148-page Japanese manual supplied
+by the user, byte-identical to the NPA's
+[published PDF](https://www.npa.go.jp/bureau/traffic/20241113kyousoku.pdf).
+`lessons.json` contains 71 source-ordered lessons/reference sections: all 11
+chapters, glossary, appendices, front matter and effective-date provisions.
+It retains the original 2024 content; newer amendments are deliberately not
+applied. A user-supplied Vietnamese translation is available alongside it.
+Changing the interface to Vietnamese/Japanese selects the corresponding library;
+other interface languages fall back to Japanese, with an independent study-language
+selector. Existing scraped references remain in a supplemental section. Book
+pagination and logical lesson counts do not double-count translations.
+
+`data/knowledge-vi/lessons-vi.json` is bound to the exact Japanese dataset hash.
+Its text values are per body block or whole table cell. The build applies each
+aggregate cell translation once, not once per original paragraph. Eight multi-image
+cells have explicit paragraph mappings in `editorial-overrides.json` to preserve
+image/caption order. A stray Japanese fragment in the crossing rule was corrected
+from the source. The original and supplied translation remain separate; the reader
+identifies the Vietnamese edition as AI-assisted, not a certified/current-law text.
+
+The import records every non-footer source character with an audit ID, retains
+furigana and line geometry, joins paragraph continuations using the manual's
+first-line/hanging indents, and maps all 277 original monochrome illustrations
+into their original cells/positions. All 87 source table fragments are retained
+for auditing and regrouped into 34 logical tables with reviewed page-break
+relationships, shared cells and headers. The missing rule on p128 is repaired
+using the adjacent numbered columns, separating item 4 from item 3. `Same as
+above` cells retain the original Japanese and expose their actual referenced
+cell. Multi-image examples interleave captions and pictures in source order.
+All fragments have 2x original-layout previews, individually labelled by page.
+The previews improve the legibility of PDF text/borders, not the detail or color
+of the original raster illustrations. Native HTML reading, chapter filtering,
+IME-safe search, previous/next lessons and image enlargement are available.
+Simple three/four-column sign tables reflow on narrow screens; paired kind/color tables are not
+mislabelled as kind/number/meaning/color. Complex merged tables remain
+scrollable inside their own region.
+
+`color-source.pdf` is a pinned copy of MLIT's official
+[color sign poster](https://www.mlit.go.jp/road/sign/sign/douro/ichiran.pdf).
+`scripts/prepare-knowledge-colors.py` renders reviewed vector crops locally;
+`color-manifest.json` records the first pack's hashes/crops (67 references).
+The active `color-applied-manifest.json` covers **151 of 277 image instances**,
+incorporating the user's MLIT/Commons pack. Twenty-two crops were re-extracted
+from the pinned vector poster to remove poster rules/captions and repair the blue
+climbing-lane and white-background emergency-phone examples. The bare clover for
+p141-image03 was rejected because the source has dimension labels; its original
+is retained. Standard monochrome supplementary signs stay monochrome. These are
+reference illustrations of the same reviewed
+sign type/direction, not restorations of the original grayscale drawings.
+Differences such as explanatory wording/pictogram styling can remain. Combined
+variants, unmatched numeric examples and unreviewed drawings keep the original image.
+MLIT's [sign design guidance](https://www.mlit.go.jp/road/soudan/soudan_04a_04.html)
+is recorded in the manifest. Source attribution is shown in the reader.
+
+The default view uses available color references; `PDF original` switches back
+without changing content or table structure. The preference persists locally.
+Missing/failed color requests fall back to the untouched image, including in
+the enlargement dialog. Original PDF previews always stay unchanged. The build
+does not call translation APIs, AI colorization or image upscaling.
+Before this restructuring, the Japanese dataset was backed up under
+`output/backups/knowledge-ja-before-structure-color-*`.
+
+To regenerate and verify the checked-in import:
+
+```bash
+python -m pip install -r scripts/requirements-pdf.txt
+npm run import:knowledge-ja
+npm run prepare:knowledge-colors
+npm run test:knowledge-ja-source
+npm run test:knowledge-ja
+npm run test:knowledge-vi
+```
+
+The Python source check compares every imported character to the original PDF,
+checks ordered source glyphs/lines, complete page/image coverage, non-overlapping
+table grids, each regrouped cell's provenance, ditto references and specific
+cross-page regression cases. It also verifies all 67 color sources by hash,
+dimensions and actual colored pixels. Browser
+checks read all 71 lessons at 320px, 390px and 1440px, compare the full Japanese
+paragraph/table text and caption/image sequence, load all 277 illustrations and
+check nonblank canvas pixels, all 151 active reference replacements, reference contents,
+color/original switching, real HTTP failure fallback, navigation, IME, source
+previews and the preserved Vietnamese library. Screenshots and the color
+original/reference contact sheet are saved under `output` for visual review.
+These checks strengthen structural fidelity; they do not certify current legal
+correctness or replace Japanese editorial review of the 2024 source.
+
+Cloudflare only needs Node for deployment: the import is bundled in Git. The
+build strips per-character audit IDs and packs lessons into the existing
+encrypted runtime data; it deploys only image assets, not the original PDFs or
+plaintext source/audit JSON. Only color files referenced by the manifest are
+deployed. Filenames are content hashes for immutable caching.
+Stable article/block IDs and source-page references support later translations
+without recreating the shared illustrations.
+The Japanese reader uses a locally hosted, approximately 600KB variable-weight
+subset of Noto Sans JP, renamed `Mirai Knowledge JP`, with SIL OFL 1.1 notices.
+See `src/assets/fonts/README.md`; no remote font service is needed.
 
 ## UI Checks
+
+### AI Translation Handoff
+
+`npm run export:knowledge-handoff -- --locale vi` creates a new, timestamped
+offline handoff under `output/translation-handoff`. It never overwrites returned
+translations or modifies the source dataset. Supported targets also include
+`en`, `zh-Hans`, `zh-Hant`, and `pt`.
+
+The package includes 71 per-lesson source/response templates, 3,117 translation
+units (paragraphs, titles and editorial alt labels), all 277 original image
+instances, the 151 active references, 87 source-table facsimiles, source PDFs,
+integrity hashes and the Vietnamese brief/prompt for another AI.
+The authoritative layout carries exact cell spans, page relationships, ditto
+targets and interleaved caption/image order independently of translation text.
+
+Open its `index.html` directly after extraction to compare Japanese and draft
+translations side-by-side (stacked on mobile). Returned JSON is read locally;
+no API, external upload, paid translation or production publishing is performed.
+Untranslated units remain Japanese in this **review-only** view.
+
+`node scripts/validate-knowledge-handoff.mjs <package-folder> <returned.json>`
+checks identity/source hashes, statuses, collisions and source asset hashes;
+`--complete` also requires every unit to be translated. Changed numbers and
+diagram letters produce warnings requiring review. Add the returned image plan
+as another argument to check all 277 image decisions and candidate file hashes.
+No candidate image is applied automatically; semantic correctness, licensing,
+SVG sanitization and human acceptance remain separate publication prerequisites.
+
+See [AI handoff instructions](docs/knowledge-ai-handoff.md) and
+[the detailed Muse prompt](docs/knowledge-ai-prompt.md).
+`npm run test:knowledge-handoff` checks the contract, invalid/partial/conflicting
+returns, numeric warnings, image proposals, asset hashes, all 71 source layouts
+and 277 nonblank images at 320/390/1440px, plus offline-file preview behavior.
+
+### Main Website
 
 ```bash
 npm install

@@ -16,7 +16,7 @@ const originals = JSON.parse(await readFile(path.join(root, "data/karimen-honmen
 assert.equal(dataConfig.version, 1);
 assert.equal(manifest.dataFormat, "aes-gcm-v1");
 assert.deepEqual(await readBuiltData(path.join(dist, manifest.locationsPath), dataConfig), originals.test_locations);
-assert.deepEqual(await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig), originals.knowledge_articles.map((article) => ({
+assert.deepEqual((await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig)).filter((article) => article.locale === "vi" && article.format !== "pdf-lessons-v1"), originals.knowledge_articles.map((article) => ({
   id: article.source_id, locale: article.locale || originals.metadata?.locale || "vi", slug: article.slug,
   title: article.title, text: article.content_text, blocks: article.blocks || [], tables: article.tables || [], images: article.images || [],
 })));
@@ -120,6 +120,7 @@ try {
   await page.locator("[data-back-exams]").click();
   await page.locator('[data-tab="knowledge"]').click();
   await page.waitForSelector(".article-row");
+  await page.locator("[data-knowledge-language]").selectOption("vi");
   await page.locator('[data-open-article="vi-knowledge-traffic-signs"]').click();
   assert.equal(await page.locator(".sign-entry").count(), 157);
   await page.locator('[data-tab="locations"]').click();

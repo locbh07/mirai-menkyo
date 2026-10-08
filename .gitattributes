@@ -1,0 +1,3 @@
+# Preserve exact bytes for source integrity checks across Windows and Linux.
+data/knowledge-ja/*.json -text whitespace=cr-at-eol
+data/knowledge-ja/*.pdf binary

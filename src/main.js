@@ -4,8 +4,10 @@ import { dataConfig } from "./data-config.js";
 import { decodeJsonData } from "./data-codec.js";
 import { installShortcutDeterrent } from "./shortcut-deterrent.js";
 import { createDevtoolsGuard } from "./devtools-guard.js";
+import { renderPdfArticle, installPdfImageViewer } from "./pdf-lessons.js";
 
 installShortcutDeterrent();
+installPdfImageViewer();
 
 const storedLocale = localStorage.getItem("mirai-menkyo-locale");
 const state = {
@@ -25,6 +27,8 @@ const state = {
   secondsLeft: 0,
   knowledge: null,
   knowledgeSearch: "",
+  knowledgeLanguage: null,
+  knowledgeGroup: "",
   knowledgeScroll: 0,
   currentArticle: null,
   locations: null,
@@ -367,7 +371,7 @@ function answerButton(question, value, label, selected) {
     if (value === question.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-answer="${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}>${icon(value ? "check" : "x")}<span>${label}</span></button>`;
+  return `<button class="answer-button ${cls}" data-answer="${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}><span>${label}</span></button>`;
 }
 
 function renderChoiceQuestion(question) {
@@ -400,7 +404,7 @@ function choiceButton(question, choice, value, selected) {
     if (value === choice.correct) cls = "correct";
     else if (selected) cls = "incorrect";
   }
-  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}>${icon(value ? "check" : "x")}<span>${t(value ? "correct" : "incorrect")}</span></button>`;
+  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}><span>${t(value ? "correct" : "incorrect")}</span></button>`;
 }
 
 function renderDot(question, index) {
@@ -585,6 +589,35 @@ async function renderKnowledgeAsync() {
   render();
 }
 
+function knowledgeLocale() {
+  return state.knowledgeLanguage || (state.manifest.knowledgeLocales?.includes(state.locale)
+    ? state.locale : state.manifest.knowledgeFallbackLocale || "ja");
+}
+
+function knowledgeArticles() {
+  const language = knowledgeLocale();
+  return (state.knowledge || []).filter((article) => (article.locale || "vi") === language);
+}
+
+function knowledgeResults() {
+  const keyword = normalizeSearch(state.knowledgeSearch);
+  return knowledgeArticles().filter((article) => (!state.knowledgeGroup || article.group?.id === state.knowledgeGroup)
+    && normalizeSearch(`${article.group?.title || ""} ${article.title} ${article.text || ""}`).includes(keyword));
+}
+
+function renderKnowledgeSections(articles) {
+  if (!articles.length) return `<div class="empty-state">${t("empty")}</div>`;
+  const groups = new Map();
+  for (const article of articles) {
+    const key = article.group?.id || "legacy";
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(article);
+  }
+  return [...groups.values()].map((items) => `<section class="knowledge-section">
+    ${items[0].group ? `<h2 class="knowledge-section-title" lang="${items[0].locale}">${escapeHtml(items[0].group.title)}</h2>` : `<h2 class="knowledge-section-title">${t("additionalKnowledge")}</h2>`}
+    <div class="knowledge-list">${items.map(renderKnowledgeRow).join("")}</div></section>`).join("");
+}
+
 function renderKnowledge() {
   if (!state.knowledge) {
     renderKnowledgeAsync().catch(showError);
@@ -597,30 +630,33 @@ function renderKnowledge() {
     else return renderArticle(article);
   }
 
-  const keyword = normalizeSearch(state.knowledgeSearch);
-  const articles = state.knowledge.filter((article) => normalizeSearch(`${article.title} ${article.text || ""}`).includes(keyword));
+  const language = knowledgeLocale();
+  const catalog = knowledgeArticles();
+  const groups = [...new Map(catalog.filter((article) => article.group).map((article) => [article.group.id, article.group])).values()];
+  const articles = knowledgeResults();
   return `
     <section class="page-head knowledge-head">
       <div>
         <p class="page-kicker">${t("knowledgeKicker")}</p>
         <h1 class="page-title">${t("knowledgeTitle")}</h1>
         <p class="page-copy">${t("knowledgeCopy")}</p>
-        ${state.locale !== (state.manifest.knowledgeLocale || "vi") ? `<p class="content-language">${t("knowledgeLanguage")}</p>` : ""}
+        ${state.locale !== language ? `<p class="content-language">${t("contentLanguage", { language: languages[language] })}</p>` : ""}
+        ${language === "ja" ? '<p class="pdf-source-version" lang="ja">2024年版「交通の方法に関する教則」・原文の内容と図を掲載</p>' : ""}
       </div>
-      <span class="knowledge-count">${t("knowledgeCount", { count: state.knowledge.length })}</span>
+      <span class="knowledge-count">${t("knowledgeCount", { count: catalog.length })}</span>
     </section>
     <div class="knowledge-toolbar">
+      <select class="knowledge-select" data-knowledge-language aria-label="${t("language")}">${(state.manifest.knowledgeLocales || ["vi"]).map((locale) => `<option value="${locale}" ${locale === language ? "selected" : ""}>${escapeHtml(languages[locale])}</option>`).join("")}</select>
+      ${groups.length ? `<select class="knowledge-select knowledge-chapter-select" data-knowledge-group aria-label="${t("knowledgeTitle")}"><option value="">${t("all")}</option>${groups.map((group) => `<option value="${group.id}" ${state.knowledgeGroup === group.id ? "selected" : ""}>${escapeHtml(group.title)}</option>`).join("")}</select>` : ""}
       <input class="search knowledge-search" type="search" data-knowledge-search value="${escapeAttribute(state.knowledgeSearch)}" placeholder="${t("knowledgeSearch")}" aria-label="${t("knowledgeSearch")}" />
-      <span class="knowledge-results" aria-live="polite">${keyword ? t("knowledgeCount", { count: articles.length }) : ""}</span>
+      <span class="knowledge-results" aria-live="polite">${t("knowledgeCount", { count: articles.length })}</span>
     </div>
-    <section class="knowledge-list" aria-label="${t("knowledgeTitle")}">
-      ${articles.map(renderKnowledgeRow).join("") || `<div class="empty-state">${t("empty")}</div>`}
-    </section>
+    <div class="knowledge-sections" aria-label="${t("knowledgeTitle")}">${renderKnowledgeSections(articles)}</div>
   `;
 }
 
 function normalizeSearch(value) {
-  return String(value || "").normalize("NFD").replace(/\p{M}/gu, "").replace(/[đĐ]/g, "d").toLowerCase().trim();
+  return String(value || "").normalize("NFKC").normalize("NFD").replace(/\p{M}/gu, "").replace(/[đĐ]/g, "d").toLowerCase().trim();
 }
 
 function articleBodyBlocks(article) {
@@ -636,7 +672,7 @@ function articleExcerpt(article) {
 }
 
 function renderKnowledgeRow(article) {
-  const index = state.knowledge.indexOf(article) + 1;
+  const index = knowledgeArticles().indexOf(article) + 1;
   const available = articleBodyBlocks(article).length || article.tables?.length || article.images?.length;
   return `
     <button class="article-row" data-open-article="${escapeAttribute(article.id)}" ${available ? "" : "disabled"}>
@@ -651,6 +687,7 @@ function renderKnowledgeRow(article) {
 }
 
 function renderArticle(article) {
+  if (article.format === "pdf-lessons-v1") return renderPdfArticle(article, state.manifest.knowledgeSources.ja, knowledgeArticles().filter((item) => item.format === "pdf-lessons-v1"), t("back"));
   return `
     <section class="article-view">
       <div class="article-toolbar">
@@ -795,11 +832,16 @@ function renderLocation(item) {
 }
 
 function bindEvents() {
+  const outline = document.querySelector(".pdf-outline details");
+  if (outline) outline.open = matchMedia("(min-width: 901px)").matches;
   const practiceMenu = document.querySelector(".practice-menu");
   const languageMenu = document.querySelector(".language-menu");
   document.querySelectorAll("[data-locale]").forEach((button) => {
     button.addEventListener("click", () => {
+      const current = state.knowledge?.find((article) => article.id === state.currentArticle);
       state.locale = button.dataset.locale;
+      state.knowledgeLanguage = null;
+      if (current?.sourceArticleId) state.currentArticle = knowledgeArticles().find((article) => article.sourceArticleId === current.sourceArticleId)?.id || null;
       localStorage.setItem("mirai-menkyo-locale", state.locale);
       render();
       const languageFocus = state.tab === "practice"
@@ -903,12 +945,19 @@ function bindEvents() {
     window.scrollTo(0, state.examHomeScroll);
   });
 
+  function openArticle(button, fromList) {
+    if (fromList) state.knowledgeScroll = window.scrollY;
+    state.currentArticle = button.dataset.openArticle || button.dataset.pdfArticle;
+    render();
+    window.scrollTo(0, 0);
+    const heading = document.querySelector(".article-view h1");
+    heading?.setAttribute("tabindex", "-1");
+    heading?.focus({ preventScroll: true });
+  }
+  document.querySelectorAll("[data-pdf-article]").forEach((button) => button.addEventListener("click", () => openArticle(button, false)));
   document.querySelectorAll("[data-open-article]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.knowledgeScroll = window.scrollY;
-      state.currentArticle = button.dataset.openArticle;
-      render();
-      window.scrollTo(0, 0);
+      openArticle(button, true);
     });
   });
 
@@ -918,14 +967,33 @@ function bindEvents() {
     window.scrollTo(0, state.knowledgeScroll);
   });
 
-  document.querySelector("[data-knowledge-search]")?.addEventListener("input", (event) => {
-    const cursor = event.target.selectionStart;
-    state.knowledgeSearch = event.target.value;
+  document.querySelector("[data-knowledge-language]")?.addEventListener("change", (event) => {
+    state.knowledgeLanguage = event.target.value;
+    state.knowledgeGroup = "";
+    state.knowledgeSearch = "";
+    state.knowledgeScroll = 0;
     render();
-    const input = document.querySelector("[data-knowledge-search]");
-    input?.focus({ preventScroll: true });
-    if (cursor !== null) input?.setSelectionRange(cursor, cursor);
   });
+  document.querySelector("[data-knowledge-group]")?.addEventListener("change", (event) => {
+    state.knowledgeGroup = event.target.value;
+    document.querySelector(".knowledge-sections").innerHTML = renderKnowledgeSections(knowledgeResults());
+    bindKnowledgeRows();
+    document.querySelector(".knowledge-results").textContent = t("knowledgeCount", { count: knowledgeResults().length });
+  });
+  function bindKnowledgeRows() {
+    document.querySelectorAll("[data-open-article]").forEach((button) => button.addEventListener("click", () => openArticle(button, true)));
+  }
+  const knowledgeSearch = document.querySelector("[data-knowledge-search]");
+  const updateKnowledgeSearch = (event) => {
+    state.knowledgeSearch = event.target.value;
+    if (event.isComposing) return;
+    const results = knowledgeResults();
+    document.querySelector(".knowledge-sections").innerHTML = renderKnowledgeSections(results);
+    bindKnowledgeRows();
+    document.querySelector(".knowledge-results").textContent = t("knowledgeCount", { count: results.length });
+  };
+  knowledgeSearch?.addEventListener("input", updateKnowledgeSearch);
+  knowledgeSearch?.addEventListener("compositionend", updateKnowledgeSearch);
 
   const locationSearch = document.querySelector("[data-location-search]");
   const updateLocationSearch = (event) => {

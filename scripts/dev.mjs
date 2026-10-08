@@ -28,6 +28,7 @@ const mimeTypes = {
   ".mmdata": "application/octet-stream",
   ".png": "image/png",
   ".svg": "image/svg+xml",
+  ".woff": "font/woff",
 };
 
 http
