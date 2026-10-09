@@ -117,10 +117,16 @@ export async function prepareData() {
   const translation = JSON.parse(await readFile(path.join(root, "data/knowledge-vi/lessons-vi.json"), "utf8"));
   if (translation.sourceDatasetSha256 !== sha256(await readFile(path.join(japaneseRoot, "lessons.json")))) throw new Error("Stale Vietnamese knowledge source");
   const editorial = JSON.parse(await readFile(path.join(root, "data/knowledge-vi/editorial-overrides.json"), "utf8"));
+  const currentLaw = JSON.parse(await readFile(path.join(root, "data/knowledge-vi/current-law-updates.json"), "utf8"));
+  const quickReview = JSON.parse(await readFile(path.join(root, "data/knowledge-vi/quick-review.json"), "utf8"));
+  const applyCurrentQuestion = (question) => {
+    const override = currentLaw.questionOverrides?.[question.source_id];
+    return override ? { ...question, ...override } : question;
+  };
   const vietnameseArticles = localizeKnowledge(japanese, translation, editorial).map(runtimeArticle);
   if (appliedColors.size !== colorImages.size) throw new Error("Orphan color mapping");
   console.log(`Japanese knowledge: ${japanese.coverage.logicalTables} logical tables / ${japanese.coverage.tables} source fragments, ${appliedColors.size} verified color references`);
-  const questions = all.exam_sets.flatMap((exam) => exam.questions || []);
+  const questions = all.exam_sets.flatMap((exam) => (exam.questions || []).map(applyCurrentQuestion));
   const { overrides: imageOverrides, version: imageVersion } = await enhancedImageOverrides(questions);
   const entries = questions.flatMap((question) => [question, ...(question.choices || [])]);
   const locales = Object.keys(entries[0]?.text || {}).filter((locale) =>
@@ -142,14 +148,15 @@ export async function prepareData() {
     stats: {
       examSets: all.exam_sets.length,
       examQuestions: all.exam_questions.length,
-      knowledgeArticles: all.knowledge_articles.length + japanese.articles.length,
-      knowledgeByLocale: { ja: japanese.articles.length, vi: all.knowledge_articles.length + vietnameseArticles.length },
+      knowledgeArticles: quickReview.articles.length + japanese.articles.length + currentLaw.articles.length,
+      knowledgeByLocale: { ja: japanese.articles.length, vi: quickReview.articles.length + vietnameseArticles.length + currentLaw.articles.length },
+      knowledgeReviewedThrough: currentLaw.reviewedThrough,
       testLocations: all.test_locations.length,
     },
   };
 
   for (const examSet of all.exam_sets) {
-    const questions = (examSet.questions || []).map((question) => slimQuestion(question, imageOverrides));
+    const questions = (examSet.questions || []).map(applyCurrentQuestion).map((question) => slimQuestion(question, imageOverrides));
     const examPayload = {
       id: examSet.source_id,
       type: examSet.exam_type,
@@ -171,16 +178,7 @@ export async function prepareData() {
   }
 
   manifest.knowledgePath = await writer.write(
-    [...vietnameseArticles, ...japaneseArticles, ...all.knowledge_articles.map((article) => ({
-      id: article.source_id,
-      locale: article.locale || all.metadata?.locale || "vi",
-      slug: article.slug,
-      title: article.title,
-      text: article.content_text,
-      blocks: article.blocks || [],
-      tables: article.tables || [],
-      images: article.images || [],
-    }))],
+    [...quickReview.articles, ...currentLaw.articles, ...vietnameseArticles, ...japaneseArticles],
   );
   manifest.locationsPath = await writer.write(all.test_locations);
   const manifestPath = await writer.write(manifest);

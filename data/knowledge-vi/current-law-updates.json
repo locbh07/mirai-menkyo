@@ -1,0 +1,92 @@
+{
+  "reviewedThrough": "2026-10-08",
+  "speedingPatch": {
+    "title": "Giới hạn tốc độ theo luật hiện hành (từ 01/09/2026)",
+    "text": "Giới hạn tốc độ theo luật hiện hành từ 01/09/2026. Đường sinh hoạt không có vạch tim đường, làn xe hoặc dải phân cách: 30 km/giờ. Các nhóm đường thông thường còn lại: 60 km/giờ. Ưu tiên tốc độ ghi trên biển báo hoặc vạch kẻ đường.",
+    "blocks": [
+      { "tag": "h1", "text": "Giới hạn tốc độ theo luật hiện hành (từ 01/09/2026)" },
+      { "tag": "p", "text": "Khi có biển báo hoặc vạch kẻ quy định tốc độ, phải tuân theo tốc độ được chỉ định." },
+      { "tag": "h2", "text": "Đường sinh hoạt: 30 km/giờ" },
+      { "tag": "p", "text": "Trên đường thông thường không có biển/vạch tốc độ và không có vạch tim đường, làn xe hoặc dải phân cách phân chia hai chiều, tốc độ pháp định của ô tô là 30 km/giờ." },
+      { "tag": "h2", "text": "Các đường thông thường còn lại: 60 km/giờ" },
+      { "tag": "p", "text": "Tốc độ pháp định 60 km/giờ tiếp tục áp dụng cho đường có vạch tim đường hoặc làn xe, đường có dải phân cách phân chia hai chiều, đường dành riêng cho ô tô và các đường thuộc nhóm được pháp luật quy định, nếu không có tốc độ chỉ định khác." },
+      { "tag": "p", "text": "Xe gắn máy thông thường vẫn có tốc độ pháp định 30 km/giờ. Dù đang trong giới hạn, người lái vẫn phải chọn tốc độ an toàn theo mặt đường, giao thông, thời tiết và tầm nhìn." },
+      { "tag": "p", "text": "Nguồn: Cơ quan Cảnh sát Quốc gia Nhật Bản — quy định có hiệu lực ngày 01/09/2026. Bản tiếng Việt do Mirai Menkyo biên tập, không phải bản dịch được cơ quan nhà nước chứng nhận." }
+    ],
+    "tables": []
+  },
+  "questionOverrides": {
+    "karimen-1-17": { "correct": false, "explanation": { "vi": "Sai. Từ 01/09/2026, không thể nói chung mọi đường thông thường không có biển tốc độ đều là 60 km/giờ. Đường sinh hoạt thuộc diện luật định là 30 km/giờ; các nhóm đường thông thường còn lại là 60 km/giờ. Xe gắn máy thông thường là 30 km/giờ." } },
+    "karimen-3-25": { "explanation": { "vi": "Sai. Xe chở khách và xe tải thông thường không có hai mức 60/50 km/giờ như câu nêu. Từ 01/09/2026 phải xác định loại đường: đường sinh hoạt thuộc diện luật định là 30 km/giờ, các nhóm đường thông thường còn lại là 60 km/giờ, trừ khi có biển/vạch tốc độ khác." } },
+    "karimen-5-27": { "explanation": { "vi": "Sai. Không có mức pháp định chung 50 km/giờ chỉ vì xe tải có ba bánh hoặc dung tích đến 660 cc. Phải áp dụng tốc độ chỉ định; nếu không có, xác định đường thuộc nhóm 30 hay 60 km/giờ theo quy định từ 01/09/2026." } },
+    "karimen-8-20": { "correct": false, "explanation": { "vi": "Sai vì phát biểu áp dụng 60 km/giờ cho mọi đường thông thường. Từ 01/09/2026, đường sinh hoạt thuộc diện luật định có tốc độ pháp định 30 km/giờ; các nhóm đường thông thường còn lại là 60 km/giờ, nếu không có tốc độ chỉ định." } },
+    "karimen-15-36": { "explanation": { "vi": "Sai. Xe tải thông thường không có mức pháp định chung 50 km/giờ. Nếu không có biển/vạch tốc độ, mức 30 hoặc 60 km/giờ phụ thuộc loại đường theo quy định có hiệu lực từ 01/09/2026." } },
+    "honmen-3-12": { "correct": false, "explanation": { "vi": "Sai vì câu khẳng định chung 60 km/giờ cho mọi đường thông thường. Từ 01/09/2026, một số đường sinh hoạt có tốc độ pháp định 30 km/giờ; các nhóm đường thông thường còn lại là 60 km/giờ nếu không có tốc độ chỉ định." } },
+    "honmen-4-85": { "correct": false, "explanation": { "vi": "Sai. Dung tích 660 cc không quyết định riêng mức này. Trên đường không có biển/vạch tốc độ, phải xác định đường thuộc nhóm 30 km/giờ hay 60 km/giờ theo cấu trúc đường và quy định có hiệu lực từ 01/09/2026." } },
+    "honmen-11-12": { "explanation": { "vi": "Sai. Không được vượt quá tốc độ tối đa đang áp dụng để vượt xe. Tốc độ đó có thể là tốc độ chỉ định, 30 km/giờ trên đường sinh hoạt thuộc diện luật định hoặc 60 km/giờ trên các nhóm đường thông thường còn lại." } },
+    "honmen-14-64": { "explanation": { "vi": "Sai. Không được vượt quá tốc độ tối đa đang áp dụng để vượt xe. Ngoài ra, từ 01/09/2026 đường không có biển/vạch tốc độ có thể thuộc nhóm pháp định 30 km/giờ hoặc 60 km/giờ." }, "correct": false },
+    "honmen-15-87": { "explanation": { "vi": "Sai. Không được tạm thời vượt quá tốc độ tối đa đang áp dụng để vượt xe. Từ 01/09/2026, mức pháp định trên đường không có biển/vạch tốc độ có thể là 30 hoặc 60 km/giờ tùy loại đường." }, "correct": false }
+  },
+  "articles": [
+    {
+      "id": "vi-current-2026-bicycle-passing",
+      "locale": "vi",
+      "slug": "current-2026-bicycle-passing",
+      "title": "Vượt xe đạp an toàn — quy định từ 01/04/2026",
+      "currentLaw": true,
+      "sourceUrl": "https://www.npa.go.jp/bureau/traffic/bicycle/202603.pdf",
+      "blocks": [
+        { "tag": "h1", "text": "Vượt xe đạp an toàn — quy định từ 01/04/2026" },
+        { "tag": "p", "text": "Khi ô tô hoặc phương tiện cơ giới đi qua bên phải xe đạp mà không thể giữ khoảng cách đầy đủ, người lái phải chạy với tốc độ an toàn phù hợp với khoảng cách thực tế. Xe đạp phải đi sát bên trái đường trong phạm vi có thể." },
+        { "tag": "p", "text": "Hướng dẫn của NPA: nên giữ khoảng cách ít nhất khoảng 1 m. Nếu không thể giữ khoảng 1 m, nên chạy khoảng 20–30 km/giờ. Đây là hướng dẫn an toàn; việc đánh giá còn phụ thuộc tình trạng đường và giao thông cụ thể." },
+        { "tag": "p", "text": "Nguồn: Cơ quan Cảnh sát Quốc gia Nhật Bản. Bản dịch/biên tập không chính thức." }
+      ],
+      "tables": [], "images": []
+    },
+    {
+      "id": "vi-current-2026-residential-speed",
+      "locale": "vi",
+      "slug": "current-2026-residential-speed",
+      "title": "Tốc độ 30 km/giờ trên đường sinh hoạt — từ 01/09/2026",
+      "currentLaw": true,
+      "sourceUrl": "https://www.npa.go.jp/bureau/traffic/seikatsudouro/seikatsudoro.html",
+      "blocks": [
+        { "tag": "h1", "text": "Tốc độ 30 km/giờ trên đường sinh hoạt — từ 01/09/2026" },
+        { "tag": "p", "text": "Đường thông thường chủ yếu phục vụ sinh hoạt hằng ngày, không có vạch tim đường, làn xe hoặc dải phân cách phân chia hai chiều, có tốc độ pháp định 30 km/giờ nếu không có biển/vạch quy định tốc độ khác." },
+        { "tag": "p", "text": "Không phải mọi đường thông thường đều giảm xuống 30 km/giờ. Các đường có vạch tim/làn xe, có phân cách hai chiều, đường dành riêng cho ô tô và những nhóm đường luật định vẫn là 60 km/giờ nếu không có tốc độ chỉ định khác." },
+        { "tag": "p", "text": "Biển báo hoặc vạch kẻ tốc độ luôn được ưu tiên áp dụng." }
+      ],
+      "tables": [], "images": []
+    },
+    {
+      "id": "vi-current-2025-new-moped",
+      "locale": "vi",
+      "slug": "current-2025-new-moped",
+      "title": "Xe gắn máy tiêu chuẩn mới — từ 01/04/2025",
+      "currentLaw": true,
+      "sourceUrl": "https://www.npa.go.jp/bureau/traffic/menkyo/menkyo_nirinsha.html",
+      "blocks": [
+        { "tag": "h1", "text": "Xe gắn máy tiêu chuẩn mới — từ 01/04/2025" },
+        { "tag": "p", "text": "Ngoài xe gắn máy truyền thống có dung tích đến 50 cc, người có bằng gentsuki được lái xe hai bánh có dung tích đến 125 cc nếu công suất cực đại đã được giới hạn ở mức 4,0 kW trở xuống." },
+        { "tag": "p", "text": "Không được hiểu rằng bằng gentsuki cho phép lái mọi xe 125 cc. Xe phải đáp ứng đồng thời điều kiện dung tích và giới hạn công suất nêu trên." },
+        { "tag": "p", "text": "Nguồn: Cơ quan Cảnh sát Quốc gia Nhật Bản. Bản dịch/biên tập không chính thức." }
+      ],
+      "tables": [], "images": []
+    },
+    {
+      "id": "vi-current-2026-bicycle-tickets",
+      "locale": "vi",
+      "slug": "current-2026-bicycle-tickets",
+      "title": "“Vé xanh” đối với xe đạp — từ 01/04/2026",
+      "currentLaw": true,
+      "sourceUrl": "https://www.npa.go.jp/bureau/traffic/bicycle/info.html",
+      "blocks": [
+        { "tag": "h1", "text": "“Vé xanh” đối với xe đạp — từ 01/04/2026" },
+        { "tag": "p", "text": "Người từ 16 tuổi trở lên điều khiển xe đạp có thể thuộc phạm vi áp dụng của thủ tục thông báo vi phạm giao thông (thường gọi là vé xanh) đối với một số vi phạm tương đối nhẹ." },
+        { "tag": "p", "text": "Cảnh sát vẫn chủ yếu hướng dẫn hoặc cảnh cáo trong nhiều trường hợp; các hành vi nguy hiểm, ác ý hoặc thực tế gây nguy hiểm có thể bị xử lý. Vi phạm nghiêm trọng như lái xe khi say rượu vẫn có thể theo thủ tục hình sự." },
+        { "tag": "p", "text": "Nguồn: Cơ quan Cảnh sát Quốc gia Nhật Bản. Bản dịch/biên tập không chính thức." }
+      ],
+      "tables": [], "images": []
+    }
+  ]
+}

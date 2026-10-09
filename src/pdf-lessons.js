@@ -25,6 +25,18 @@ export function renderPdfRuns(block) {
     ? `<ruby>${escape(run.text)}<rp>(</rp><rt>${escape(run.reading)}</rt><rp>)</rp></ruby>` : escape(run.text)).join("");
 }
 
+function headingClass(block, locale) {
+  const text = block.text.trim();
+  if (locale === "vi") {
+    if (/^Chương\s+\d+\b/i.test(text)) return "pdf-chapter-heading";
+    if (/^Mục\s+\d+\b/i.test(text)) return "pdf-section-heading";
+  } else {
+    if (/^第\s*\d+\s*章/.test(text)) return "pdf-chapter-heading";
+    if (/^第\s*\d+\s*節/.test(text)) return "pdf-section-heading";
+  }
+  return "";
+}
+
 function figure(image, label, original = true, locale = "ja") {
   label = image.alt || label;
   const path = original && image.color && imageMode() === "color" ? image.color.path : image.path;
@@ -79,12 +91,12 @@ export function renderPdfArticle(article, source, articles, backLabel) {
     ${blocks.some((block) => block.cells?.some((cell) => cell.images.some((image) => image.color))) ? `<div class="pdf-color-toolbar"><label>${ui.imageMode} <select data-pdf-image-mode><option value="color" ${imageMode() === "color" ? "selected" : ""}>${ui.color}</option><option value="original" ${imageMode() === "original" ? "selected" : ""}>${ui.pdf}</option></select></label><span>${ui.colorNote}</span></div>` : ""}
     <div class="pdf-reading-layout">
       ${headings.length ? `<aside class="pdf-outline"><details><summary>${icon("list")}<span>${ui.outline}</span></summary>
-        <nav aria-label="${ui.outline}">${headings.map((block) => `<a href="#${escape(block.id)}">${escape(block.text)}</a>`).join("")}</nav></details></aside>` : ""}
+        <nav aria-label="${ui.outline}">${headings.map((block) => `<a class="${headingClass(block, locale)}" href="#${escape(block.id)}">${escape(block.text)}</a>`).join("")}</nav></details></aside>` : ""}
       <div class="article-body pdf-lesson-body">${blocks.map((block) => {
         if (block.kind === "table") return table(block, locale);
         if (block.kind === "figure") return `<figure class="pdf-figure">${figure(block.image, `PDF ${block.source.page} ${ui.page}`, true, locale)}</figure>`;
         const tag = ["h2", "h3"].includes(block.tag) ? block.tag : "p";
-        return `<${tag} id="${escape(block.id)}" class="pdf-text ${block.note ? "pdf-revision-note" : ""}" data-source-page="${block.source.page}">${renderPdfRuns(block)}</${tag}>`;
+        return `<${tag} id="${escape(block.id)}" class="pdf-text ${headingClass(block, locale)} ${block.note ? "pdf-revision-note" : ""}" data-source-page="${block.source.page}">${renderPdfRuns(block)}</${tag}>`;
       }).join("")}
       <footer class="pdf-attribution">${ui.source}「${escape(source.title)}」 · ${ui.reformatted}<br />
         <a href="${escape(source.url)}#page=${article.source.firstPage}" target="_blank" rel="noopener noreferrer">PDF ${icon("external-link")}</a>

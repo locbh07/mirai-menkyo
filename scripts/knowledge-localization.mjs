@@ -56,6 +56,23 @@ export function localizeKnowledge(source, translation, overrides) {
       }
       if (block.kind === "figure") block.image.alt = result.title;
     }
+    for (const [targetId, merge] of Object.entries(overrides.blockMerges || {})) {
+      const target = result.blocks.find((block) => block.id === targetId);
+      if (!target) continue;
+      if (target.kind !== "text") throw new Error(`Stale block merge target: ${targetId}`);
+      const sourceIds = merge.sources || [];
+      if (!sourceIds.length || sourceIds.some((id) => !result.blocks.some((block) => block.id === id)))
+        throw new Error(`Stale block merge sources: ${targetId}`);
+      paragraph(target, merge.text);
+      if (merge.tag) target.tag = merge.tag;
+      result.blocks = result.blocks.filter((block) => !sourceIds.includes(block.id));
+    }
+    for (const [blockId, tag] of Object.entries(overrides.blockTags || {})) {
+      const block = result.blocks.find((item) => item.id === blockId);
+      if (!block) continue;
+      if (block.kind !== "text") throw new Error(`Stale block tag override: ${blockId}`);
+      block.tag = tag;
+    }
     result.text = result.blocks.map((block) => block.kind === "text" ? block.text : (block.cells || []).flatMap((cell) => cell.paragraphs.map((p) => p.text)).join("\n")).join("\n");
     return result;
   });

@@ -13,13 +13,12 @@ const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const dist = path.join(root, "dist");
 const manifest = await readBuiltData(path.join(dist, dataConfig.manifestPath), dataConfig);
 const originals = JSON.parse(await readFile(path.join(root, "data/karimen-honmen-vi/all.json"), "utf8"));
+const currentLaw = JSON.parse(await readFile(path.join(root, "data/knowledge-vi/current-law-updates.json"), "utf8"));
+const quickReview = JSON.parse(await readFile(path.join(root, "data/knowledge-vi/quick-review.json"), "utf8"));
 assert.equal(dataConfig.version, 1);
 assert.equal(manifest.dataFormat, "aes-gcm-v1");
 assert.deepEqual(await readBuiltData(path.join(dist, manifest.locationsPath), dataConfig), originals.test_locations);
-assert.deepEqual((await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig)).filter((article) => article.locale === "vi" && article.format !== "pdf-lessons-v1"), originals.knowledge_articles.map((article) => ({
-  id: article.source_id, locale: article.locale || originals.metadata?.locale || "vi", slug: article.slug,
-  title: article.title, text: article.content_text, blocks: article.blocks || [], tables: article.tables || [], images: article.images || [],
-})));
+assert.deepEqual((await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig)).filter((article) => article.locale === "vi" && article.format !== "pdf-lessons-v1"), [...quickReview.articles, ...currentLaw.articles]);
 
 async function filesUnder(directory) {
   const files = [];
@@ -121,8 +120,9 @@ try {
   await page.locator('[data-tab="knowledge"]').click();
   await page.waitForSelector(".article-row");
   await page.locator("[data-knowledge-language]").selectOption("vi");
-  await page.locator('[data-open-article="vi-knowledge-traffic-signs"]').click();
-  assert.equal(await page.locator(".sign-entry").count(), 157);
+  await page.locator("[data-knowledge-scope]").selectOption("detail");
+  await page.locator('[data-open-article="vi-kyousoku-chapter-05-section-08"]').click();
+  await page.waitForSelector(".pdf-article-view");
   await page.locator('[data-tab="locations"]').click();
   await page.waitForSelector(".location-row");
   await page.locator("[data-location-search]").pressSequentially("Tokyo");

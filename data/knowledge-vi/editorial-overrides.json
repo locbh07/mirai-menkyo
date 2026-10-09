@@ -5,6 +5,31 @@
       "to": "dòng xe ngắt quãng"
     }
   },
+  "blockMerges": {
+    "ja-kyousoku-chapter-01-section-04-b0011": {
+      "sources": ["ja-kyousoku-chapter-01-section-04-b0012"],
+      "tag": "h3",
+      "text": "2 Không được trưng bày hàng hóa hoặc đặt đất đá, gỗ và các vật khác gây cản trở giao thông trên đường."
+    },
+    "ja-kyousoku-chapter-01-section-04-b0013": {
+      "sources": ["ja-kyousoku-chapter-01-section-04-b0014"],
+      "tag": "h3",
+      "text": "3 Việc không nhìn rõ đèn tín hiệu, biển báo hoặc vạch kẻ đường là rất nguy hiểm. Không được đặt biển đèn neon có màu giống đèn tín hiệu ở gần đèn tín hiệu, đặt biển quảng cáo gần biển báo, hoặc tự ý điều khiển, di chuyển hay làm hỏng đèn tín hiệu, biển báo và vạch kẻ đường."
+    },
+    "ja-kyousoku-chapter-01-section-04-b0015": {
+      "sources": ["ja-kyousoku-chapter-01-section-04-b0016"],
+      "tag": "h3",
+      "text": "4 Không được nhờ người không có giấy phép lái xe hoặc người có hơi rượu lái xe. Cũng không được giục người lái xe chạy nhanh hoặc thực hiện hành vi cản trở việc lái xe."
+    },
+    "ja-kyousoku-chapter-01-section-04-b0018": {
+      "sources": ["ja-kyousoku-chapter-01-section-04-b0019"],
+      "tag": "h3",
+      "text": "6 Không được yêu cầu người lái xe chở quá tải (tức chở hàng vượt quá giới hạn trọng lượng cho phép), hoặc bán hay giao hàng hóa khiến xe bị quá tải."
+    }
+  },
+  "blockTags": {
+    "ja-kyousoku-chapter-01-section-04-b0017": "h3"
+  },
   "cellParagraphs": {
     "p127-table00-r2-c0": {
       "0": "Cấm lấn sang phần đường bên phải để vượt",

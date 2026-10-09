@@ -28,6 +28,7 @@ const state = {
   knowledge: null,
   knowledgeSearch: "",
   knowledgeLanguage: null,
+  knowledgeScope: "quick",
   knowledgeGroup: "",
   knowledgeScroll: 0,
   currentArticle: null,
@@ -596,7 +597,24 @@ function knowledgeLocale() {
 
 function knowledgeArticles() {
   const language = knowledgeLocale();
-  return (state.knowledge || []).filter((article) => (article.locale || "vi") === language);
+  return (state.knowledge || []).filter((article) => {
+    if ((article.locale || "vi") !== language) return false;
+    if (language !== "vi") return true;
+    if (state.knowledgeScope === "quick") return article.format === "quick-review-v1" || article.currentLaw;
+    return article.format === "pdf-lessons-v1" || article.currentLaw;
+  });
+}
+
+function knowledgeScopeUi() {
+  if (state.locale === "ja") return { quick: "要点復習", detail: "詳細教材", notice: "ベトナム語では要点復習と詳細教材を切り替えられます。翻訳・編集は非公式です。" };
+  if (state.locale === "en") return { quick: "Quick review", detail: "Detailed lessons", notice: "Quick review is compiled from the official manual. Detailed lessons preserve its chapters, appendices and colored reference illustrations. Translation and editing are unofficial." };
+  return { quick: "Ôn nhanh", detail: "Giáo trình chi tiết", notice: "Ôn nhanh được biên soạn lại từ PDF chính thức. Giáo trình chi tiết giữ nguyên cấu trúc chương, phụ biểu và hình màu tham khảo. Bản dịch/biên tập không chính thức; quy định mới được rà soát đến 08/10/2026." };
+}
+
+function knowledgeUi() {
+  if (state.locale === "ja") return { exam: "試験対策", reference: "全文資料", notice: "試験対策を優先表示しています。全文資料には2024年版原文、付録、改正履歴も含まれます。翻訳・編集は非公式です。" };
+  if (state.locale === "en") return { exam: "Exam study", reference: "Full reference", notice: "Exam-focused lessons are shown first. Full reference also contains the 2024 source, appendices and amendment history. Translation and editing are unofficial." };
+  return { exam: "Học để thi", reference: "Tài liệu đầy đủ", notice: "Mặc định chỉ hiển thị nội dung phục vụ học và thi. Tài liệu đầy đủ còn chứa bản gốc 2024, phụ lục và lịch sử sửa đổi. Bản dịch/biên tập không chính thức; quy định mới được rà soát đến 08/10/2026." };
 }
 
 function knowledgeResults() {
@@ -631,6 +649,7 @@ function renderKnowledge() {
   }
 
   const language = knowledgeLocale();
+  const ui = knowledgeScopeUi();
   const catalog = knowledgeArticles();
   const groups = [...new Map(catalog.filter((article) => article.group).map((article) => [article.group.id, article.group])).values()];
   const articles = knowledgeResults();
@@ -642,10 +661,12 @@ function renderKnowledge() {
         <p class="page-copy">${t("knowledgeCopy")}</p>
         ${state.locale !== language ? `<p class="content-language">${t("contentLanguage", { language: languages[language] })}</p>` : ""}
         ${language === "ja" ? '<p class="pdf-source-version" lang="ja">2024年版「交通の方法に関する教則」・原文の内容と図を掲載</p>' : ""}
+        <p class="knowledge-legal-notice">${escapeHtml(ui.notice)}</p>
       </div>
       <span class="knowledge-count">${t("knowledgeCount", { count: catalog.length })}</span>
     </section>
     <div class="knowledge-toolbar">
+      ${language === "vi" ? `<select class="knowledge-select" data-knowledge-scope aria-label="${escapeAttribute(ui.quick)}"><option value="quick" ${state.knowledgeScope === "quick" ? "selected" : ""}>${escapeHtml(ui.quick)}</option><option value="detail" ${state.knowledgeScope === "detail" ? "selected" : ""}>${escapeHtml(ui.detail)}</option></select>` : ""}
       <select class="knowledge-select" data-knowledge-language aria-label="${t("language")}">${(state.manifest.knowledgeLocales || ["vi"]).map((locale) => `<option value="${locale}" ${locale === language ? "selected" : ""}>${escapeHtml(languages[locale])}</option>`).join("")}</select>
       ${groups.length ? `<select class="knowledge-select knowledge-chapter-select" data-knowledge-group aria-label="${t("knowledgeTitle")}"><option value="">${t("all")}</option>${groups.map((group) => `<option value="${group.id}" ${state.knowledgeGroup === group.id ? "selected" : ""}>${escapeHtml(group.title)}</option>`).join("")}</select>` : ""}
       <input class="search knowledge-search" type="search" data-knowledge-search value="${escapeAttribute(state.knowledgeSearch)}" placeholder="${t("knowledgeSearch")}" aria-label="${t("knowledgeSearch")}" />
@@ -687,7 +708,7 @@ function renderKnowledgeRow(article) {
 }
 
 function renderArticle(article) {
-  if (article.format === "pdf-lessons-v1") return renderPdfArticle(article, state.manifest.knowledgeSources.ja, knowledgeArticles().filter((item) => item.format === "pdf-lessons-v1"), t("back"));
+  if (article.format === "pdf-lessons-v1") return renderPdfArticle(article, state.manifest.knowledgeSources.ja, (state.knowledge || []).filter((item) => item.locale === article.locale && item.format === "pdf-lessons-v1"), t("back"));
   return `
     <section class="article-view">
       <div class="article-toolbar">
@@ -700,9 +721,33 @@ function renderArticle(article) {
       ${renderArticleBlocks(article)}
       ${renderArticleTables(article)}
       ${renderArticleImages(article)}
+      ${renderRelatedArticles(article)}
+      ${article.sourceUrl ? `<footer class="pdf-attribution">Nguồn chính thức: <a href="${escapeAttribute(article.sourceUrl)}" target="_blank" rel="noopener noreferrer">Cơ quan Cảnh sát Quốc gia Nhật Bản ${icon("external-link")}</a><br />Bản dịch/biên tập không chính thức của Mirai Menkyo.</footer>` : ""}
       </div>
     </section>
   `;
+}
+
+function renderRelatedArticles(article) {
+  if (!article.relatedArticleIds?.length) return "";
+  const groups = new Map();
+  for (const id of article.relatedArticleIds) {
+    const target = state.knowledge.find((item) => item.id === id);
+    if (!target) continue;
+    const key = target.currentLaw ? "current-law" : target.group?.id || "reference";
+    const title = target.currentLaw
+      ? "Quy định cập nhật sau PDF 2024"
+      : target.group?.title || "Tài liệu tham khảo";
+    if (!groups.has(key)) groups.set(key, { title, articles: [] });
+    groups.get(key).articles.push(target);
+  }
+  if (!groups.size) return "";
+  return `<section class="quick-related"><h2>Xem chi tiết trong giáo trình</h2>
+    <div class="quick-related-groups">${[...groups.values()].map((group) => `<section class="quick-related-group">
+      <h3>${escapeHtml(group.title)}</h3>
+      <div>${group.articles.map((target) => `<button class="button secondary" data-open-article="${escapeAttribute(target.id)}">${escapeHtml(target.title)}</button>`).join("")}</div>
+    </section>`).join("")}</div>
+  </section>`;
 }
 
 function renderArticleBlocks(article) {
@@ -969,6 +1014,13 @@ function bindEvents() {
 
   document.querySelector("[data-knowledge-language]")?.addEventListener("change", (event) => {
     state.knowledgeLanguage = event.target.value;
+    state.knowledgeGroup = "";
+    state.knowledgeSearch = "";
+    state.knowledgeScroll = 0;
+    render();
+  });
+  document.querySelector("[data-knowledge-scope]")?.addEventListener("change", (event) => {
+    state.knowledgeScope = event.target.value;
     state.knowledgeGroup = "";
     state.knowledgeSearch = "";
     state.knowledgeScroll = 0;

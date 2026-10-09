@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "locale": "vi",
+  "source": "npa-kyousoku-2024",
+  "articles": [
+    {
+      "id": "vi-quick-signals-signs",
+      "locale": "vi",
+      "format": "quick-review-v1",
+      "slug": "quick-signals-signs",
+      "title": "Tín hiệu, hiệu lệnh và hệ thống biển báo",
+      "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Ưu tiên hiệu lệnh cảnh sát, đèn tín hiệu, biển báo, biển phụ và vạch kẻ đường.",
+      "blocks": [
+        { "tag": "h1", "text": "Tín hiệu, hiệu lệnh và hệ thống biển báo" },
+        { "tag": "li", "text": "Phải tuân theo hiệu lệnh của cảnh sát hoặc người có thẩm quyền ngay cả khi khác với đèn tín hiệu hay biển báo." },
+        { "tag": "li", "text": "Đọc biển chính cùng biển phụ; biển phụ bổ sung đối tượng, thời gian, phạm vi hoặc điều kiện áp dụng." },
+        { "tag": "li", "text": "Vạch và ký hiệu trên mặt đường cũng có thể quy định hoặc chỉ dẫn cách lưu thông." },
+        { "tag": "p", "text": "Mở phần chi tiết bên dưới để xem toàn bộ biển báo và hình màu lấy từ phụ biểu của PDF." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-01-section-02", "vi-kyousoku-chapter-01-section-03", "vi-kyousoku-appendix-1", "vi-kyousoku-appendix-3-part-1", "vi-kyousoku-appendix-3-part-2", "vi-kyousoku-appendix-3-part-3", "vi-kyousoku-appendix-3-part-4", "vi-kyousoku-appendix-3-part-5", "vi-kyousoku-appendix-3-part-6", "vi-kyousoku-appendix-3-part-7"]
+    },
+    {
+      "id": "vi-quick-pedestrians-bicycles",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-pedestrians-bicycles",
+      "title": "Bảo vệ người đi bộ và xe đạp", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Qua đường, vạch qua đường, trẻ em, người cao tuổi, người khuyết tật và xe đạp.",
+      "blocks": [
+        { "tag": "h1", "text": "Bảo vệ người đi bộ và xe đạp" },
+        { "tag": "li", "text": "Giảm tốc và chuẩn bị dừng khi có khả năng người đi bộ hoặc xe đạp qua đường; không cản trở người đang qua tại vạch qua đường." },
+        { "tag": "li", "text": "Đặc biệt chú ý trẻ em, người cao tuổi, người khuyết tật và nơi tầm nhìn bị che khuất." },
+        { "tag": "li", "text": "Khi đi qua bên phải xe đạp, phải giữ khoảng cách an toàn; nếu không đủ khoảng cách thì giảm xuống tốc độ phù hợp." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-02-section-03", "vi-kyousoku-chapter-02-section-08", "vi-kyousoku-chapter-02-section-09", "vi-kyousoku-chapter-02-section-10", "vi-kyousoku-chapter-03-section-02", "vi-kyousoku-chapter-05-section-03", "vi-current-2026-bicycle-passing"]
+    },
+    {
+      "id": "vi-quick-before-driving",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-before-driving",
+      "title": "Trước khi lái xe: bằng lái, kiểm tra và chở hàng", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Điều kiện sức khỏe, loại bằng, kiểm tra xe, số người và giới hạn hàng hóa.",
+      "blocks": [
+        { "tag": "h1", "text": "Trước khi lái xe: bằng lái, kiểm tra và chở hàng" },
+        { "tag": "li", "text": "Không lái khi có rượu, quá mệt, buồn ngủ, bị ảnh hưởng bởi thuốc hoặc không đủ điều kiện điều khiển an toàn." },
+        { "tag": "li", "text": "Chỉ lái loại xe phù hợp với giấy phép đang có và các điều kiện ghi trên giấy phép." },
+        { "tag": "li", "text": "Kiểm tra phanh, lốp, đèn, nhiên liệu và các bộ phận cần thiết; cố định người và hàng hóa đúng giới hạn." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-04-section-01", "vi-kyousoku-chapter-04-section-02", "vi-kyousoku-chapter-04-section-03", "vi-kyousoku-chapter-04-section-04", "vi-current-2025-new-moped"]
+    },
+    {
+      "id": "vi-quick-speed-distance",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-speed-distance",
+      "title": "Tốc độ an toàn và khoảng cách dừng", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Tốc độ chỉ định, tốc độ pháp định, khoảng cách phản ứng và khoảng cách phanh.",
+      "blocks": [
+        { "tag": "h1", "text": "Tốc độ an toàn và khoảng cách dừng" },
+        { "tag": "li", "text": "Ưu tiên tốc độ ghi trên biển báo hoặc vạch kẻ đường. Không được vượt tốc độ tối đa để vượt xe." },
+        { "tag": "li", "text": "Từ 01/09/2026, một số đường sinh hoạt không có vạch tim/làn xe hoặc phân cách hai chiều có tốc độ pháp định 30 km/giờ; các nhóm đường thông thường còn lại là 60 km/giờ nếu không có chỉ định khác." },
+        { "tag": "li", "text": "Khoảng cách dừng bằng khoảng cách phản ứng cộng khoảng cách phanh; mệt mỏi, tốc độ cao, đường trơn và lốp mòn đều làm tăng quãng đường cần thiết." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-04-section-05", "vi-kyousoku-chapter-05-section-04", "vi-current-2026-residential-speed"]
+    },
+    {
+      "id": "vi-quick-manoeuvres",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-manoeuvres",
+      "title": "Chuyển hướng, vượt xe và giao lộ", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Quan sát, báo hiệu, vị trí xe, quyền ưu tiên và những nơi cấm vượt.",
+      "blocks": [
+        { "tag": "h1", "text": "Chuyển hướng, vượt xe và giao lộ" },
+        { "tag": "li", "text": "Trước khi chuyển hướng hoặc đổi làn phải kiểm tra an toàn, báo hiệu đúng thời điểm và không chuyển hướng đột ngột." },
+        { "tag": "li", "text": "Chỉ vượt khi được phép và đủ tầm nhìn, khoảng cách; không cản trở xe đối diện hoặc xe đang được vượt." },
+        { "tag": "li", "text": "Tại giao lộ phải xét đèn, biển báo, đường ưu tiên, bề rộng đường và hướng đi; khi rẽ phải phải đặc biệt chú ý xe đi thẳng, rẽ trái và người qua đường." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-05-section-05", "vi-kyousoku-chapter-05-section-06", "vi-kyousoku-chapter-05-section-07"]
+    },
+    {
+      "id": "vi-quick-parking",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-parking",
+      "title": "Dừng xe và đỗ xe", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Khái niệm dừng/đỗ, nơi cấm và cách đỗ không gây cản trở.",
+      "blocks": [
+        { "tag": "h1", "text": "Dừng xe và đỗ xe" },
+        { "tag": "li", "text": "Phân biệt dừng và đỗ dựa trên mục đích, thời gian bốc dỡ và khả năng người lái lập tức điều khiển xe." },
+        { "tag": "li", "text": "Ghi nhớ các khu vực cấm dừng/đỗ và khoảng cách tính từ giao lộ, vạch qua đường, đường sắt, điểm dừng xe buýt, thiết bị chữa cháy và lối ra vào." },
+        { "tag": "li", "text": "Đỗ sát bên trái theo cấu trúc đường, chừa phần đường cần thiết và không gây nguy hiểm hoặc cản trở giao thông." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-05-section-08"]
+    },
+    {
+      "id": "vi-quick-hazards",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-hazards",
+      "title": "Đường sắt, ban đêm và thời tiết xấu", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Đường ngang, đường cong/dốc, đèn xe, mưa, sương mù và mất kiểm soát.",
+      "blocks": [
+        { "tag": "h1", "text": "Đường sắt, ban đêm và thời tiết xấu" },
+        { "tag": "li", "text": "Dừng và xác nhận an toàn trước đường ngang theo quy định; không đi vào nếu phía trước không đủ chỗ thoát." },
+        { "tag": "li", "text": "Ban đêm và khi tầm nhìn xấu phải giảm tốc, sử dụng đèn đúng cách và không nhìn trực tiếp vào ánh sáng gây chói." },
+        { "tag": "li", "text": "Trên đường ướt, tuyết hoặc băng, tránh đánh lái và phanh gấp; tăng khoảng cách và thao tác nhẹ nhàng." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-06-section-01", "vi-kyousoku-chapter-06-section-02", "vi-kyousoku-chapter-06-section-03", "vi-kyousoku-chapter-06-section-04", "vi-kyousoku-chapter-06-section-05"]
+    },
+    {
+      "id": "vi-quick-expressway",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-expressway",
+      "title": "Lái xe trên đường cao tốc", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Chuẩn bị xe, nhập làn, khoảng cách, làn dừng khẩn cấp và xử lý sự cố.",
+      "blocks": [
+        { "tag": "h1", "text": "Lái xe trên đường cao tốc" },
+        { "tag": "li", "text": "Kiểm tra nhiên liệu, lốp, tải trọng và tình trạng xe trước khi vào đường cao tốc." },
+        { "tag": "li", "text": "Dùng làn tăng tốc để đạt tốc độ phù hợp, quan sát và nhập làn mà không cản trở xe trên làn chính." },
+        { "tag": "li", "text": "Giữ khoảng cách lớn hơn, tránh dừng/đỗ hoặc lùi xe; khi sự cố phải cảnh báo, rời khỏi xe tới nơi an toàn và gọi trợ giúp." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-07-section-01", "vi-kyousoku-chapter-07-section-02", "vi-kyousoku-chapter-10-section-02"]
+    },
+    {
+      "id": "vi-quick-motorcycles",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-motorcycles",
+      "title": "Xe hai bánh và xe gắn máy", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Tư thế, phanh, đường cong, tải trọng, trang bị và đặc điểm từng loại xe.",
+      "blocks": [
+        { "tag": "h1", "text": "Xe hai bánh và xe gắn máy" },
+        { "tag": "li", "text": "Đội mũ bảo hiểm đúng cách, mặc trang phục dễ nhận biết và kiểm tra xe trước khi chạy." },
+        { "tag": "li", "text": "Giữ tư thế ổn định, nhìn xa, dùng cả phanh trước và sau phù hợp; giảm tốc trước đường cong." },
+        { "tag": "li", "text": "Không chở người hoặc hàng vượt quy định; hiểu rõ khác biệt giữa xe gắn máy thông thường, xe cỡ nhỏ đặc định và mô tô." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-03-section-01", "vi-kyousoku-chapter-03-section-03", "vi-kyousoku-chapter-08-section-01", "vi-kyousoku-chapter-08-section-02", "vi-kyousoku-chapter-08-section-03", "vi-kyousoku-chapter-08-section-04", "vi-kyousoku-chapter-08-section-05", "vi-kyousoku-chapter-08-section-06", "vi-current-2025-new-moped"]
+    },
+    {
+      "id": "vi-quick-accidents",
+      "locale": "vi", "format": "quick-review-v1", "slug": "quick-accidents",
+      "title": "Tai nạn, xe hỏng và thiên tai", "group": { "id": "quick-review", "title": "Ôn nhanh theo chủ đề" },
+      "text": "Dừng xe, cứu người, báo cảnh sát, phòng tai nạn tiếp theo và sơ tán.",
+      "blocks": [
+        { "tag": "h1", "text": "Tai nạn, xe hỏng và thiên tai" },
+        { "tag": "li", "text": "Khi xảy ra tai nạn: dừng xe, cứu người bị thương, ngăn tai nạn tiếp theo và báo cảnh sát." },
+        { "tag": "li", "text": "Khi xe hỏng: đưa xe khỏi phần đường nếu có thể, cảnh báo xe phía sau và đứng tại vị trí an toàn." },
+        { "tag": "li", "text": "Khi động đất hoặc thiên tai: bình tĩnh giảm tốc, dừng theo hướng dẫn và không tự ý cản trở tuyến đường khẩn cấp." }
+      ],
+      "relatedArticleIds": ["vi-kyousoku-chapter-10-section-01", "vi-kyousoku-chapter-10-section-02", "vi-kyousoku-chapter-10-section-03"]
+    }
+  ]
+}

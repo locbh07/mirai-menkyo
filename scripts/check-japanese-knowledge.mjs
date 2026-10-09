@@ -14,7 +14,8 @@ const articleId = (slug) => `${locale}-kyousoku-${slug}`;
 const screenshots = path.join(root, `output/${locale === "vi" ? "vietnamese" : "japanese"}-knowledge`);
 await mkdir(screenshots, { recursive: true });
 const manifest = await readBuiltData(path.join(dist, dataConfig.manifestPath), dataConfig);
-const articles = (await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig)).filter((article) => article.locale === locale && article.format === "pdf-lessons-v1");
+const knowledge = await readBuiltData(path.join(dist, manifest.knowledgePath), dataConfig);
+const articles = knowledge.filter((article) => article.locale === locale && article.format === "pdf-lessons-v1");
 const source = JSON.parse(await readFile(path.join(root, "data/knowledge-ja/lessons.json"), "utf8"));
 assert.equal(articles.length, source.articles.length);
 assert.equal(manifest.knowledgeFallbackLocale, "ja");
@@ -68,12 +69,18 @@ try {
     await page.locator('[data-tab="knowledge"]').click();
     await page.waitForSelector(".article-row");
     await page.locator("[data-knowledge-language]").selectOption(locale);
+    if (locale === "vi") {
+      assert.equal(await page.locator("[data-knowledge-scope]").inputValue(), "quick");
+      await page.locator("[data-knowledge-scope]").selectOption("detail");
+    }
     assert.equal(await page.evaluate(async () => {
       await document.fonts.ready;
       return document.fonts.check('18px "Mirai Knowledge JP"');
     }), true, "Bundled Japanese font failed to load");
     assert.equal(await page.locator("[data-knowledge-language]").inputValue(), locale);
-    const catalogSize = manifest.stats.knowledgeByLocale[locale];
+    const catalogSize = locale === "vi"
+      ? knowledge.filter((article) => article.locale === "vi" && (article.format === "pdf-lessons-v1" || article.currentLaw)).length
+      : manifest.stats.knowledgeByLocale[locale];
     assert.equal(await page.locator(".article-row").count(), catalogSize);
     await layout(page, `${width}/list`);
     if (width !== 320) await page.screenshot({ path: path.join(screenshots, `${width}-list.png`) });
@@ -215,9 +222,15 @@ try {
     assert.equal(await page.locator(".article-view h1").textContent(), next.title);
     await page.locator("[data-close-article]").click();
     await page.locator("[data-knowledge-language]").selectOption("vi");
-    await page.locator('[data-open-article="vi-knowledge-traffic-signs"]').click();
-    assert.equal(await page.locator(".sign-entry").count(), 157);
+    await page.locator("[data-knowledge-scope]").selectOption("quick");
+    await page.locator('[data-open-article="vi-quick-motorcycles"]').click();
+    assert.equal(await page.locator(".quick-related-group").count(), 3);
+    const relatedHeadings = await page.locator(".quick-related-group h3").allTextContents();
+    assert.ok(relatedHeadings.some((heading) => heading.includes("Chương 3")));
+    assert.ok(relatedHeadings.some((heading) => heading.includes("Chương 8")));
+    assert.ok(relatedHeadings.some((heading) => heading.includes("Quy định cập nhật")));
     await page.locator("[data-close-article]").click();
+    await page.locator("[data-knowledge-scope]").selectOption("detail");
     await page.locator('[data-open-article="vi-kyousoku-chapter-05-section-08"]').click();
     for (const [interfaceLocale, expectedLocale] of [["ja", "ja"], ["vi", "vi"], ["en", "ja"], ["vi", "vi"]]) {
       await page.locator(".language-trigger").click();
@@ -227,7 +240,7 @@ try {
       if (counterpart) assert.equal(await page.locator(".pdf-article-view h1").textContent(), counterpart.title);
     }
     await page.close();
-    console.log(`OK: ${locale}/${width}px, all ${articles.length} lessons, exact runtime text/table contents, 277 nonblank illustrations, ${activeColors.images.length} validated references, ditto relationships, original/reference switching, failed-request fallback, IME, previews, navigation and legacy Vietnamese`);
+    console.log(`OK: ${locale}/${width}px, all ${articles.length} lessons, exact runtime text/table contents, 277 nonblank illustrations, ${activeColors.images.length} validated references, grouped quick-review links, original/reference switching, failed-request fallback, IME, previews and navigation`);
   }
   assert.deepEqual(errors, []);
   console.log(`Passed ${workflows} ${locale} lesson workflows. Screenshots: ${screenshots}`);

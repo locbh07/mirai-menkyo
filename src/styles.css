@@ -1228,6 +1228,14 @@ a:hover {
 .knowledge-chapter-select { flex: 1 1 360px; width: 100%; }
 .knowledge-toolbar .knowledge-search { flex: 1 1 100%; max-width: none; }
 .pdf-source-version { margin: 8px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+.knowledge-legal-notice { max-width: 860px; margin: 16px 0 0; padding: 12px 14px; border-left: 4px solid var(--pink); border-radius: 0 8px 8px 0; background: var(--surface-soft); color: var(--muted); font-size: 14px; line-height: 1.65; }
+.quick-related { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); }
+.quick-related h2 { margin: 0 0 12px; font-size: 18px; }
+.quick-related-groups { display: grid; gap: 18px; }
+.quick-related-group { padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-soft); }
+.quick-related-group h3 { margin: 0 0 10px; color: var(--navy); font-size: 15px; line-height: 1.5; }
+.quick-related-group > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.quick-related-group .button { background: #fff; }
 .knowledge-sections [lang="ja"], .knowledge-head [lang="ja"], .knowledge-select { font-family: "Mirai Knowledge JP", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, sans-serif; }
 .article-view.pdf-article-view { border: 0; border-radius: 0; padding: 0; background: none; box-shadow: none; font-family: "Mirai Knowledge JP", "Hiragino Kaku Gothic ProN", "Yu Gothic UI", Meiryo, sans-serif; }
 .article-view.pdf-article-view[lang="vi"] { font-family: inherit; }
@@ -1243,11 +1251,17 @@ a:hover {
 .pdf-outline summary { display: flex; align-items: center; gap: 8px; cursor: pointer; min-height: 44px; color: var(--navy); }
 .pdf-outline nav { display: grid; border-left: 2px solid var(--line); margin-top: 12px; }
 .pdf-outline a { padding: 10px 12px; min-height: 44px; font-size: 14px; line-height: 1.6; font-weight: 500; color: var(--muted); overflow-wrap: anywhere; }
+.pdf-outline a.pdf-chapter-heading { margin-top: 8px; border-left: 3px solid var(--pink); background: var(--surface-soft); color: var(--text); font-weight: 750; }
+.pdf-outline a.pdf-section-heading { padding-left: 24px; font-size: 13px; }
 .pdf-outline a:hover { background: var(--navy-soft); color: var(--navy); text-decoration: none; }
 .article-body.pdf-lesson-body { min-width: 0; font-size: 18px; line-height: 1.95; color: var(--text); }
 .pdf-text { margin: 0 0 20px; white-space: pre-wrap; overflow-wrap: anywhere; scroll-margin-top: 24px; }
 h2.pdf-text { margin: 32px 0 16px; font-size: 22px; line-height: 1.7; }
 h3.pdf-text { margin: 24px 0 12px; font-size: 19px; line-height: 1.7; }
+.pdf-text.pdf-chapter-heading { margin: 40px 0 18px; padding: 12px 16px; border-left: 5px solid var(--pink); background: var(--surface-soft); font-size: 24px; line-height: 1.5; }
+.pdf-text.pdf-section-heading { margin: 22px 0 10px 16px; color: var(--navy); font-size: 18px; line-height: 1.55; }
+.pdf-article-view[lang="vi"] .pdf-text,
+.pdf-article-view[lang="vi"] .pdf-outline a { overflow-wrap: break-word; word-break: normal; }
 .pdf-revision-note { font-size: 14px; color: var(--muted); }
 .pdf-lesson-body ruby rt { font-size: 10px; }
 .pdf-table-section { margin: 24px 0; min-width: 0; }
