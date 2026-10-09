@@ -284,7 +284,7 @@ function renderPractice() {
   const question = exam.questions[state.currentQuestionIndex];
   return `
     <section class="exam-layout">
-      <aside class="question-nav" id="question-navigation" aria-label="${t("questionList")}" data-exam-id="${escapeAttribute(exam.id)}" ${state.questionNavOpen ? "" : "hidden"}>
+      <aside class="question-nav" id="question-navigation" aria-label="${t("questionList")}" data-exam-id="${escapeAttribute(exam.id)}" data-question-count="${exam.questions.length}" ${state.questionNavOpen ? "" : "hidden"}>
         <div class="exam-header">
           <div class="drawer-heading">
             <strong>${escapeHtml(examTitle(exam))}</strong>
@@ -366,13 +366,29 @@ function renderTrueFalseQuestion(question) {
   `;
 }
 
+function gradingUi() {
+  if (state.locale === "ja") return { selected: "選択した回答", correct: "正解", selectedCorrect: "選択した回答・正解", selectedWrong: "選択した回答・不正解", guide: "採点結果の見方" };
+  if (state.locale === "vi") return { selected: "Bạn đã chọn", correct: "Đáp án đúng", selectedCorrect: "Bạn đã chọn · Đúng", selectedWrong: "Bạn đã chọn · Sai", guide: "Cách đọc kết quả" };
+  return { selected: "Your answer", correct: "Correct answer", selectedCorrect: "Your answer · Correct", selectedWrong: "Your answer · Incorrect", guide: "How to read the result" };
+}
+
+function answerStatus(correct, selected) {
+  if (!state.submitted) return "";
+  const ui = gradingUi();
+  const status = selected ? (correct ? ui.selectedCorrect : ui.selectedWrong) : (correct ? ui.correct : "");
+  if (!status) return "";
+  return `<span class="answer-status" aria-hidden="true">${icon(correct ? "check" : "x")}<span>${escapeHtml(status)}</span></span>`;
+}
+
 function answerButton(question, value, label, selected) {
   let cls = selected ? "selected" : "";
+  const correct = value === question.correct;
   if (state.submitted) {
-    if (value === question.correct) cls = "correct";
-    else if (selected) cls = "incorrect";
+    if (correct) cls = `correct${selected ? " selected-answer" : ""}`;
+    else if (selected) cls = "incorrect selected-answer";
   }
-  return `<button class="answer-button ${cls}" data-answer="${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}><span>${label}</span></button>`;
+  const reviewLabel = state.submitted ? answerStatus(correct, selected).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : "";
+  return `<button class="answer-button ${cls}" data-answer="${value}" aria-pressed="${selected}" aria-label="${escapeAttribute(`${label}${reviewLabel ? ` · ${reviewLabel}` : ""}`)}" ${state.advanceTimer !== null ? "disabled" : ""}><span class="answer-label">${label}</span>${answerStatus(correct, selected)}</button>`;
 }
 
 function renderChoiceQuestion(question) {
@@ -401,11 +417,14 @@ function renderChoiceQuestion(question) {
 
 function choiceButton(question, choice, value, selected) {
   let cls = selected ? "selected" : "";
+  const correct = value === choice.correct;
   if (state.submitted) {
-    if (value === choice.correct) cls = "correct";
-    else if (selected) cls = "incorrect";
+    if (correct) cls = `correct${selected ? " selected-answer" : ""}`;
+    else if (selected) cls = "incorrect selected-answer";
   }
-  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" aria-pressed="${selected}" ${state.advanceTimer !== null ? "disabled" : ""}><span>${t(value ? "correct" : "incorrect")}</span></button>`;
+  const label = t(value ? "correct" : "incorrect");
+  const reviewLabel = state.submitted ? answerStatus(correct, selected).replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : "";
+  return `<button class="answer-button ${cls}" data-choice-answer="${choice.number}:${value}" aria-pressed="${selected}" aria-label="${escapeAttribute(`${label}${reviewLabel ? ` · ${reviewLabel}` : ""}`)}" ${state.advanceTimer !== null ? "disabled" : ""}><span class="answer-label">${label}</span>${answerStatus(correct, selected)}</button>`;
 }
 
 function renderDot(question, index) {
@@ -418,10 +437,16 @@ function renderDot(question, index) {
 
 function renderResult() {
   const result = state.result;
+  const ui = gradingUi();
   return `
     <div class="result-box">
       <p class="result-score">${result.score}/${result.total}</p>
       <p>${t(result.passed ? "passed" : "failed", { score: state.currentExam.passingScore })}</p>
+      <div class="result-legend" aria-label="${escapeAttribute(ui.guide)}">
+        <span><i class="legend-swatch selected-swatch" aria-hidden="true"></i>${escapeHtml(ui.selected)}</span>
+        <span><i class="legend-swatch correct-swatch" aria-hidden="true"></i>${escapeHtml(ui.correct)}</span>
+        <span><i class="legend-swatch wrong-swatch" aria-hidden="true"></i>${escapeHtml(ui.selectedWrong)}</span>
+      </div>
     </div>
   `;
 }
@@ -611,6 +636,13 @@ function knowledgeScopeUi() {
   return { quick: "Ôn nhanh", detail: "Giáo trình chi tiết", notice: "Ôn nhanh được biên soạn lại từ PDF chính thức. Giáo trình chi tiết giữ nguyên cấu trúc chương, phụ biểu và hình màu tham khảo. Bản dịch/biên tập không chính thức; quy định mới được rà soát đến 08/10/2026." };
 }
 
+function knowledgePresentationUi(language, ui) {
+  if (language === "vi") return { notice: ui.notice, mode: ui.quick };
+  if (state.locale === "ja") return { notice: "日本語版は警察庁の2024年版原文を、章・節・付表ごとにウェブ向けに整理した詳細教材です。新しい改正は別途確認してください。", mode: "原文・詳細教材" };
+  if (state.locale === "en") return { notice: "The Japanese version is the detailed 2024 source manual, reorganized for the web by chapter, section and appendix. Check newer amendments separately.", mode: "Original detailed manual" };
+  return { notice: "Bản tiếng Nhật là giáo trình gốc năm 2024, được trình bày lại theo chương, mục và phụ biểu để đọc thuận tiện trên web. Các sửa đổi mới cần được đối chiếu riêng.", mode: "Giáo trình gốc chi tiết" };
+}
+
 function knowledgeUi() {
   if (state.locale === "ja") return { exam: "試験対策", reference: "全文資料", notice: "試験対策を優先表示しています。全文資料には2024年版原文、付録、改正履歴も含まれます。翻訳・編集は非公式です。" };
   if (state.locale === "en") return { exam: "Exam study", reference: "Full reference", notice: "Exam-focused lessons are shown first. Full reference also contains the 2024 source, appendices and amendment history. Translation and editing are unofficial." };
@@ -650,6 +682,7 @@ function renderKnowledge() {
 
   const language = knowledgeLocale();
   const ui = knowledgeScopeUi();
+  const presentation = knowledgePresentationUi(language, ui);
   const catalog = knowledgeArticles();
   const groups = [...new Map(catalog.filter((article) => article.group).map((article) => [article.group.id, article.group])).values()];
   const articles = knowledgeResults();
@@ -661,12 +694,12 @@ function renderKnowledge() {
         <p class="page-copy">${t("knowledgeCopy")}</p>
         ${state.locale !== language ? `<p class="content-language">${t("contentLanguage", { language: languages[language] })}</p>` : ""}
         ${language === "ja" ? '<p class="pdf-source-version" lang="ja">2024年版「交通の方法に関する教則」・原文の内容と図を掲載</p>' : ""}
-        <p class="knowledge-legal-notice">${escapeHtml(ui.notice)}</p>
+        <p class="knowledge-legal-notice">${escapeHtml(presentation.notice)}</p>
       </div>
       <span class="knowledge-count">${t("knowledgeCount", { count: catalog.length })}</span>
     </section>
     <div class="knowledge-toolbar">
-      ${language === "vi" ? `<select class="knowledge-select" data-knowledge-scope aria-label="${escapeAttribute(ui.quick)}"><option value="quick" ${state.knowledgeScope === "quick" ? "selected" : ""}>${escapeHtml(ui.quick)}</option><option value="detail" ${state.knowledgeScope === "detail" ? "selected" : ""}>${escapeHtml(ui.detail)}</option></select>` : ""}
+      ${language === "vi" ? `<select class="knowledge-select" data-knowledge-scope aria-label="${escapeAttribute(ui.quick)}"><option value="quick" ${state.knowledgeScope === "quick" ? "selected" : ""}>${escapeHtml(ui.quick)}</option><option value="detail" ${state.knowledgeScope === "detail" ? "selected" : ""}>${escapeHtml(ui.detail)}</option></select>` : `<span class="knowledge-mode-label" lang="${escapeAttribute(language)}">${escapeHtml(presentation.mode)}</span>`}
       <select class="knowledge-select" data-knowledge-language aria-label="${t("language")}">${(state.manifest.knowledgeLocales || ["vi"]).map((locale) => `<option value="${locale}" ${locale === language ? "selected" : ""}>${escapeHtml(languages[locale])}</option>`).join("")}</select>
       ${groups.length ? `<select class="knowledge-select knowledge-chapter-select" data-knowledge-group aria-label="${t("knowledgeTitle")}"><option value="">${t("all")}</option>${groups.map((group) => `<option value="${group.id}" ${state.knowledgeGroup === group.id ? "selected" : ""}>${escapeHtml(group.title)}</option>`).join("")}</select>` : ""}
       <input class="search knowledge-search" type="search" data-knowledge-search value="${escapeAttribute(state.knowledgeSearch)}" placeholder="${t("knowledgeSearch")}" aria-label="${t("knowledgeSearch")}" />
@@ -879,6 +912,9 @@ function renderLocation(item) {
 function bindEvents() {
   const outline = document.querySelector(".pdf-outline details");
   if (outline) outline.open = matchMedia("(min-width: 901px)").matches;
+  const desktopQuestionNav = matchMedia("(min-width: 768px)");
+  const questionList = document.querySelector(".question-list");
+  if (desktopQuestionNav.matches && questionList) questionList.open = true;
   const practiceMenu = document.querySelector(".practice-menu");
   const languageMenu = document.querySelector(".language-menu");
   document.querySelectorAll("[data-locale]").forEach((button) => {
@@ -933,6 +969,7 @@ function bindEvents() {
   document.querySelector("[data-close-questions]")?.addEventListener("click", () => toggleQuestionNav(false));
 
   document.querySelector(".question-list")?.addEventListener("toggle", (event) => {
+    if (desktopQuestionNav.matches) return;
     if (event.target.isConnected && state.questionNavOpen !== event.target.open) toggleQuestionNav(event.target.open);
   });
 

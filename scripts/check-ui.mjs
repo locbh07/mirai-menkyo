@@ -50,7 +50,10 @@ async function checkLayout(page, name) {
     }
     const nav = document.querySelector(".question-nav")?.getBoundingClientRect();
     const panel = document.querySelector(".question-panel")?.getBoundingClientRect();
-    if (nav?.width && panel && (nav.left < panel.left || nav.right > panel.right)) problems.push("Question drawer escapes question panel");
+    if (nav?.width && panel) {
+      if (innerWidth >= 768 && nav.right > panel.left) problems.push("Persistent question sidebar overlaps question panel");
+      if (innerWidth < 768 && (nav.left < panel.left || nav.right > panel.right)) problems.push("Question drawer escapes question panel");
+    }
     for (const dot of document.querySelectorAll(".dot")) {
       if (!dot.getClientRects().length) continue;
       const rect = dot.getBoundingClientRect();
@@ -63,8 +66,12 @@ async function checkLayout(page, name) {
 }
 
 async function checkPracticeControls(page, locale, submitted = false) {
-  assert.equal(await page.locator(".answer-button .ui-icon").count(), 0, "True/false answers are text-only");
-  if (submitted) assert.ok(await page.locator(".answer-button.correct").evaluateAll((buttons) => buttons.every((button) => getComputedStyle(button).backgroundColor === "rgb(167, 243, 208)")), "Correct answers use the stronger green");
+  if (!submitted) assert.equal(await page.locator(".answer-button .ui-icon").count(), 0, "Answer icons appear only during review");
+  if (submitted) {
+    assert.ok(await page.locator(".answer-button.correct").evaluateAll((buttons) => buttons.every((button) => getComputedStyle(button).backgroundColor === "rgb(167, 243, 208)")), "Correct answers use the stronger green");
+    assert.equal(await page.locator(".result-legend").count(), 1, "Review includes an answer-state legend");
+    assert.ok(await page.locator(".answer-status").count() >= 1, "Reviewed answers include explicit text status");
+  }
   assert.equal(await page.locator(".question-topline [data-back-exams]").count(), 1);
   assert.equal(await page.locator(".question-footer button").count(), 3);
   assert.equal(await page.locator(".question-footer [data-back-exams]").count(), 0);

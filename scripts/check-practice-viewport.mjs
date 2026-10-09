@@ -34,10 +34,14 @@ const report = { checks: 0, innerScroll: [], errors: [], viewports };
 let browser;
 
 async function navigate(page, index) {
-  await page.locator("[data-toggle-questions]").click();
-  assert.equal(await page.locator("[data-toggle-questions]").getAttribute("aria-expanded"), "true");
+  const toggle = page.locator("[data-toggle-questions]");
+  const persistentSidebar = (await page.viewportSize()).width >= 768;
+  if (!persistentSidebar) {
+    await toggle.click();
+    assert.equal(await toggle.getAttribute("aria-expanded"), "true");
+  }
   await page.locator(`[data-go-question="${index}"]`).click();
-  assert.equal(await page.locator(".question-nav").isVisible(), false);
+  assert.equal(await page.locator(".question-nav").isVisible(), persistentSidebar);
 }
 
 async function check(page, name, question, locale, allowInnerScroll) {
@@ -140,10 +144,14 @@ try {
             await page.screenshot({ path: path.join(output, `${width}-${height}-${question.id}.png`) });
           }
         }
-        await page.locator("[data-toggle-questions]").click();
-        await page.keyboard.press("Escape");
-        assert.equal(await page.locator(".question-nav").isVisible(), false);
-        assert.equal(await page.locator("[data-toggle-questions]").evaluate((button) => document.activeElement === button), true);
+        if (width < 768) {
+          await page.locator("[data-toggle-questions]").click();
+          await page.keyboard.press("Escape");
+          assert.equal(await page.locator(".question-nav").isVisible(), false);
+          assert.equal(await page.locator("[data-toggle-questions]").evaluate((button) => document.activeElement === button), true);
+        } else {
+          assert.equal(await page.locator(".question-nav").isVisible(), true);
+        }
         await page.locator(".practice-menu > summary").click();
         await page.locator(".language-trigger").click();
         await page.locator(`[data-locale="${locale === "en" ? "vi" : "en"}"]`).click();
